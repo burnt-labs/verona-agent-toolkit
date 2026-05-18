@@ -82,14 +82,8 @@ impl ConfigManager {
     }
 
     pub fn get_status(&self) -> Result<serde_json::Value> {
-        use super::constants::{get_mainnet_config, get_testnet_config};
-
         let current_network = self.get_current_network();
-        let network_config = match current_network {
-            "testnet" => get_testnet_config(),
-            "mainnet" => get_mainnet_config(),
-            _ => anyhow::bail!("Unknown network: {}", current_network),
-        };
+        let network_config = self.get_network_config()?;
 
         // Check if user has credentials for this network
         let credentials_manager = CredentialsManager::new(current_network)?;
@@ -110,7 +104,11 @@ impl ConfigManager {
         let current_network = self.get_current_network();
         match current_network {
             "testnet" => Ok(get_testnet_config()),
-            "mainnet" => Ok(get_mainnet_config()),
+            "mainnet" => {
+                let config = get_mainnet_config();
+                validate_mainnet_oauth_client_id(&config.oauth_client_id)?;
+                Ok(config)
+            }
             _ => anyhow::bail!("Unknown network: {}", current_network),
         }
     }
@@ -118,5 +116,53 @@ impl ConfigManager {
     pub fn reset_config(&mut self) -> Result<()> {
         self.config = Config::default();
         self.save_config()
+    }
+}
+
+/// Returns true when the compile-time mainnet OAuth client ID was not configured.
+pub fn is_unconfigured_mainnet_oauth_client_id(client_id: &str) -> bool {
+    client_id.is_empty()
+        || client_id.contains("PLACEHOLDER")
+        || client_id.starts_with("your-mainnet")
+}
+
+fn validate_mainnet_oauth_client_id(client_id: &str) -> Result<()> {
+    if is_unconfigured_mainnet_oauth_client_id(client_id) {
+        anyhow::bail!(
+            "Mainnet OAuth client ID is not configured. \
+             Set XION_MAINNET_OAUTH_CLIENT_ID in .env before building, or configure the \
+             XION_MAINNET_OAUTH_CLIENT_ID GitHub Actions variable for release binaries. \
+             See CONTRIBUTING.md and docs/release.md."
+        );
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_is_unconfigured_mainnet_oauth_client_id() {
+        assert!(is_unconfigured_mainnet_oauth_client_id(""));
+        assert!(is_unconfigured_mainnet_oauth_client_id(
+            "PLACEHOLDER_MAINNET_CLIENT_ID"
+        ));
+        assert!(is_unconfigured_mainnet_oauth_client_id(
+            "your-mainnet-client-id-here"
+        ));
+        assert!(!is_unconfigured_mainnet_oauth_client_id(
+            "GhA--realClientId"
+        ));
+    }
+
+    #[test]
+    fn test_validate_mainnet_oauth_client_id_rejects_placeholder() {
+        let err = validate_mainnet_oauth_client_id("your-mainnet-client-id-here").unwrap_err();
+        assert!(
+            err.to_string()
+                .contains("Mainnet OAuth client ID is not configured"),
+            "unexpected error: {err}"
+        );
     }
 }

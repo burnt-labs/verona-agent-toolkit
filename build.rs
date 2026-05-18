@@ -17,6 +17,9 @@ fn main() {
     let testnet_oauth_api_url = env::var("XION_TESTNET_OAUTH_API_URL")
         .unwrap_or_else(|_| "https://oauth2.testnet.burnt.com".to_string());
 
+    let mainnet_oauth_api_url = env::var("XION_MAINNET_OAUTH_API_URL")
+        .unwrap_or_else(|_| "https://oauth2.burnt.com".to_string());
+
     // Generate network_config.rs
     let out_dir = env::var("OUT_DIR").unwrap();
     let dest_path = Path::new(&out_dir).join("network_config.rs");
@@ -74,7 +77,7 @@ pub fn get_testnet_config() -> NetworkConfig {{
 pub fn get_mainnet_config() -> NetworkConfig {{
     NetworkConfig {{
         network_name: "mainnet".to_string(),
-        oauth_api_url: "https://oauth2.burnt.com".to_string(),
+        oauth_api_url: "{}".to_string(),
         rpc_url: "https://rpc.xion-mainnet-1.burnt.com:443".to_string(),
         rest_url: "https://api.xion-mainnet-1.burnt.com".to_string(),
         chain_id: "xion-mainnet-1".to_string(),
@@ -92,7 +95,7 @@ pub fn get_mainnet_config() -> NetworkConfig {{
     }}
 }}
 "#,
-        testnet_oauth_api_url, testnet_client_id, mainnet_client_id
+        testnet_oauth_api_url, testnet_client_id, mainnet_oauth_api_url, mainnet_client_id
     );
 
     fs::write(&dest_path, config_content).unwrap();
@@ -100,6 +103,7 @@ pub fn get_mainnet_config() -> NetworkConfig {{
     println!("cargo:rerun-if-env-changed=XION_TESTNET_OAUTH_CLIENT_ID");
     println!("cargo:rerun-if-env-changed=XION_TESTNET_OAUTH_API_URL");
     println!("cargo:rerun-if-env-changed=XION_MAINNET_OAUTH_CLIENT_ID");
+    println!("cargo:rerun-if-env-changed=XION_MAINNET_OAUTH_API_URL");
     println!("cargo:rerun-if-changed=.env");
     println!("cargo:rerun-if-changed=build.rs");
 }
