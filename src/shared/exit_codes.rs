@@ -9,7 +9,6 @@
 //! |-------|----------|
 //! | 0 | Success |
 //! | 1 | General/Unknown error |
-//! | 10 | Mainnet disabled |
 //! | 2-19 | Authentication errors |
 //! | 20-39 | Configuration errors |
 //! | 40-59 | Network errors |
@@ -48,12 +47,6 @@ pub mod exit_code {
     // ========================================================================
     /// General/unknown error
     pub const GENERAL_ERROR: i32 = 1;
-
-    // ========================================================================
-    // Mainnet Disabled (10)
-    // ========================================================================
-    /// Mainnet mode is disabled
-    pub const MAINNET_DISABLED: i32 = 10;
 
     // ========================================================================
     // Authentication Errors (2-19)
@@ -321,7 +314,6 @@ pub fn exit_code_name(code: i32) -> &'static str {
     match code {
         SUCCESS => "SUCCESS",
         GENERAL_ERROR => "GENERAL_ERROR",
-        MAINNET_DISABLED => "MAINNET_DISABLED",
 
         // Authentication
         AUTH_REQUIRED => "AUTH_REQUIRED",
@@ -476,7 +468,7 @@ mod tests {
     fn test_exit_code_name() {
         assert_eq!(exit_code_name(0), "SUCCESS");
         assert_eq!(exit_code_name(1), "GENERAL_ERROR");
-        assert_eq!(exit_code_name(10), "MAINNET_DISABLED");
+        assert_eq!(exit_code_name(10), "UNKNOWN");
         assert_eq!(exit_code_name(2), "AUTH_REQUIRED");
         assert_eq!(exit_code_name(80), "TREASURY_NOT_FOUND");
         assert_eq!(exit_code_name(999), "UNKNOWN");
@@ -513,15 +505,6 @@ mod tests {
     fn test_xion_error_exit_code() {
         let err = XionError::from(AuthError::NotAuthenticated("test".to_string()));
         assert_eq!(err.code().exit_code(), exit_code::AUTH_REQUIRED);
-    }
-
-    #[test]
-    fn test_mainnet_disabled_exit_code() {
-        assert_eq!(exit_code::MAINNET_DISABLED, 10);
-        assert_eq!(
-            exit_code_name(exit_code::MAINNET_DISABLED),
-            "MAINNET_DISABLED"
-        );
     }
 
     #[test]

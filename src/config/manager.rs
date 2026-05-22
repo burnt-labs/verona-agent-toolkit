@@ -77,19 +77,16 @@ impl ConfigManager {
         if !["testnet", "mainnet"].contains(&network) {
             anyhow::bail!("Invalid network: {}. Must be testnet or mainnet", network);
         }
+        if network == "mainnet" {
+            mainnet_network_config()?;
+        }
         self.config.network = network.to_string();
         self.save_config()
     }
 
     pub fn get_status(&self) -> Result<serde_json::Value> {
-        use super::constants::{get_mainnet_config, get_testnet_config};
-
         let current_network = self.get_current_network();
-        let network_config = match current_network {
-            "testnet" => get_testnet_config(),
-            "mainnet" => get_mainnet_config(),
-            _ => anyhow::bail!("Unknown network: {}", current_network),
-        };
+        let network_config = self.get_network_config()?;
 
         // Check if user has credentials for this network
         let credentials_manager = CredentialsManager::new(current_network)?;
@@ -105,12 +102,12 @@ impl ConfigManager {
     }
 
     pub fn get_network_config(&self) -> Result<super::constants::NetworkConfig> {
-        use super::constants::{get_mainnet_config, get_testnet_config};
+        use super::constants::get_testnet_config;
 
         let current_network = self.get_current_network();
         match current_network {
             "testnet" => Ok(get_testnet_config()),
-            "mainnet" => Ok(get_mainnet_config()),
+            "mainnet" => mainnet_network_config(),
             _ => anyhow::bail!("Unknown network: {}", current_network),
         }
     }
@@ -118,5 +115,101 @@ impl ConfigManager {
     pub fn reset_config(&mut self) -> Result<()> {
         self.config = Config::default();
         self.save_config()
+    }
+
+    /// Create a config manager rooted at a custom directory (for tests).
+    #[cfg(test)]
+    pub fn with_config_dir(config_dir: PathBuf) -> Result<Self> {
+        fs::create_dir_all(&config_dir).context("Failed to create config directory")?;
+        let config = Self::load_or_create_config(&config_dir)?;
+        Ok(Self { config_dir, config })
+    }
+}
+
+fn mainnet_network_config() -> Result<super::constants::NetworkConfig> {
+    use super::constants::get_mainnet_config;
+
+    let config = get_mainnet_config();
+    validate_mainnet_oauth_client_id(&config.oauth_client_id)?;
+    Ok(config)
+}
+
+fn is_unconfigured_mainnet_oauth_client_id(client_id: &str) -> bool {
+    client_id.is_empty()
+        || client_id.contains("PLACEHOLDER")
+        || client_id.starts_with("your-mainnet")
+}
+
+fn validate_mainnet_oauth_client_id(client_id: &str) -> Result<()> {
+    if is_unconfigured_mainnet_oauth_client_id(client_id) {
+        anyhow::bail!(
+            "Mainnet OAuth client ID is not configured in this binary. \
+             Rebuild with XION_MAINNET_OAUTH_CLIENT_ID set in the environment or in a .env file \
+             loaded at build time, or use a release binary built with the GitHub Actions variable. \
+             See CONTRIBUTING.md and docs/release.md."
+        );
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_is_unconfigured_mainnet_oauth_client_id() {
+        assert!(is_unconfigured_mainnet_oauth_client_id(""));
+        assert!(is_unconfigured_mainnet_oauth_client_id(
+            "PLACEHOLDER_MAINNET_CLIENT_ID"
+        ));
+        assert!(is_unconfigured_mainnet_oauth_client_id(
+            "your-mainnet-client-id-here"
+        ));
+        assert!(!is_unconfigured_mainnet_oauth_client_id(
+            "GhA--realClientId"
+        ));
+    }
+
+    #[test]
+    fn test_validate_mainnet_oauth_client_id_rejects_placeholder() {
+        let err = validate_mainnet_oauth_client_id("your-mainnet-client-id-here").unwrap_err();
+        assert!(
+            err.to_string()
+                .contains("Rebuild with XION_MAINNET_OAUTH_CLIENT_ID"),
+            "unexpected error: {err}"
+        );
+    }
+
+    /// Codex P1: `set_network mainnet` must validate before persisting (see PR #75).
+    #[test]
+    fn test_set_network_mainnet_fails_without_persisting_when_unconfigured() {
+        use crate::config::constants::get_mainnet_config;
+        use tempfile::tempdir;
+
+        let mainnet_id = get_mainnet_config().oauth_client_id;
+        if !is_unconfigured_mainnet_oauth_client_id(&mainnet_id) {
+            // Built with a real mainnet client ID; persistence regression not applicable.
+            return;
+        }
+
+        let temp = tempdir().expect("temp dir");
+        let mut manager =
+            ConfigManager::with_config_dir(temp.path().to_path_buf()).expect("config manager");
+        assert_eq!(manager.load_config().expect("config").network, "testnet");
+
+        let err = manager.set_network("mainnet").unwrap_err();
+        assert!(
+            err.to_string()
+                .contains("Rebuild with XION_MAINNET_OAUTH_CLIENT_ID"),
+            "unexpected error: {err}"
+        );
+
+        let reloaded =
+            ConfigManager::with_config_dir(temp.path().to_path_buf()).expect("reload config");
+        assert_eq!(
+            reloaded.load_config().expect("config").network,
+            "testnet",
+            "config.json must not be updated when mainnet validation fails"
+        );
     }
 }
