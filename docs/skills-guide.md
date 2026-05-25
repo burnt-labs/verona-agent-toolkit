@@ -11,6 +11,29 @@ Skills are bash scripts that provide AI Agents with structured, JSON-output capa
 - Consistent error codes with remediation hints
 - Follow [Agent Skills](https://agentskills.io/) format
 
+### Frontmatter (Codex / Cursor / Claude)
+
+Loaders reject invalid `SKILL.md` files at startup. Keep frontmatter valid:
+
+| Rule | Requirement |
+|------|-------------|
+| Delimiters | Start and end YAML with `---` on its own line |
+| `description` | Single quoted string (recommended); **max 1024 characters** |
+| Long triggers | Put keyword lists in a `## Triggers` section in the body, not in `description` |
+| Extra docs | Command details, refresh-first notes, and examples belong in the body |
+
+Validate locally before publishing or reinstalling:
+
+```bash
+./scripts/validate-skill-frontmatter.sh
+```
+
+After changing skills in this repo, reinstall global copies for Codex:
+
+```bash
+npx skills add burnt-labs/xion-agent-toolkit -g -y -a codex
+```
+
 ## Installation
 
 Install to global skills directory for all common agents (Cursor, Claude Code, Codex, OpenClaw):
