@@ -15,6 +15,10 @@ source "$SCRIPT_DIR/lib.sh"
 VALIDATE="$SCRIPT_DIR/../../scripts/validate-skill-frontmatter.sh"
 
 test_skill_frontmatter_all_packages() {
+    if [[ ! -f "$VALIDATE" ]]; then
+        log_error "validate script not found: $VALIDATE"
+        return 1
+    fi
     if [[ ! -x "$VALIDATE" ]]; then
         chmod +x "$VALIDATE"
     fi

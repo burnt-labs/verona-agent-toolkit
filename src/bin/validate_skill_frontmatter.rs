@@ -16,10 +16,6 @@ fn usage() -> &'static str {
 }
 
 fn extract_frontmatter(text: &str) -> Result<String, String> {
-    if !text.starts_with("---\n") && !text.starts_with("---\r\n") {
-        return Err("missing opening ---".into());
-    }
-
     let re = Regex::new(r"\A---[ \t]*\r?\n([\s\S]*?)\r?\n---[ \t]*\r?(?:\n|\z)")
         .expect("frontmatter regex compiles");
     let caps = re.captures(text).ok_or_else(|| {
@@ -52,7 +48,7 @@ fn validate_file(path: &Path) -> Result<usize, String> {
         "description must be a string (use quoted or block scalar, not a mapping/list)".to_string()
     })?;
 
-    Ok(desc_str.len())
+    Ok(desc_str.chars().count())
 }
 
 fn check_skill(path: &Path) -> Result<(), String> {
@@ -64,7 +60,9 @@ fn check_skill(path: &Path) -> Result<(), String> {
 
     let len = validate_file(path)?;
     if len > MAX_DESC_LEN {
-        return Err(format!("description length {len} exceeds {MAX_DESC_LEN}"));
+        return Err(format!(
+            "description length {len} Unicode scalar values exceeds {MAX_DESC_LEN}"
+        ));
     }
     println!("OK   {name} ({len} chars)");
     Ok(())
