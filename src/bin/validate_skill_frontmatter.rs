@@ -22,12 +22,9 @@ fn extract_frontmatter(text: &str) -> Result<String, String> {
 
     let re = Regex::new(r"\A---[ \t]*\r?\n([\s\S]*?)\r?\n---[ \t]*\r?(?:\n|\z)")
         .expect("frontmatter regex compiles");
-    let caps = re
-        .captures(text)
-        .ok_or_else(|| {
-            "missing or invalid closing --- delimiter (must be exactly --- on its own line)"
-                .to_string()
-        })?;
+    let caps = re.captures(text).ok_or_else(|| {
+        "missing or invalid closing --- delimiter (must be exactly --- on its own line)".to_string()
+    })?;
     Ok(caps.get(1).expect("capture group 1").as_str().to_string())
 }
 
@@ -35,8 +32,7 @@ fn validate_file(path: &Path) -> Result<usize, String> {
     let text = fs::read_to_string(path).map_err(|e| e.to_string())?;
     let block = extract_frontmatter(&text)?;
 
-    let value: Value =
-        serde_yaml::from_str(&block).map_err(|e| format!("invalid YAML: {e}"))?;
+    let value: Value = serde_yaml::from_str(&block).map_err(|e| format!("invalid YAML: {e}"))?;
 
     let map = value
         .as_mapping()
@@ -52,12 +48,9 @@ fn validate_file(path: &Path) -> Result<usize, String> {
     let desc = map
         .get(Value::from("description"))
         .ok_or_else(|| "missing description field".to_string())?;
-    let desc_str = desc
-        .as_str()
-        .ok_or_else(|| {
-            "description must be a string (use quoted or block scalar, not a mapping/list)"
-                .to_string()
-        })?;
+    let desc_str = desc.as_str().ok_or_else(|| {
+        "description must be a string (use quoted or block scalar, not a mapping/list)".to_string()
+    })?;
 
     Ok(desc_str.len())
 }
@@ -71,9 +64,7 @@ fn check_skill(path: &Path) -> Result<(), String> {
 
     let len = validate_file(path)?;
     if len > MAX_DESC_LEN {
-        return Err(format!(
-            "description length {len} exceeds {MAX_DESC_LEN}"
-        ));
+        return Err(format!("description length {len} exceeds {MAX_DESC_LEN}"));
     }
     println!("OK   {name} ({len} chars)");
     Ok(())
@@ -91,7 +82,10 @@ fn main() -> ExitCode {
     }
 
     if !skills_dir.is_dir() {
-        eprintln!("ERROR: skills directory not found: {}", skills_dir.display());
+        eprintln!(
+            "ERROR: skills directory not found: {}",
+            skills_dir.display()
+        );
         return ExitCode::from(2);
     }
 
