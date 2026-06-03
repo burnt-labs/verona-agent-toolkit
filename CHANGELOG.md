@@ -5,6 +5,34 @@ All notable changes to the Xion Agent Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.1](https://github.com/burnt-labs/xion-agent-toolkit/compare/0.12.0...0.12.1) (2026-06-03)
+
+
+### Bug Fixes
+
+* **skill:** address Copilot review on frontmatter validator ([da0f035](https://github.com/burnt-labs/xion-agent-toolkit/commit/da0f0357b9f4893c4b76a915cfa9f869e60c8011))
+* **skill:** address PR review for frontmatter validation ([1a0f30b](https://github.com/burnt-labs/xion-agent-toolkit/commit/1a0f30bae6fbf5e7b359b15a9585530620f2d25c))
+* **skill:** Codex frontmatter and installable skill script layout ([#78](https://github.com/burnt-labs/xion-agent-toolkit/issues/78)) ([a31c359](https://github.com/burnt-labs/xion-agent-toolkit/commit/a31c359d820f4807de5dbe49f2f25f697a43b383))
+* **skill:** shorten descriptions for Codex loader (≤1024 chars) ([ebfca30](https://github.com/burnt-labs/xion-agent-toolkit/commit/ebfca30e683e297f9204c3090781b96cffda3d05))
+* **skill:** validate frontmatter with Rust binary instead of Ruby ([e99cd3d](https://github.com/burnt-labs/xion-agent-toolkit/commit/e99cd3d8ce0ffb915af9995b1b0cc65113adb6d1))
+
+
+### Refactoring
+
+* **skill:** colocate shared scripts under skill packages ([d19655f](https://github.com/burnt-labs/xion-agent-toolkit/commit/d19655f917cf8af278a4861309211ce04d54c4df))
+* **skill:** wire colocated scripts for installed skill layout ([25dfa42](https://github.com/burnt-labs/xion-agent-toolkit/commit/25dfa421dc6e93979636ffbdacfbec78d860e422))
+
+
+### Documentation
+
+* **harness:** migrate harness to .mstar and split agent guides ([3d14800](https://github.com/burnt-labs/xion-agent-toolkit/commit/3d14800008704092f951cbb644d496a00168894c))
+* **harness:** migrate harness to .mstar layout ([485e995](https://github.com/burnt-labs/xion-agent-toolkit/commit/485e995ace11d8db15b1ff46af1480ceb7b12a6d))
+
+
+### Tests
+
+* **skill:** require cargo in frontmatter test wrapper ([da01e7e](https://github.com/burnt-labs/xion-agent-toolkit/commit/da01e7e6756899ebaa67cfdec75a9f38523972b4))
+
 ## [0.12.0](https://github.com/burnt-labs/xion-agent-toolkit/compare/0.11.0...0.12.0) (2026-05-22)
 
 
