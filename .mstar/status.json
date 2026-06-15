@@ -1,103 +1,11 @@
 {
-  "version": 2,
-  "updated_at": "2026-06-03",
+  "version": 1,
+  "updated_at": "2026-06-15",
   "plans": [],
-  "archived": {
-    "total_count": 45,
-    "archived_at": "2026-06-03",
-    "index": ".mstar/plans/archived/README.md",
-    "recent": ".mstar/plans/archived/2026-04-03-maintenance-optimization.md"
-  },
-  "active_roadmap": ".mstar/knowledge/feature-roadmap.md",
-  "knowledge": [
-    {
-      "file": ".mstar/knowledge/feature-roadmap.md",
-      "desc": "Product feature roadmap (active_roadmap)."
-    },
-    {
-      "file": ".mstar/knowledge/oauth-client-implementation.md",
-      "desc": "OAuthClient implementation decisions."
-    },
-    {
-      "file": ".mstar/knowledge/treasury-create-design.md",
-      "desc": "Treasury create command design."
-    },
-    {
-      "file": ".mstar/knowledge/TYPES_COMPARISON.md",
-      "desc": "Treasury type comparison analysis."
-    },
-    {
-      "file": ".mstar/knowledge/faucet-contract-research.md",
-      "desc": "Faucet contract research and deployment attempts."
-    },
-    {
-      "file": ".mstar/knowledge/task-dependency-analysis.md",
-      "desc": "Phase 4 task dependency and parallel execution analysis."
-    },
-    {
-      "file": ".mstar/knowledge/expiration-research.md",
-      "desc": "Treasury expiration field research."
-    },
-    {
-      "file": ".mstar/knowledge/xion-skills-update-plan.md",
-      "desc": "Xion skills update planning notes."
-    }
-  ],
-  "removed_features": [
-    {
-      "id": "treasury-analytics",
-      "title": "Treasury Analytics",
-      "removed_at": "2026-03-15",
-      "reason": "On-chain queries too heavy for this toolkit; should use external indexing services"
-    },
-    {
-      "id": "ibc-transfer-enhancement",
-      "title": "IBC Transfer Enhancement",
-      "removed_at": "2026-03-15",
-      "reason": "Not needed for current roadmap"
-    },
-    {
-      "id": "multi-sig-treasury-support",
-      "title": "Multi-sig Treasury Support",
-      "removed_at": "2026-03-15",
-      "reason": "Not needed for current roadmap"
-    },
-    {
-      "id": "oauth2-client-revoke-deactivate-flow",
-      "title": "OAuth2 Client Revoke/Deactivate Flow",
-      "removed_at": "2026-04-02",
-      "reason": "Requirement removed from ENG-1576; keep secret rotation scope only"
-    },
-    {
-      "id": "verify-address",
-      "title": "Treasury Verify-Address Command",
-      "removed_at": "2026-04-03",
-      "reason": "Limited practical value; current info command suffices for verification needs"
-    }
-  ],
-  "phase_summary": {
-    "phase1": "Done (2026-03-14) — MetaAccount Info, Extended Grants, Batch Ops, Asset Builder",
-    "phase2": "Done (2026-03-15) — Error Recovery, Tx Monitoring, Skills Testing, CI/CD Output",
-    "phase3": "Done (2026-03-15) — Predicted Address, Batch Treasury Ops",
-    "oauth2_client_mgmt": "Done (2026-03-31 ~ 04-01) — Full lifecycle, advanced safety, scope validation",
-    "interactive_cli": "Done (2026-04-02) — dialoguer prompts, --no-interactive, 21 skill scripts updated",
-    "phase4": "Done (2026-04-03) — Expiration research, api_client refactor, security audit, TODO cleanup, test coverage (archived)"
-  },
-  "deferred_items": [],
-  "resolved_items": [
-    {
-      "id": "RF-2",
-      "source": "interactive-cli",
-      "desc": "Unit tests for prompt validators (reject invalid address/amount/hash)",
-      "resolved_at": "2026-04-02",
-      "commit": "46eb262"
-    },
-    {
-      "id": "RF-8",
-      "source": "interactive-cli",
-      "desc": "Use bech32::decode() for proper address validation instead of prefix+length check",
-      "resolved_at": "2026-04-02",
-      "commit": "46eb262"
-    }
-  ]
+  "residual_findings": {},
+  "metadata": {
+    "active_roadmap": ".mstar/knowledge/feature-roadmap.md",
+    "knowledge_index": ".mstar/knowledge/README.md",
+    "archived_plans_index": ".mstar/plans/archived/README.md"
+  }
 }
