@@ -1,4 +1,4 @@
-# Contributing to Xion Agent Toolkit
+# Contributing to Verona Agent Toolkit
 
 Thank you for your interest in contributing! This guide will help you get started.
 
@@ -22,8 +22,8 @@ Thank you for your interest in contributing! This guide will help you get starte
 
 ```bash
 # Clone the repository
-git clone https://github.com/burnt-labs/xion-agent-toolkit
-cd xion-agent-toolkit
+git clone https://github.com/burnt-labs/verona-agent-toolkit
+cd verona-agent-toolkit
 
 # Build
 cargo build
@@ -36,7 +36,7 @@ cargo run -- completions --install
 
 # Configure OAuth (required for integration testing)
 cp .env.example .env
-# Edit .env with your OAuth Client IDs (XION_TESTNET_OAUTH_CLIENT_ID, XION_MAINNET_OAUTH_CLIENT_ID)
+# Edit .env with your OAuth Client IDs (VERONA_TESTNET_OAUTH_CLIENT_ID, VERONA_MAINNET_OAUTH_CLIENT_ID)
 ```
 
 ## Code Standards
@@ -157,7 +157,7 @@ E2E bash scripts live in `tests/` (e.g. `e2e_treasury_lifecycle.sh`); run them m
 
 ### Test Serialization Rules
 
-**CRITICAL**: Tests that modify `XION_CI_ENCRYPTION_KEY` environment variable 
+**CRITICAL**: Tests that modify `VERONA_CI_ENCRYPTION_KEY` environment variable 
 MUST use `#[serial(encryption_key)]` to prevent race conditions in CI.
 
 ```rust
@@ -179,7 +179,7 @@ fn test_something_bad() { ... }
 
 ### CI Environment
 
-In CI, `XION_CI_ENCRYPTION_KEY` is pre-configured. Local development uses 
+In CI, `VERONA_CI_ENCRYPTION_KEY` is pre-configured. Local development uses 
 machine ID for key derivation automatically.
 
 ## Pull Request Process
@@ -208,7 +208,7 @@ machine ID for key derivation automatically.
 ## Project Structure
 
 ```
-xion-agent-toolkit/
+verona-agent-toolkit/
 ├── src/
 │   ├── main.rs          # CLI entry point
 │   ├── lib.rs           # Library exports
@@ -286,7 +286,7 @@ pub fn generate_pkce_challenge(verifier: &str) -> Result<String> {
 - Use secure storage for sensitive information
 - Validate all external inputs
 - Use HTTPS for all external communications
-- **Do not delete** `~/.xion-toolkit/credentials/*.enc` unless explicitly requested (they hold long-lived refresh tokens)
+- **Do not delete** `~/.verona-toolkit/credentials/*.enc` unless explicitly requested (they hold long-lived refresh tokens)
 - **Do not run** `auth logout` in tests or automation unless explicitly requested
 - See AGENTS.md / CLAUDE.md for full security and credential rules
 

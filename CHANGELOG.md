@@ -1,9 +1,21 @@
 # Changelog
 
-All notable changes to the Xion Agent Toolkit will be documented in this file.
+All notable changes to the Verona Agent Toolkit will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Breaking Changes
+
+* **Product rename:** Xion Agent Toolkit is now **Verona Agent Toolkit**. The CLI binary is `verona-toolkit` (no `xion-toolkit` alias).
+* **Config directory:** Credentials and config now live under `~/.verona-toolkit/`. On first run, an existing `~/.xion-toolkit/` directory is migrated automatically.
+* **Environment variables:** Primary names are `VERONA_*` (e.g. `VERONA_CI_ENCRYPTION_KEY`, `VERONA_NETWORK_OVERRIDE`). Legacy `XION_*` names are accepted with a deprecation warning for one release.
+* **Skills:** Bundled skill folders renamed to `verona-*`. Reinstall with `npx skills add burnt-labs/verona-agent-toolkit -g`.
+* **Repository:** GitHub repo will be renamed to `burnt-labs/verona-agent-toolkit` after merge.
+
+Chain identifiers are unchanged: `xion1` addresses, `uxion` denom, `xion-testnet-2` chain ID, OAuth `xion:*` scopes, and `xiond` CLI.
 
 ## [0.12.1](https://github.com/burnt-labs/xion-agent-toolkit/compare/0.12.0...0.12.1) (2026-06-03)
 

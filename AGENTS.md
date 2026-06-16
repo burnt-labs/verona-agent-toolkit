@@ -1,6 +1,6 @@
-# Xion Agent Toolkit — Agent Guide
+# Verona Agent Toolkit — Agent Guide
 
-CLI-first, agent-oriented Rust toolkit for Xion blockchain. Uses OAuth2/MetaAccount for gasless transactions.
+CLI-first, agent-oriented Rust toolkit for the Verona blockchain. Uses OAuth2/MetaAccount for gasless transactions.
 
 ## Agent documentation layers
 
@@ -126,7 +126,7 @@ scripts/          # Build/utility scripts (NOT test scripts).
 ## Testing Rules
 
 - **Single test**: `cargo test <exact_test_name>`
-- **Env var mutation** (especially `XION_CI_ENCRYPTION_KEY`): MUST use `#[serial(encryption_key)]` from `serial_test`. Bare `#[serial]` is a different group and will NOT serialize correctly.
+- **Env var mutation** (especially `VERONA_CI_ENCRYPTION_KEY`): MUST use `#[serial(encryption_key)]` from `serial_test`. Bare `#[serial]` is a different group and will NOT serialize correctly.
 - **Async integration tests**: `#[tokio::test]`
 - Current test count: **500 tests passing**
 
@@ -142,7 +142,7 @@ scripts/          # Build/utility scripts (NOT test scripts).
 
 ## Critical Rules
 
-- NEVER delete `~/.xion-toolkit/credentials/*.enc` — they hold long-lived refresh tokens.
+- NEVER delete `~/.verona-toolkit/credentials/*.enc` — they hold long-lived refresh tokens.
 - NEVER run `auth logout` unless explicitly requested.
 - Treasury `xion17vg5l9za4768g0hnxezltgnu4h7eleqdcmwark2uuz2s4z5q4dfsr80vvm` is write-protected in all tests/scripts.
 - OAuth2 API is transaction-only; queries go to DaoDao Indexer or RPC.

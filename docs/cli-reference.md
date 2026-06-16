@@ -2,7 +2,7 @@
 
 > **For AI Agents**: This document is comprehensive. For a condensed quick reference, see [QUICK-REFERENCE.md](./QUICK-REFERENCE.md).
 
-Complete reference for the Xion Agent Toolkit CLI commands.
+Complete reference for the Verona Agent Toolkit CLI commands.
 
 ## Table of Contents
 
@@ -65,16 +65,16 @@ Quick reference to common tasks and workflows.
 
 ```bash
 # 1. Login to your account
-xion-toolkit auth login
+verona-toolkit auth login
 
 # 2. Check authentication status
-xion-toolkit auth status
+verona-toolkit auth status
 
 # 3. List your treasuries
-xion-toolkit treasury list
+verona-toolkit treasury list
 
 # 4. Create a new treasury
-xion-toolkit treasury create \
+verona-toolkit treasury create \
   --redirect-url "https://example.com/callback" \
   --icon-url "https://example.com/icon.png" \
   --name "My Treasury"
@@ -118,35 +118,35 @@ End-to-end example of creating and configuring a Treasury:
 
 ```bash
 # Step 1: Authenticate
-xion-toolkit auth login
+verona-toolkit auth login
 
 # Step 2: Create a new Treasury
-xion-toolkit treasury create \
+verona-toolkit treasury create \
   --redirect-url "https://myapp.example.com/callback" \
   --name "My App Treasury"
 # Output: {"success": true, "address": "xion1treasury...", ...}
 
 # Step 3: Fund the Treasury (1 XION = 1,000,000 uxion)
-xion-toolkit treasury fund xion1treasury... --amount 10000000
+verona-toolkit treasury fund xion1treasury... --amount 10000000
 
 # Step 4: Configure Authz Grant (allow MsgSend)
-xion-toolkit treasury grant-config add xion1treasury... \
+verona-toolkit treasury grant-config add xion1treasury... \
   --grant-type-url "/cosmos.bank.v1beta1.MsgSend" \
   --grant-auth-type send \
   --grant-spend-limit "5000000uxion" \
   --grant-description "Allow sending funds"
 
 # Step 5: Configure Fee Allowance (gasless transactions)
-xion-toolkit treasury fee-config set xion1treasury... \
+verona-toolkit treasury fee-config set xion1treasury... \
   --fee-allowance-type basic \
   --fee-spend-limit "1000000uxion" \
   --fee-description "Basic fee allowance"
 
 # Step 6: Verify configuration
-xion-toolkit treasury query xion1treasury... --include-grants
+verona-toolkit treasury query xion1treasury... --include-grants
 
 # Step 7: Use the Treasury (withdraw funds)
-xion-toolkit treasury withdraw xion1treasury... \
+verona-toolkit treasury withdraw xion1treasury... \
   --amount 1000000 \
   --to xion1recipient...
 ```
@@ -157,20 +157,20 @@ Complete authentication management:
 
 ```bash
 # Login (opens browser)
-xion-toolkit auth login
+verona-toolkit auth login
 
 # Login with dev mode (for Manager API access)
-xion-toolkit auth login --dev-mode
+verona-toolkit auth login --dev-mode
 
 # Check status
-xion-toolkit auth status
+verona-toolkit auth status
 # Output: {"success": true, "authenticated": true, ...}
 
 # If token expired, refresh it
-xion-toolkit auth refresh
+verona-toolkit auth refresh
 
 # Logout when done (clears credentials)
-xion-toolkit auth logout
+verona-toolkit auth logout
 ```
 
 ### Grant and Fee Setup Workflow
@@ -179,30 +179,30 @@ Setting up permissions for Treasury operations:
 
 ```bash
 # List existing grants
-xion-toolkit treasury grant-config list xion1treasury...
+verona-toolkit treasury grant-config list xion1treasury...
 
 # Add a new grant
-xion-toolkit treasury grant-config add xion1treasury... \
+verona-toolkit treasury grant-config add xion1treasury... \
   --grant-type-url "/cosmos.bank.v1beta1.MsgSend" \
   --grant-auth-type send \
   --grant-spend-limit "1000000uxion" \
   --grant-description "Daily spending limit"
 
 # Query on-chain grants
-xion-toolkit treasury chain-query grants xion1treasury...
+verona-toolkit treasury chain-query grants xion1treasury...
 
 # Set fee allowance
-xion-toolkit treasury fee-config set xion1treasury... \
+verona-toolkit treasury fee-config set xion1treasury... \
   --fee-allowance-type periodic \
   --fee-period-seconds 86400 \
   --fee-period-spend-limit "100000uxion" \
   --fee-description "Daily fee allowance"
 
 # Query fee configuration
-xion-toolkit treasury fee-config query xion1treasury...
+verona-toolkit treasury fee-config query xion1treasury...
 
 # Remove grant when no longer needed
-xion-toolkit treasury grant-config remove xion1treasury... \
+verona-toolkit treasury grant-config remove xion1treasury... \
   --type-url "/cosmos.bank.v1beta1.MsgSend"
 ```
 
@@ -212,14 +212,14 @@ Deploying and interacting with CosmWasm contracts:
 
 ```bash
 # Instantiate a contract
-xion-toolkit contract instantiate \
+verona-toolkit contract instantiate \
   --code-id 1260 \
   --label "my-contract-001" \
   --msg '{"admin": "xion1abc..."}'
 # Output: {"success": true, "address": "xion1contract...", ...}
 
 # Instantiate with predictable address (instantiate2)
-xion-toolkit contract instantiate2 \
+verona-toolkit contract instantiate2 \
   --code-id 1260 \
   --label "my-contract-002" \
   --msg '{"admin": "xion1abc..."}' \
@@ -227,12 +227,12 @@ xion-toolkit contract instantiate2 \
 # Output: {"success": true, "address": "xion1predictable...", ...}
 
 # Execute a message on the contract
-xion-toolkit contract execute \
+verona-toolkit contract execute \
   --contract xion1contract... \
   --msg '{"increment": {}}'
 
 # Execute with funds
-xion-toolkit contract execute \
+verona-toolkit contract execute \
   --contract xion1contract... \
   --msg '{"buy_item": {"id": 1}}' \
   --funds "1000000uxion"
@@ -244,18 +244,18 @@ Export treasury configuration for backup or migration:
 
 ```bash
 # Step 1: Export treasury configuration
-xion-toolkit treasury export xion1treasury... --output treasury-backup.json
+verona-toolkit treasury export xion1treasury... --output treasury-backup.json
 
 # Step 2: (Optional) Edit configuration file
 # Modify grant_configs, fee_config, or params as needed
 
 # Step 3: Preview import (dry run)
-xion-toolkit treasury import xion1newtreasury... \
+verona-toolkit treasury import xion1newtreasury... \
   --from-file treasury-backup.json \
   --dry-run
 
 # Step 4: Execute import
-xion-toolkit treasury import xion1newtreasury... \
+verona-toolkit treasury import xion1newtreasury... \
   --from-file treasury-backup.json
 ```
 
@@ -266,12 +266,12 @@ xion-toolkit treasury import xion1newtreasury... \
 These options can be used with any command:
 
 ```bash
-xion-toolkit --network <NETWORK> <command>  # Network override (testnet, mainnet)
-xion-toolkit --output <FORMAT> <command>    # Output format (json, json-compact, github-actions)
-xion-toolkit --help                          # Show help
-xion-toolkit --version                       # Show version
-xion-toolkit -c, --config <CONFIG> <command>  # Path to config file
-xion-toolkit --no-interactive <command>       # Disable interactive prompts (exit on missing args)
+verona-toolkit --network <NETWORK> <command>  # Network override (testnet, mainnet)
+verona-toolkit --output <FORMAT> <command>    # Output format (json, json-compact, github-actions)
+verona-toolkit --help                          # Show help
+verona-toolkit --version                       # Show version
+verona-toolkit -c, --config <CONFIG> <command>  # Path to config file
+verona-toolkit --no-interactive <command>       # Disable interactive prompts (exit on missing args)
 ```
 
 ### Output Formats
@@ -287,14 +287,14 @@ xion-toolkit --no-interactive <command>       # Disable interactive prompts (exi
 
 ```bash
 # Default (pretty JSON)
-xion-toolkit treasury list --output json
+verona-toolkit treasury list --output json
 
 # Compact JSON for CI pipelines
-xion-toolkit treasury list --output json-compact
+verona-toolkit treasury list --output json-compact
 # Output: {"success":true,"treasuries":[...],"count":2}
 
 # GitHub Actions format (outputs workflow commands)
-xion-toolkit treasury create --output github-actions
+verona-toolkit treasury create --output github-actions
 # Output: ::set-output name=address::xion1...
 ```
 
@@ -308,7 +308,7 @@ When running in a terminal (TTY), if you omit required arguments, the CLI will p
 
 **Example:**
 ```bash
-$ xion-toolkit treasury fund
+$ verona-toolkit treasury fund
 ⚠️  Missing required arguments. Let's fill them in:
 
   Contract address (xion1...): xion1abc...
@@ -324,7 +324,7 @@ $ xion-toolkit treasury fund
 
 ```bash
 # Disable for CI/CD scripts
-xion-toolkit --no-interactive treasury fund xion1abc... --amount 1000000uxion
+verona-toolkit --no-interactive treasury fund xion1abc... --amount 1000000uxion
 ```
 
 **Prompt validation:**
@@ -351,7 +351,7 @@ Initiates OAuth2 authentication flow with PKCE security.
 
 **Usage:**
 ```bash
-xion-toolkit auth login [--port <PORT>] [--dev-mode]
+verona-toolkit auth login [--port <PORT>] [--dev-mode]
 ```
 
 **Options:**
@@ -373,7 +373,7 @@ The `auth login` command requests OAuth2 scopes based on the mode:
 
 Basic usage:
 ```bash
-xion-toolkit auth login
+verona-toolkit auth login
 ```
 
 Output (success):
@@ -387,12 +387,12 @@ Output (success):
 
 With custom port:
 ```bash
-xion-toolkit auth login --port 8080
+verona-toolkit auth login --port 8080
 ```
 
 With dev mode (for Manager API access):
 ```bash
-xion-toolkit auth login --dev-mode
+verona-toolkit auth login --dev-mode
 ```
 
 Output (error - port in use):
@@ -407,12 +407,12 @@ Output (error - port in use):
 
 **Notes:**
 - Opens browser automatically for authentication
-- Stores encrypted credentials in `~/.xion-toolkit/credentials/`
+- Stores encrypted credentials in `~/.verona-toolkit/credentials/`
 - Refresh tokens valid for 30 days
 - OAuth2 scopes are persisted with credentials and validated locally before HTTP requests
 - Manager API commands require `xion:mgr:read` and `xion:mgr:write` scopes
   - Use `--dev-mode` flag to obtain these scopes during login
-  - If scopes are missing, the CLI fails fast with: `"Insufficient scope: missing xion:mgr:read, xion:mgr:write. Re-login with --dev-mode: xion-toolkit auth login --dev-mode"`
+  - If scopes are missing, the CLI fails fast with: `"Insufficient scope: missing xion:mgr:read, xion:mgr:write. Re-login with --dev-mode: verona-toolkit auth login --dev-mode"`
 - Use `--dev-mode` when working with OAuth2 client management or other Manager API endpoints
 
 ---
@@ -423,14 +423,14 @@ Clears stored credentials and logs out.
 
 **Usage:**
 ```bash
-xion-toolkit auth logout
+verona-toolkit auth logout
 ```
 
 **Examples:**
 
 Basic usage:
 ```bash
-xion-toolkit auth logout
+verona-toolkit auth logout
 ```
 
 Output (success):
@@ -447,7 +447,7 @@ Output (error - not authenticated):
   "success": false,
   "error": "No credentials found",
   "code": "NOT_AUTHENTICATED",
-  "suggestion": "Run 'xion-toolkit auth login' to authenticate first"
+  "suggestion": "Run 'verona-toolkit auth login' to authenticate first"
 }
 ```
 
@@ -464,14 +464,14 @@ Checks authentication status and token expiration.
 
 **Usage:**
 ```bash
-xion-toolkit auth status
+verona-toolkit auth status
 ```
 
 **Examples:**
 
 Basic usage:
 ```bash
-xion-toolkit auth status
+verona-toolkit auth status
 ```
 
 Output (authenticated):
@@ -479,9 +479,9 @@ Output (authenticated):
 {
   "success": true,
   "authenticated": true,
-  "address": "xion1abc123def456...",
+  "verona_address": "xion1abc123def456...",
   "expires_at": "2024-01-15T12:00:00Z",
-  "refresh_token_expires_at": "2024-02-15T12:00:00Z"
+  "scope": "xion:identity:read xion:blockchain:read xion:transactions:submit"
 }
 ```
 
@@ -501,7 +501,7 @@ Output (token expired):
   "authenticated": false,
   "message": "Access token expired",
   "expires_at": "2024-01-01T00:00:00Z",
-  "suggestion": "Run 'xion-toolkit auth refresh' to refresh your token"
+  "suggestion": "Run 'verona-toolkit auth refresh' to refresh your token"
 }
 ```
 
@@ -513,14 +513,14 @@ Refreshes the access token using the stored refresh token.
 
 **Usage:**
 ```bash
-xion-toolkit auth refresh
+verona-toolkit auth refresh
 ```
 
 **Examples:**
 
 Basic usage:
 ```bash
-xion-toolkit auth refresh
+verona-toolkit auth refresh
 ```
 
 Output (success):
@@ -538,7 +538,7 @@ Output (error - refresh token expired):
   "success": false,
   "error": "Refresh token has expired",
   "code": "REFRESH_TOKEN_EXPIRED",
-  "suggestion": "Run 'xion-toolkit auth login' to re-authenticate"
+  "suggestion": "Run 'verona-toolkit auth login' to re-authenticate"
 }
 ```
 
@@ -557,7 +557,7 @@ Lists all Treasury contracts owned by the authenticated user.
 
 **Usage:**
 ```bash
-xion-toolkit treasury list
+verona-toolkit treasury list
 ```
 
 **Options:**
@@ -568,7 +568,7 @@ xion-toolkit treasury list
 
 Basic usage:
 ```bash
-xion-toolkit treasury list
+verona-toolkit treasury list
 ```
 
 Output (success):
@@ -597,7 +597,7 @@ Output (success):
 
 With network override:
 ```bash
-xion-toolkit treasury list --network mainnet
+verona-toolkit treasury list --network mainnet
 ```
 
 Output (no treasuries):
@@ -615,7 +615,7 @@ Output (error - not authenticated):
   "success": false,
   "error": "No valid credentials found",
   "code": "NOT_AUTHENTICATED",
-  "suggestion": "Run 'xion-toolkit auth login' to authenticate first"
+  "suggestion": "Run 'verona-toolkit auth login' to authenticate first"
 }
 ```
 
@@ -627,7 +627,7 @@ Queries detailed information about a specific Treasury contract.
 
 **Usage:**
 ```bash
-xion-toolkit treasury query <ADDRESS>
+verona-toolkit treasury query <ADDRESS>
 ```
 
 **Arguments:**
@@ -640,7 +640,7 @@ xion-toolkit treasury query <ADDRESS>
 
 Basic usage:
 ```bash
-xion-toolkit treasury query xion1abc123def456...
+verona-toolkit treasury query xion1abc123def456...
 ```
 
 Output (success):
@@ -704,7 +704,7 @@ Creates a new Treasury contract with configurable parameters.
 
 **Usage:**
 ```bash
-xion-toolkit treasury create [options]
+verona-toolkit treasury create [options]
 ```
 
 **Options:**
@@ -744,7 +744,7 @@ Using config file:
   }
 }
 
-xion-toolkit treasury create --config treasury-config.json
+verona-toolkit treasury create --config treasury-config.json
 ```
 
 Output (success):
@@ -771,14 +771,14 @@ Output (success):
 
 Using flags (minimal):
 ```bash
-xion-toolkit treasury create \
+verona-toolkit treasury create \
   --redirect-url "https://example.com/callback" \
   --icon-url "https://example.com/icon.png"
 ```
 
 Using flags (with grants):
 ```bash
-xion-toolkit treasury create \
+verona-toolkit treasury create \
   --redirect-url "https://example.com/callback" \
   --icon-url "https://example.com/icon.png" \
   --name "My Treasury" \
@@ -793,7 +793,7 @@ xion-toolkit treasury create \
 
 With OAuth2 app flag:
 ```bash
-xion-toolkit treasury create \
+verona-toolkit treasury create \
   --redirect-url "https://app.example.com/oauth" \
   --icon-url "https://app.example.com/icon.png" \
   --name "My OAuth2 App" \
@@ -809,11 +809,11 @@ Use `--predict` to compute the treasury address before deployment. This is usefu
 
 ```bash
 # Predict address with string salt
-xion-toolkit treasury create --predict --salt "my-treasury-v1"
+verona-toolkit treasury create --predict --salt "my-treasury-v1"
 # Output: {"success":true,"predicted_address":"xion1...","salt":"my-treasury-v1","code_id":1260}
 
 # Predict address with hex salt
-xion-toolkit treasury create --predict --salt "6d792d74726561737572792d7631"
+verona-toolkit treasury create --predict --salt "6d792d74726561737572792d7631"
 ```
 
 Output (prediction):
@@ -872,7 +872,7 @@ Funds a Treasury contract with tokens.
 
 **Usage:**
 ```bash
-xion-toolkit treasury fund <ADDRESS> --amount <AMOUNT>
+verona-toolkit treasury fund <ADDRESS> --amount <AMOUNT>
 ```
 
 **Arguments:**
@@ -886,7 +886,7 @@ xion-toolkit treasury fund <ADDRESS> --amount <AMOUNT>
 
 Basic usage:
 ```bash
-xion-toolkit treasury fund xion1abc123def456... --amount 1000000uxion
+verona-toolkit treasury fund xion1abc123def456... --amount 1000000uxion
 ```
 
 Output (success):
@@ -901,7 +901,7 @@ Output (success):
 
 With larger amount:
 ```bash
-xion-toolkit treasury fund xion1abc123def456... --amount 100000000uxion
+verona-toolkit treasury fund xion1abc123def456... --amount 100000000uxion
 ```
 
 Output (error - insufficient balance):
@@ -936,7 +936,7 @@ Withdraws funds from a Treasury to the admin account.
 
 **Usage:**
 ```bash
-xion-toolkit treasury withdraw <ADDRESS> --amount <AMOUNT>
+verona-toolkit treasury withdraw <ADDRESS> --amount <AMOUNT>
 ```
 
 **Arguments:**
@@ -951,7 +951,7 @@ xion-toolkit treasury withdraw <ADDRESS> --amount <AMOUNT>
 
 Basic usage (to admin):
 ```bash
-xion-toolkit treasury withdraw xion1abc123def456... --amount 500000uxion
+verona-toolkit treasury withdraw xion1abc123def456... --amount 500000uxion
 ```
 
 Output (success):
@@ -967,7 +967,7 @@ Output (success):
 
 To specific recipient:
 ```bash
-xion-toolkit treasury withdraw xion1abc123def456... \
+verona-toolkit treasury withdraw xion1abc123def456... \
   --amount 500000uxion \
   --to xion1recipient123...
 ```
@@ -978,7 +978,7 @@ Output (error - insufficient treasury balance):
   "success": false,
   "error": "Treasury has insufficient balance: have 300000uxion, need 500000uxion",
   "code": "INSUFFICIENT_BALANCE",
-  "suggestion": "Check treasury balance with 'xion-toolkit treasury query'"
+  "suggestion": "Check treasury balance with 'verona-toolkit treasury query'"
 }
 ```
 
@@ -1005,7 +1005,7 @@ Adds an Authz grant configuration to a Treasury.
 
 **Usage:**
 ```bash
-xion-toolkit treasury grant-config add <ADDRESS> [options]
+verona-toolkit treasury grant-config add <ADDRESS> [options]
 ```
 
 **Arguments:**
@@ -1056,7 +1056,7 @@ xion-toolkit treasury grant-config add <ADDRESS> [options]
 
 Add send authorization:
 ```bash
-xion-toolkit treasury grant-config add xion1abc123def456... \
+verona-toolkit treasury grant-config add xion1abc123def456... \
   --type-url "/cosmos.bank.v1beta1.MsgSend" \
   --auth-type send \
   --spend-limit "1000000uxion" \
@@ -1076,7 +1076,7 @@ Output (success):
 
 Add contract execution authorization:
 ```bash
-xion-toolkit treasury grant-config add xion1abc123def456... \
+verona-toolkit treasury grant-config add xion1abc123def456... \
   --type-url "/cosmwasm.wasm.v1.MsgExecuteContract" \
   --auth-type contract-execution \
   --contract xion1contract789... \
@@ -1089,19 +1089,19 @@ xion-toolkit treasury grant-config add xion1abc123def456... \
 Using preset (quick setup):
 ```bash
 # Send preset
-xion-toolkit treasury grant-config add xion1abc123def456... \
+verona-toolkit treasury grant-config add xion1abc123def456... \
   --preset send \
   --spend-limit "1000000uxion" \
   --description "Allow sending funds"
 
 # Execute preset
-xion-toolkit treasury grant-config add xion1abc123def456... \
+verona-toolkit treasury grant-config add xion1abc123def456... \
   --preset execute \
   --contract xion1contract789... \
   --description "Allow contract execution"
 
 # Instantiate preset
-xion-toolkit treasury grant-config add xion1abc123def456... \
+verona-toolkit treasury grant-config add xion1abc123def456... \
   --preset instantiate \
   --description "Allow contract instantiation"
 ```
@@ -1120,7 +1120,7 @@ Using config file:
   ]
 }
 
-xion-toolkit treasury grant-config add xion1abc123def456... --grant-config grant-config.json
+verona-toolkit treasury grant-config add xion1abc123def456... --grant-config grant-config.json
 ```
 
 Output (error - duplicate grant):
@@ -1146,7 +1146,7 @@ Removes an Authz grant configuration from a Treasury.
 
 **Usage:**
 ```bash
-xion-toolkit treasury grant-config remove <ADDRESS> --type-url <URL>
+verona-toolkit treasury grant-config remove <ADDRESS> --type-url <URL>
 ```
 
 **Arguments:**
@@ -1160,7 +1160,7 @@ xion-toolkit treasury grant-config remove <ADDRESS> --type-url <URL>
 
 Basic usage:
 ```bash
-xion-toolkit treasury grant-config remove xion1abc123def456... \
+verona-toolkit treasury grant-config remove xion1abc123def456... \
   --type-url "/cosmos.bank.v1beta1.MsgSend"
 ```
 
@@ -1197,7 +1197,7 @@ Lists all Authz grant configurations for a Treasury.
 
 **Usage:**
 ```bash
-xion-toolkit treasury grant-config list <ADDRESS>
+verona-toolkit treasury grant-config list <ADDRESS>
 ```
 
 **Arguments:**
@@ -1211,7 +1211,7 @@ xion-toolkit treasury grant-config list <ADDRESS>
 
 Basic usage:
 ```bash
-xion-toolkit treasury grant-config list xion1abc123def456...
+verona-toolkit treasury grant-config list xion1abc123def456...
 ```
 
 Output (success):
@@ -1264,7 +1264,7 @@ Sets fee grant configuration for a Treasury.
 
 **Usage:**
 ```bash
-xion-toolkit treasury fee-config set <ADDRESS> --fee-config <FILE>
+verona-toolkit treasury fee-config set <ADDRESS> --fee-config <FILE>
 ```
 
 **Arguments:**
@@ -1302,7 +1302,7 @@ xion-toolkit treasury fee-config set <ADDRESS> --fee-config <FILE>
 
 Set basic fee allowance:
 ```bash
-xion-toolkit treasury fee-config set xion1abc123def456... \
+verona-toolkit treasury fee-config set xion1abc123def456... \
   --fee-config fee-config-basic.json
 ```
 
@@ -1319,7 +1319,7 @@ Output (success):
 
 Set periodic fee allowance:
 ```bash
-xion-toolkit treasury fee-config set xion1abc123def456... \
+verona-toolkit treasury fee-config set xion1abc123def456... \
   --fee-config fee-config-periodic.json
 ```
 
@@ -1358,7 +1358,7 @@ Revokes fee allowance from a specific grantee.
 
 **Usage:**
 ```bash
-xion-toolkit treasury fee-config remove <ADDRESS> --grantee <ADDRESS>
+verona-toolkit treasury fee-config remove <ADDRESS> --grantee <ADDRESS>
 ```
 
 **Arguments:**
@@ -1372,7 +1372,7 @@ xion-toolkit treasury fee-config remove <ADDRESS> --grantee <ADDRESS>
 
 Basic usage:
 ```bash
-xion-toolkit treasury fee-config remove xion1abc123def456... \
+verona-toolkit treasury fee-config remove xion1abc123def456... \
   --grantee xion1grantee789...
 ```
 
@@ -1409,7 +1409,7 @@ Queries fee configuration for a Treasury.
 
 **Usage:**
 ```bash
-xion-toolkit treasury fee-config query <ADDRESS>
+verona-toolkit treasury fee-config query <ADDRESS>
 ```
 
 **Arguments:**
@@ -1422,7 +1422,7 @@ xion-toolkit treasury fee-config query <ADDRESS>
 
 Basic usage:
 ```bash
-xion-toolkit treasury fee-config query xion1abc123def456...
+verona-toolkit treasury fee-config query xion1abc123def456...
 ```
 
 Output (success - basic allowance):
@@ -1475,7 +1475,7 @@ Proposes a new admin for the Treasury.
 
 **Usage:**
 ```bash
-xion-toolkit treasury admin propose <ADDRESS> --new-admin <ADDRESS>
+verona-toolkit treasury admin propose <ADDRESS> --new-admin <ADDRESS>
 ```
 
 **Arguments:**
@@ -1489,7 +1489,7 @@ xion-toolkit treasury admin propose <ADDRESS> --new-admin <ADDRESS>
 
 Basic usage:
 ```bash
-xion-toolkit treasury admin propose xion1abc123def456... \
+verona-toolkit treasury admin propose xion1abc123def456... \
   --new-admin xion1newadmin789...
 ```
 
@@ -1537,7 +1537,7 @@ Accepts admin role (must be called by the pending admin).
 
 **Usage:**
 ```bash
-xion-toolkit treasury admin accept <ADDRESS>
+verona-toolkit treasury admin accept <ADDRESS>
 ```
 
 **Arguments:**
@@ -1550,7 +1550,7 @@ xion-toolkit treasury admin accept <ADDRESS>
 
 Basic usage:
 ```bash
-xion-toolkit treasury admin accept xion1abc123def456...
+verona-toolkit treasury admin accept xion1abc123def456...
 ```
 
 Output (success):
@@ -1597,7 +1597,7 @@ Cancels a proposed admin.
 
 **Usage:**
 ```bash
-xion-toolkit treasury admin cancel <ADDRESS>
+verona-toolkit treasury admin cancel <ADDRESS>
 ```
 
 **Arguments:**
@@ -1610,7 +1610,7 @@ xion-toolkit treasury admin cancel <ADDRESS>
 
 Basic usage:
 ```bash
-xion-toolkit treasury admin cancel xion1abc123def456...
+verona-toolkit treasury admin cancel xion1abc123def456...
 ```
 
 Output (success):
@@ -1646,7 +1646,7 @@ Fund multiple treasuries from a configuration file.
 
 **Usage:**
 ```bash
-xion-toolkit treasury batch fund --config <FILE>
+verona-toolkit treasury batch fund --config <FILE>
 ```
 
 **Options:**
@@ -1669,7 +1669,7 @@ xion-toolkit treasury batch fund --config <FILE>
 
 Fund multiple treasuries:
 ```bash
-xion-toolkit treasury batch fund --config funds.json
+verona-toolkit treasury batch fund --config funds.json
 ```
 
 Output (success):
@@ -1704,7 +1704,7 @@ Output (partial failure):
 
 Compact output for CI:
 ```bash
-xion-toolkit treasury batch fund --config funds.json --output json-compact
+verona-toolkit treasury batch fund --config funds.json --output json-compact
 ```
 
 **Notes:**
@@ -1721,7 +1721,7 @@ Configure grants for multiple treasuries from a configuration file.
 
 **Usage:**
 ```bash
-xion-toolkit treasury batch grant-config --config <FILE>
+verona-toolkit treasury batch grant-config --config <FILE>
 ```
 
 **Options:**
@@ -1748,7 +1748,7 @@ xion-toolkit treasury batch grant-config --config <FILE>
 
 Configure grants for multiple treasuries:
 ```bash
-xion-toolkit treasury batch grant-config --config grants.json
+verona-toolkit treasury batch grant-config --config grants.json
 ```
 
 Output (success):
@@ -1781,7 +1781,7 @@ Updates Treasury parameters.
 
 **Usage:**
 ```bash
-xion-toolkit treasury params update <ADDRESS> [options]
+verona-toolkit treasury params update <ADDRESS> [options]
 ```
 
 **Arguments:**
@@ -1799,7 +1799,7 @@ xion-toolkit treasury params update <ADDRESS> [options]
 
 Update redirect URL:
 ```bash
-xion-toolkit treasury params update xion1abc123def456... \
+verona-toolkit treasury params update xion1abc123def456... \
   --redirect-url "https://newurl.com/callback"
 ```
 
@@ -1815,20 +1815,20 @@ Output (success):
 
 Update name and OAuth2 app flag:
 ```bash
-xion-toolkit treasury params update xion1abc123def456... \
+verona-toolkit treasury params update xion1abc123def456... \
   --name "My Updated Treasury" \
   --is-oauth2-app
 ```
 
 Update metadata:
 ```bash
-xion-toolkit treasury params update xion1abc123def456... \
+verona-toolkit treasury params update xion1abc123def456... \
   --metadata '{"description":"Updated description","custom_field":"value"}'
 ```
 
 Update multiple params:
 ```bash
-xion-toolkit treasury params update xion1abc123def456... \
+verona-toolkit treasury params update xion1abc123def456... \
   --redirect-url "https://app.com/callback" \
   --icon-url "https://app.com/icon.png" \
   --name "My App Treasury" \
@@ -1869,7 +1869,7 @@ Queries on-chain Authz grants for a Treasury.
 
 **Usage:**
 ```bash
-xion-toolkit treasury chain-query grants <ADDRESS>
+verona-toolkit treasury chain-query grants <ADDRESS>
 ```
 
 **Arguments:**
@@ -1896,7 +1896,7 @@ xion-toolkit treasury chain-query grants <ADDRESS>
 
 **Example:**
 ```bash
-xion-toolkit treasury chain-query grants xion1abc123...
+verona-toolkit treasury chain-query grants xion1abc123...
 ```
 
 ---
@@ -1907,7 +1907,7 @@ Queries on-chain fee allowances for a Treasury.
 
 **Usage:**
 ```bash
-xion-toolkit treasury chain-query allowances <ADDRESS>
+verona-toolkit treasury chain-query allowances <ADDRESS>
 ```
 
 **Arguments:**
@@ -1933,7 +1933,7 @@ xion-toolkit treasury chain-query allowances <ADDRESS>
 
 **Example:**
 ```bash
-xion-toolkit treasury chain-query allowances xion1abc123...
+verona-toolkit treasury chain-query allowances xion1abc123...
 ```
 
 ---
@@ -1944,7 +1944,7 @@ Export treasury configuration for backup or migration.
 
 **Usage:**
 ```bash
-xion-toolkit treasury export [ADDRESS] [--output <FILE>]
+verona-toolkit treasury export [ADDRESS] [--output <FILE>]
 ```
 
 **Arguments:**
@@ -1958,7 +1958,7 @@ xion-toolkit treasury export [ADDRESS] [--output <FILE>]
 
 Export single treasury to stdout:
 ```bash
-xion-toolkit treasury export xion1abc123def456...
+verona-toolkit treasury export xion1abc123def456...
 ```
 
 Output:
@@ -1997,7 +1997,7 @@ Output:
 
 Export single treasury to file:
 ```bash
-xion-toolkit treasury export xion1abc123def456... --output treasury-backup.json
+verona-toolkit treasury export xion1abc123def456... --output treasury-backup.json
 ```
 
 Output:
@@ -2014,7 +2014,7 @@ Output:
 
 When no address is provided, exports all treasuries:
 ```bash
-xion-toolkit treasury export --output all-treasuries.json
+verona-toolkit treasury export --output all-treasuries.json
 ```
 
 Output:
@@ -2059,7 +2059,7 @@ Import configuration to an existing treasury.
 
 **Usage:**
 ```bash
-xion-toolkit treasury import <ADDRESS> --from-file <FILE> [--dry-run]
+verona-toolkit treasury import <ADDRESS> --from-file <FILE> [--dry-run]
 ```
 
 **Arguments:**
@@ -2074,7 +2074,7 @@ xion-toolkit treasury import <ADDRESS> --from-file <FILE> [--dry-run]
 
 Preview import (no changes):
 ```bash
-xion-toolkit treasury import xion1abc123def456... \
+verona-toolkit treasury import xion1abc123def456... \
   --from-file treasury-backup.json \
   --dry-run
 ```
@@ -2103,7 +2103,7 @@ Output:
 
 Execute import:
 ```bash
-xion-toolkit treasury import xion1abc123def456... \
+verona-toolkit treasury import xion1abc123def456... \
   --from-file treasury-backup.json
 ```
 
@@ -2140,7 +2140,7 @@ Output:
 
 ## OAuth2 Client Commands
 
-Manage OAuth2 clients via the Xion MGR API. Authentication is required for all commands.
+Manage OAuth2 clients via the Verona Manager API. Authentication is required for all commands.
 
 ---
 
@@ -2150,7 +2150,7 @@ Lists OAuth clients for the authenticated user.
 
 **Usage:**
 ```bash
-xion-toolkit oauth2 client list [options]
+verona-toolkit oauth2 client list [options]
 ```
 
 **Options:**
@@ -2161,12 +2161,12 @@ xion-toolkit oauth2 client list [options]
 
 Basic usage:
 ```bash
-xion-toolkit oauth2 client list
+verona-toolkit oauth2 client list
 ```
 
 With pagination:
 ```bash
-xion-toolkit oauth2 client list --limit 10 --cursor "abc123"
+verona-toolkit oauth2 client list --limit 10 --cursor "abc123"
 ```
 
 Output (success):
@@ -2194,7 +2194,7 @@ Creates a new OAuth client.
 
 **Usage:**
 ```bash
-xion-toolkit oauth2 client create [options]
+verona-toolkit oauth2 client create [options]
 ```
 
 **Options:**
@@ -2217,14 +2217,14 @@ xion-toolkit oauth2 client create [options]
 
 Minimal create:
 ```bash
-xion-toolkit oauth2 client create \
+verona-toolkit oauth2 client create \
   --redirect-uris "https://example.com/callback" \
   --treasury "xion1treasury..."
 ```
 
 Full create:
 ```bash
-xion-toolkit oauth2 client create \
+verona-toolkit oauth2 client create \
   --redirect-uris "https://a.com/cb,https://b.com/cb" \
   --treasury "xion1treasury..." \
   --client-name "My App" \
@@ -2240,7 +2240,7 @@ xion-toolkit oauth2 client create \
 
 From JSON file:
 ```bash
-xion-toolkit oauth2 client create --json-input request.json
+verona-toolkit oauth2 client create --json-input request.json
 ```
 
 Output (success):
@@ -2268,7 +2268,7 @@ Gets a specific OAuth client by ID.
 
 **Usage:**
 ```bash
-xion-toolkit oauth2 client get <CLIENT_ID>
+verona-toolkit oauth2 client get <CLIENT_ID>
 ```
 
 **Arguments:**
@@ -2277,7 +2277,7 @@ xion-toolkit oauth2 client get <CLIENT_ID>
 **Examples:**
 
 ```bash
-xion-toolkit oauth2 client get client_abc123
+verona-toolkit oauth2 client get client_abc123
 ```
 
 Output (success):
@@ -2313,7 +2313,7 @@ Updates an existing OAuth client.
 
 **Usage:**
 ```bash
-xion-toolkit oauth2 client update <CLIENT_ID> [options]
+verona-toolkit oauth2 client update <CLIENT_ID> [options]
 ```
 
 **Arguments:**
@@ -2333,7 +2333,7 @@ xion-toolkit oauth2 client update <CLIENT_ID> [options]
 **Examples:**
 
 ```bash
-xion-toolkit oauth2 client update client_abc123 \
+verona-toolkit oauth2 client update client_abc123 \
   --client-name "Updated App" \
   --contacts "new@example.com"
 ```
@@ -2355,7 +2355,7 @@ Deletes an OAuth client. The `--force` flag is required to confirm the destructi
 
 **Usage:**
 ```bash
-xion-toolkit oauth2 client delete <CLIENT_ID> --force
+verona-toolkit oauth2 client delete <CLIENT_ID> --force
 ```
 
 **Arguments:**
@@ -2367,7 +2367,7 @@ xion-toolkit oauth2 client delete <CLIENT_ID> --force
 **Examples:**
 
 ```bash
-xion-toolkit oauth2 client delete client_abc123 --force
+verona-toolkit oauth2 client delete client_abc123 --force
 ```
 
 Output (success):
@@ -2387,7 +2387,7 @@ Gets the extension data for a client.
 
 **Usage:**
 ```bash
-xion-toolkit oauth2 client extension get <CLIENT_ID>
+verona-toolkit oauth2 client extension get <CLIENT_ID>
 ```
 
 **Arguments:**
@@ -2396,7 +2396,7 @@ xion-toolkit oauth2 client extension get <CLIENT_ID>
 **Examples:**
 
 ```bash
-xion-toolkit oauth2 client extension get client_abc123
+verona-toolkit oauth2 client extension get client_abc123
 ```
 
 Output (success):
@@ -2418,7 +2418,7 @@ Updates the extension data for a client.
 
 **Usage:**
 ```bash
-xion-toolkit oauth2 client extension update <CLIENT_ID> --managers <IDS>
+verona-toolkit oauth2 client extension update <CLIENT_ID> --managers <IDS>
 ```
 
 **Arguments:**
@@ -2430,7 +2430,7 @@ xion-toolkit oauth2 client extension update <CLIENT_ID> --managers <IDS>
 **Examples:**
 
 ```bash
-xion-toolkit oauth2 client extension update client_abc123 \
+verona-toolkit oauth2 client extension update client_abc123 \
   --managers "user_a,user_b"
 ```
 
@@ -2451,7 +2451,7 @@ Adds a manager to a client.
 
 **Usage:**
 ```bash
-xion-toolkit oauth2 client managers add <CLIENT_ID> --manager-id <USER_ID>
+verona-toolkit oauth2 client managers add <CLIENT_ID> --manager-id <USER_ID>
 ```
 
 **Arguments:**
@@ -2463,7 +2463,7 @@ xion-toolkit oauth2 client managers add <CLIENT_ID> --manager-id <USER_ID>
 **Examples:**
 
 ```bash
-xion-toolkit oauth2 client managers add client_abc123 --manager-id user_456
+verona-toolkit oauth2 client managers add client_abc123 --manager-id user_456
 ```
 
 Output (success):
@@ -2484,7 +2484,7 @@ Removes a manager from a client.
 
 **Usage:**
 ```bash
-xion-toolkit oauth2 client managers remove <CLIENT_ID> --manager-id <USER_ID>
+verona-toolkit oauth2 client managers remove <CLIENT_ID> --manager-id <USER_ID>
 ```
 
 **Arguments:**
@@ -2496,7 +2496,7 @@ xion-toolkit oauth2 client managers remove <CLIENT_ID> --manager-id <USER_ID>
 **Examples:**
 
 ```bash
-xion-toolkit oauth2 client managers remove client_abc123 --manager-id user_456
+verona-toolkit oauth2 client managers remove client_abc123 --manager-id user_456
 ```
 
 Output (success):
@@ -2517,7 +2517,7 @@ Transfers client ownership to a new user. The `--force` flag is required to conf
 
 **Usage:**
 ```bash
-xion-toolkit oauth2 client transfer-ownership <CLIENT_ID> --new-owner <USER_ID> --force
+verona-toolkit oauth2 client transfer-ownership <CLIENT_ID> --new-owner <USER_ID> --force
 ```
 
 **Arguments:**
@@ -2530,7 +2530,7 @@ xion-toolkit oauth2 client transfer-ownership <CLIENT_ID> --new-owner <USER_ID> 
 **Examples:**
 
 ```bash
-xion-toolkit oauth2 client transfer-ownership client_abc123 --new-owner user_789 --force
+verona-toolkit oauth2 client transfer-ownership client_abc123 --new-owner user_789 --force
 ```
 
 Output (success):
@@ -2567,7 +2567,7 @@ Rotates the client secret for a confidential OAuth2 client. The new secret is re
 
 **Usage:**
 ```bash
-xion-toolkit oauth2 client rotate-secret <CLIENT_ID>
+verona-toolkit oauth2 client rotate-secret <CLIENT_ID>
 ```
 
 **Arguments:**
@@ -2576,7 +2576,7 @@ xion-toolkit oauth2 client rotate-secret <CLIENT_ID>
 **Examples:**
 
 ```bash
-xion-toolkit oauth2 client rotate-secret client_abc123
+verona-toolkit oauth2 client rotate-secret client_abc123
 ```
 
 Output (success):
@@ -2635,7 +2635,7 @@ Generate shell completion scripts for bash, zsh, fish, PowerShell, and other she
 
 **Usage:**
 ```bash
-xion-toolkit completions [SHELL] [OPTIONS]
+verona-toolkit completions [SHELL] [OPTIONS]
 ```
 
 **Arguments:**
@@ -2650,28 +2650,28 @@ xion-toolkit completions [SHELL] [OPTIONS]
 
 Auto-detect shell and print to stdout:
 ```bash
-xion-toolkit completions
+verona-toolkit completions
 ```
 
 Install with auto-detection (recommended):
 ```bash
 # Auto-detect from $SHELL and install
-xion-toolkit completions --install
+verona-toolkit completions --install
 ```
 
 Install for specific shell:
 ```bash
 # Install bash completions
-xion-toolkit completions bash --install
+verona-toolkit completions bash --install
 
 # Install zsh completions
-xion-toolkit completions zsh --install
+verona-toolkit completions zsh --install
 
 # Install fish completions (fish auto-loads, no profile modification needed)
-xion-toolkit completions fish --install
+verona-toolkit completions fish --install
 
 # Install PowerShell completions
-xion-toolkit completions powershell --install
+verona-toolkit completions powershell --install
 ```
 
 **Output (successful installation):**
@@ -2679,7 +2679,7 @@ xion-toolkit completions powershell --install
 {
   "success": true,
   "shell": "bash",
-  "completion_file": "/home/user/.local/share/xion-toolkit/completions.bash",
+  "completion_file": "/home/user/.local/share/verona-toolkit/completions.bash",
   "profile_file": "/home/user/.bashrc",
   "message": "Completions installed. Restart your shell or run: source .bashrc"
 }
@@ -2690,10 +2690,10 @@ xion-toolkit completions powershell --install
 {
   "success": true,
   "shell": "bash",
-  "completion_file": "/home/user/.local/share/xion-toolkit/completions.bash",
+  "completion_file": "/home/user/.local/share/verona-toolkit/completions.bash",
   "profile_file": "/home/user/.bashrc",
   "already_installed": true,
-  "message": "Completions already installed. To reinstall, remove the 'BEGIN xion-toolkit completions' block from your profile first."
+  "message": "Completions already installed. To reinstall, remove the 'BEGIN verona-toolkit completions' block from your profile first."
 }
 ```
 
@@ -2702,8 +2702,8 @@ xion-toolkit completions powershell --install
 {
   "success": true,
   "shell": "fish",
-  "completion_file": "/home/user/.config/fish/completions/xion-toolkit.fish",
-  "message": "Completions installed to /home/user/.config/fish/completions/xion-toolkit.fish (fish auto-loads this directory)"
+  "completion_file": "/home/user/.config/fish/completions/verona-toolkit.fish",
+  "message": "Completions installed to /home/user/.config/fish/completions/verona-toolkit.fish (fish auto-loads this directory)"
 }
 ```
 
@@ -2713,45 +2713,45 @@ If you prefer manual installation, generate and redirect the output:
 
 Generate bash completions:
 ```bash
-xion-toolkit completions bash > ~/.local/share/bash-completion/completions/xion-toolkit
-source ~/.local/share/bash-completion/completions/xion-toolkit
+verona-toolkit completions bash > ~/.local/share/bash-completion/completions/verona-toolkit
+source ~/.local/share/bash-completion/completions/verona-toolkit
 ```
 
 Generate zsh completions:
 ```bash
 mkdir -p ~/.zfunc
-xion-toolkit completions zsh > ~/.zfunc/_xion-toolkit
+verona-toolkit completions zsh > ~/.zfunc/_verona-toolkit
 # Add to .zshrc: fpath+=~/.zfunc; autoload -U compinit; compinit
 ```
 
 Generate fish completions:
 ```bash
-xion-toolkit completions fish > ~/.config/fish/completions/xion-toolkit.fish
+verona-toolkit completions fish > ~/.config/fish/completions/verona-toolkit.fish
 ```
 
 Generate PowerShell completions:
 ```powershell
-xion-toolkit completions powershell > xion-toolkit.ps1
-. ./xion-toolkit.ps1
+verona-toolkit completions powershell > verona-toolkit.ps1
+. ./verona-toolkit.ps1
 ```
 
 **Installation Paths:**
 
 | Shell | Completion File | Profile |
 |-------|-----------------|---------|
-| bash | `~/.local/share/xion-toolkit/completions.bash` | `~/.bashrc` |
-| zsh | `~/.local/share/xion-toolkit/completions.zsh` | `~/.zshrc` |
-| fish | `~/.config/fish/completions/xion-toolkit.fish` | N/A (auto-loads) |
-| powershell | `~/.local/share/xion-toolkit/completions.ps1` | `$PROFILE` |
+| bash | `~/.local/share/verona-toolkit/completions.bash` | `~/.bashrc` |
+| zsh | `~/.local/share/verona-toolkit/completions.zsh` | `~/.zshrc` |
+| fish | `~/.config/fish/completions/verona-toolkit.fish` | N/A (auto-loads) |
+| powershell | `~/.local/share/verona-toolkit/completions.ps1` | `$PROFILE` |
 
 **Profile Block Format:**
 
 The `--install` flag adds a marked block to your shell profile:
 
 ```bash
-# BEGIN xion-toolkit completions
-[ -f ~/.local/share/xion-toolkit/completions.bash ] && source ~/.local/share/xion-toolkit/completions.bash
-# END xion-toolkit completions
+# BEGIN verona-toolkit completions
+[ -f ~/.local/share/verona-toolkit/completions.bash ] && source ~/.local/share/verona-toolkit/completions.bash
+# END verona-toolkit completions
 ```
 
 This allows the CLI to detect existing installations and prevents duplicate entries.
@@ -2772,7 +2772,7 @@ Instantiates a generic smart contract (v1 - dynamic address).
 
 **Usage:**
 ```bash
-xion-toolkit contract instantiate --code-id <ID> --label <LABEL> --msg <FILE> [options]
+verona-toolkit contract instantiate --code-id <ID> --label <LABEL> --msg <FILE> [options]
 ```
 
 **Options:**
@@ -2794,7 +2794,7 @@ xion-toolkit contract instantiate --code-id <ID> --label <LABEL> --msg <FILE> [o
 
 **Example:**
 ```bash
-xion-toolkit contract instantiate \
+verona-toolkit contract instantiate \
   --code-id 1260 \
   --label "my-contract" \
   --msg instantiate-msg.json \
@@ -2809,7 +2809,7 @@ Instantiates a smart contract with predictable address (v2 - using salt).
 
 **Usage:**
 ```bash
-xion-toolkit contract instantiate2 --code-id <ID> --label <LABEL> --msg <FILE> [options]
+verona-toolkit contract instantiate2 --code-id <ID> --label <LABEL> --msg <FILE> [options]
 ```
 
 **Options:**
@@ -2834,7 +2834,7 @@ xion-toolkit contract instantiate2 --code-id <ID> --label <LABEL> --msg <FILE> [
 
 **Example:**
 ```bash
-xion-toolkit contract instantiate2 \
+verona-toolkit contract instantiate2 \
   --code-id 1260 \
   --label "my-contract" \
   --msg instantiate-msg.json \
@@ -2850,7 +2850,7 @@ Executes a message on a deployed smart contract.
 
 **Usage:**
 ```bash
-xion-toolkit contract execute --contract <ADDRESS> --msg <FILE> [options]
+verona-toolkit contract execute --contract <ADDRESS> --msg <FILE> [options]
 ```
 
 **Options:**
@@ -2870,12 +2870,12 @@ xion-toolkit contract execute --contract <ADDRESS> --msg <FILE> [options]
 **Examples:**
 ```bash
 # Basic execution
-xion-toolkit contract execute \
+verona-toolkit contract execute \
   --contract xion1abc... \
   --msg execute-msg.json
 
 # Execution with funds
-xion-toolkit contract execute \
+verona-toolkit contract execute \
   --contract xion1abc... \
   --msg execute-msg.json \
   --funds "1000000uxion"
@@ -2889,7 +2889,7 @@ Query a CosmWasm smart contract (read-only operation, no authentication required
 
 **Usage:**
 ```bash
-xion-toolkit contract query --contract <ADDRESS> --msg <QUERY_FILE>
+verona-toolkit contract query --contract <ADDRESS> --msg <QUERY_FILE>
 ```
 
 **Options:**
@@ -2905,7 +2905,7 @@ Basic query:
 echo '{"get_config": {}}' > query.json
 
 # Query contract
-xion-toolkit contract query --contract xion1contract... --msg query.json
+verona-toolkit contract query --contract xion1contract... --msg query.json
 ```
 
 Output:
@@ -2926,7 +2926,7 @@ Output:
 Query with parameters:
 ```bash
 echo '{"get_balance": {"address": "xion1user..."}}' > balance-query.json
-xion-toolkit contract query --contract xion1contract... --msg balance-query.json
+verona-toolkit contract query --contract xion1contract... --msg balance-query.json
 ```
 
 Output:
@@ -2975,11 +2975,11 @@ Claim testnet XION tokens from the deployed faucet contract.
 
 | Command | Description |
 |---------|-------------|
-| `xion-toolkit faucet claim` | Claim tokens for authenticated user |
-| `xion-toolkit faucet claim --receiver <address>` | Claim tokens for another address |
-| `xion-toolkit faucet status` | Check cooldown status |
-| `xion-toolkit faucet status --address <address>` | Check status for specific address |
-| `xion-toolkit faucet info` | Query faucet configuration |
+| `verona-toolkit faucet claim` | Claim tokens for authenticated user |
+| `verona-toolkit faucet claim --receiver <address>` | Claim tokens for another address |
+| `verona-toolkit faucet status` | Check cooldown status |
+| `verona-toolkit faucet status --address <address>` | Check status for specific address |
+| `verona-toolkit faucet info` | Query faucet configuration |
 
 **Faucet Contract Info:**
 
@@ -2999,7 +2999,7 @@ Claim testnet tokens from the faucet contract.
 
 **Usage:**
 ```bash
-xion-toolkit faucet claim [--receiver <ADDRESS>]
+verona-toolkit faucet claim [--receiver <ADDRESS>]
 ```
 
 **Options:**
@@ -3011,7 +3011,7 @@ xion-toolkit faucet claim [--receiver <ADDRESS>]
 
 Claim for yourself:
 ```bash
-xion-toolkit faucet claim
+verona-toolkit faucet claim
 ```
 
 Output (success):
@@ -3025,7 +3025,7 @@ Output (success):
 
 Claim for another address (delegate):
 ```bash
-xion-toolkit faucet claim --receiver xion1abc123...
+verona-toolkit faucet claim --receiver xion1abc123...
 ```
 
 Output (success - delegated):
@@ -3062,9 +3062,9 @@ Output (error - not authenticated):
 ```json
 {
   "success": false,
-  "error": "Not authenticated. Please run 'xion-toolkit auth login' first.",
+  "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
   "code": "EFAUCET003",
-  "hint": "Run 'xion-toolkit auth login' to authenticate"
+  "hint": "Run 'verona-toolkit auth login' to authenticate"
 }
 ```
 
@@ -3097,7 +3097,7 @@ Check faucet claim status and remaining cooldown.
 
 **Usage:**
 ```bash
-xion-toolkit faucet status [--address <ADDRESS>]
+verona-toolkit faucet status [--address <ADDRESS>]
 ```
 
 **Options:**
@@ -3109,7 +3109,7 @@ xion-toolkit faucet status [--address <ADDRESS>]
 
 Check your own status:
 ```bash
-xion-toolkit faucet status
+verona-toolkit faucet status
 ```
 
 Output (can claim):
@@ -3135,16 +3135,16 @@ Output (cooldown active):
 
 Check another address (no auth required):
 ```bash
-xion-toolkit faucet status --address xion1abc123...
+verona-toolkit faucet status --address xion1abc123...
 ```
 
 Output (error - no auth and no address):
 ```json
 {
   "success": false,
-  "error": "Not authenticated. Provide --address or run 'xion-toolkit auth login' first.",
+  "error": "Not authenticated. Provide --address or run 'verona-toolkit auth login' first.",
   "code": "EFAUCET003",
-  "hint": "Provide --address flag or authenticate with 'xion-toolkit auth login'"
+  "hint": "Provide --address flag or authenticate with 'verona-toolkit auth login'"
 }
 ```
 
@@ -3161,7 +3161,7 @@ Query faucet configuration and contract info.
 
 **Usage:**
 ```bash
-xion-toolkit faucet info
+verona-toolkit faucet info
 ```
 
 **Authentication:** Not required
@@ -3170,7 +3170,7 @@ xion-toolkit faucet info
 
 Query faucet info:
 ```bash
-xion-toolkit faucet info
+verona-toolkit faucet info
 ```
 
 Output:
@@ -3197,8 +3197,8 @@ Output:
 |------|-------------|------|
 | `EFAUCET001` | Faucet claim failed | Check error message for details (cooldown, balance gate, insufficient funds) |
 | `EFAUCET002` | Faucet query failed | Check network connection and verify faucet contract is available |
-| `EFAUCET003` | Not authenticated | Run `xion-toolkit auth login` or provide `--address` flag |
-| `EFAUCET004` | Faucet not available on this network | Use `--network testnet` or `xion-toolkit config set-network testnet` |
+| `EFAUCET003` | Not authenticated | Run `verona-toolkit auth login` or provide `--address` flag |
+| `EFAUCET004` | Faucet not available on this network | Use `--network testnet` or `verona-toolkit config set-network testnet` |
 
 ---
 
@@ -3210,7 +3210,7 @@ Lists all available NFT asset types with their code IDs.
 
 **Usage:**
 ```bash
-xion-toolkit asset types
+verona-toolkit asset types
 ```
 
 **Output:**
@@ -3238,7 +3238,7 @@ Creates a new NFT collection.
 
 **Usage:**
 ```bash
-xion-toolkit asset create --type <TYPE> --name <NAME> --symbol <SYMBOL> [options]
+verona-toolkit asset create --type <TYPE> --name <NAME> --symbol <SYMBOL> [options]
 ```
 
 **Options:**
@@ -3253,10 +3253,10 @@ xion-toolkit asset create --type <TYPE> --name <NAME> --symbol <SYMBOL> [options
 
 ```bash
 # Create standard NFT collection
-xion-toolkit asset create --type cw721-base --name "My Collection" --symbol "NFT"
+verona-toolkit asset create --type cw721-base --name "My Collection" --symbol "NFT"
 
 # Create with predictable address
-xion-toolkit asset create --type cw721-base --name "My Collection" \
+verona-toolkit asset create --type cw721-base --name "My Collection" \
   --symbol "NFT" --salt "my-unique-salt"
 ```
 
@@ -3268,7 +3268,7 @@ Mints a new NFT token.
 
 **Usage:**
 ```bash
-xion-toolkit asset mint --contract <ADDRESS> --token-id <ID> --owner <ADDRESS> [options]
+verona-toolkit asset mint --contract <ADDRESS> --token-id <ID> --owner <ADDRESS> [options]
 ```
 
 **Options:**
@@ -3286,19 +3286,19 @@ xion-toolkit asset mint --contract <ADDRESS> --token-id <ID> --owner <ADDRESS> [
 
 ```bash
 # Standard mint
-xion-toolkit asset mint --contract xion1... --token-id "1" --owner xion1...
+verona-toolkit asset mint --contract xion1... --token-id "1" --owner xion1...
 
 # Mint with token URI
-xion-toolkit asset mint --contract xion1... --token-id "1" --owner xion1... \
+verona-toolkit asset mint --contract xion1... --token-id "1" --owner xion1... \
   --token-uri "ipfs://QmHash..."
 
 # Mint with royalties (5%)
-xion-toolkit asset mint --contract xion1... --token-id "1" --owner xion1... \
+verona-toolkit asset mint --contract xion1... --token-id "1" --owner xion1... \
   --asset-type cw2981-royalties \
   --royalty-address xion1... --royalty-percentage 0.05
 
 # Mint with expiration
-xion-toolkit asset mint --contract xion1... --token-id "1" --owner xion1... \
+verona-toolkit asset mint --contract xion1... --token-id "1" --owner xion1... \
   --asset-type cw721-expiration \
   --expires-at "2025-12-31T23:59:59Z"
 ```
@@ -3311,7 +3311,7 @@ Predicts the contract address before deployment.
 
 **Usage:**
 ```bash
-xion-toolkit asset predict --type <TYPE> --name <NAME> --symbol <SYMBOL> --salt <SALT> [options]
+verona-toolkit asset predict --type <TYPE> --name <NAME> --symbol <SYMBOL> --salt <SALT> [options]
 ```
 
 **Options:**
@@ -3324,7 +3324,7 @@ xion-toolkit asset predict --type <TYPE> --name <NAME> --symbol <SYMBOL> --salt 
 
 **Example:**
 ```bash
-xion-toolkit asset predict --type cw721-base --name "My NFT" \
+verona-toolkit asset predict --type cw721-base --name "My NFT" \
   --symbol "NFT" --salt "my-unique-salt"
 ```
 
@@ -3346,7 +3346,7 @@ Mints multiple NFT tokens from a JSON file.
 
 **Usage:**
 ```bash
-xion-toolkit asset batch-mint --contract <ADDRESS> --tokens-file <FILE> [options]
+verona-toolkit asset batch-mint --contract <ADDRESS> --tokens-file <FILE> [options]
 ```
 
 **Options:**
@@ -3365,7 +3365,7 @@ xion-toolkit asset batch-mint --contract <ADDRESS> --tokens-file <FILE> [options
 
 **Example:**
 ```bash
-xion-toolkit asset batch-mint --contract xion1... --tokens-file tokens.json
+verona-toolkit asset batch-mint --contract xion1... --tokens-file tokens.json
 ```
 
 ---
@@ -3376,7 +3376,7 @@ Queries an NFT contract.
 
 **Usage:**
 ```bash
-xion-toolkit asset query --contract <ADDRESS> --msg <JSON>
+verona-toolkit asset query --contract <ADDRESS> --msg <JSON>
 ```
 
 **Options:**
@@ -3386,13 +3386,13 @@ xion-toolkit asset query --contract <ADDRESS> --msg <JSON>
 **Examples:**
 ```bash
 # Get NFT info
-xion-toolkit asset query --contract xion1... --msg '{"nft_info": {"token_id": "1"}}'
+verona-toolkit asset query --contract xion1... --msg '{"nft_info": {"token_id": "1"}}'
 
 # Get owner
-xion-toolkit asset query --contract xion1... --msg '{"owner_of": {"token_id": "1"}}'
+verona-toolkit asset query --contract xion1... --msg '{"owner_of": {"token_id": "1"}}'
 
 # Get all tokens
-xion-toolkit asset query --contract xion1... --msg '{"all_tokens": {}}'
+verona-toolkit asset query --contract xion1... --msg '{"all_tokens": {}}'
 ```
 
 ---
@@ -3405,7 +3405,7 @@ Query the status of a transaction by its hash.
 
 **Usage:**
 ```bash
-xion-toolkit tx status <HASH>
+verona-toolkit tx status <HASH>
 ```
 
 **Arguments:**
@@ -3414,7 +3414,7 @@ xion-toolkit tx status <HASH>
 **Examples:**
 
 ```bash
-xion-toolkit tx status ABC123DEF456...
+verona-toolkit tx status ABC123DEF456...
 ```
 
 Output (success):
@@ -3444,7 +3444,7 @@ Wait for a transaction to be confirmed on-chain.
 
 **Usage:**
 ```bash
-xion-toolkit tx wait <HASH> [options]
+verona-toolkit tx wait <HASH> [options]
 ```
 
 **Arguments:**
@@ -3458,12 +3458,12 @@ xion-toolkit tx wait <HASH> [options]
 
 Wait with defaults:
 ```bash
-xion-toolkit tx wait ABC123DEF456...
+verona-toolkit tx wait ABC123DEF456...
 ```
 
 Wait with custom timeout:
 ```bash
-xion-toolkit tx wait ABC123DEF456... --timeout 120 --interval 5
+verona-toolkit tx wait ABC123DEF456... --timeout 120 --interval 5
 ```
 
 Output (confirmed):
@@ -3499,7 +3499,7 @@ Execute multiple transactions from a JSON batch file.
 
 **Usage:**
 ```bash
-xion-toolkit batch execute --from-file <FILE> [options]
+verona-toolkit batch execute --from-file <FILE> [options]
 ```
 
 **Options:**
@@ -3511,17 +3511,17 @@ xion-toolkit batch execute --from-file <FILE> [options]
 
 Execute batch:
 ```bash
-xion-toolkit batch execute --from-file batch.json
+verona-toolkit batch execute --from-file batch.json
 ```
 
 Simulate (dry-run):
 ```bash
-xion-toolkit batch execute --from-file batch.json --simulate
+verona-toolkit batch execute --from-file batch.json --simulate
 ```
 
 With memo:
 ```bash
-xion-toolkit batch execute --from-file batch.json --memo "batch funding round 1"
+verona-toolkit batch execute --from-file batch.json --memo "batch funding round 1"
 ```
 
 **Notes:**
@@ -3537,7 +3537,7 @@ Validate a batch file without executing transactions.
 
 **Usage:**
 ```bash
-xion-toolkit batch validate --from-file <FILE>
+verona-toolkit batch validate --from-file <FILE>
 ```
 
 **Options:**
@@ -3546,7 +3546,7 @@ xion-toolkit batch validate --from-file <FILE>
 **Examples:**
 
 ```bash
-xion-toolkit batch validate --from-file batch.json
+verona-toolkit batch validate --from-file batch.json
 ```
 
 Output (valid):
@@ -3577,14 +3577,14 @@ Shows the current authenticated user's MetaAccount information.
 
 **Usage:**
 ```bash
-xion-toolkit account info
+verona-toolkit account info
 ```
 
 **Examples:**
 
 Basic usage:
 ```bash
-xion-toolkit account info
+verona-toolkit account info
 ```
 
 Output (success):
@@ -3612,7 +3612,7 @@ Shows current configuration.
 
 **Usage:**
 ```bash
-xion-toolkit config show
+verona-toolkit config show
 ```
 
 **Output:**
@@ -3634,7 +3634,7 @@ Switches the active network.
 
 **Usage:**
 ```bash
-xion-toolkit config set-network <NETWORK>
+verona-toolkit config set-network <NETWORK>
 ```
 
 **Arguments:**
@@ -3651,8 +3651,8 @@ xion-toolkit config set-network <NETWORK>
 
 **Example:**
 ```bash
-xion-toolkit config set-network testnet
-xion-toolkit config set-network mainnet
+verona-toolkit config set-network testnet
+verona-toolkit config set-network mainnet
 ```
 
 ---
@@ -3663,7 +3663,7 @@ Gets a specific configuration value.
 
 **Usage:**
 ```bash
-xion-toolkit config get <KEY>
+verona-toolkit config get <KEY>
 ```
 
 **Arguments:**
@@ -3672,7 +3672,7 @@ xion-toolkit config get <KEY>
 **Examples:**
 
 ```bash
-xion-toolkit config get network
+verona-toolkit config get network
 ```
 
 Output:
@@ -3692,13 +3692,13 @@ Resets configuration to default values.
 
 **Usage:**
 ```bash
-xion-toolkit config reset
+verona-toolkit config reset
 ```
 
 **Examples:**
 
 ```bash
-xion-toolkit config reset
+verona-toolkit config reset
 ```
 
 Output:
@@ -3717,7 +3717,7 @@ Shows toolkit status including version and configuration.
 
 **Usage:**
 ```bash
-xion-toolkit status
+verona-toolkit status
 ```
 
 **Output:**
@@ -3798,5 +3798,5 @@ The CLI returns standardized exit codes for CI/CD integration. See [EXIT-CODES.m
 - [README.md](../README.md) - Project overview and quick start
 - [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) - Condensed CLI reference for AI agents
 - [EXIT-CODES.md](./EXIT-CODES.md) - Standardized exit codes for CI/CD
-- [SKILL.md](../skills/xion-treasury/SKILL.md) - Skill documentation for Agent integration
+- [SKILL.md](../skills/verona-treasury/SKILL.md) - Skill documentation for Agent integration
 - [Contributing Guide](../CONTRIBUTING.md) - Contribution guidelines

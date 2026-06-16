@@ -81,11 +81,11 @@ No product code changes in Batch 0.
 
 ## Batch 4 — Documentation
 
-- `README.md`, `INSTALL-FOR-AGENTS.md`: `verona-toolkit`, repo URL `verona-agent-toolkit`
-- `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`
-- `docs/*.md` (7 files): mechanical replace + spot-check
-- `examples/README.md`
-- `CHANGELOG.md`: new breaking-change entry (do not rewrite history)
+- [x] `README.md`, `INSTALL-FOR-AGENTS.md`: `verona-toolkit`, repo URL `verona-agent-toolkit`
+- [x] `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`
+- [x] `docs/*.md` (7 files): mechanical replace + spot-check
+- [x] `examples/README.md`
+- [x] `CHANGELOG.md`: new breaking-change entry (do not rewrite history)
 
 Doc rule: product/commands use Verona; chain examples keep `xion1...`, `uxion`, `xion-testnet-2` with "chain identifier" note.
 

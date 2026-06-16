@@ -1,6 +1,6 @@
-# Xion Agent Toolkit - AI Agent Installation Guide
+# Verona Agent Toolkit - AI Agent Installation Guide
 
-> **Purpose**: This document enables AI Agents to autonomously install, configure, and use the Xion Agent Toolkit for gasless blockchain operations.
+> **Purpose**: This document enables AI Agents to autonomously install, configure, and use the Verona Agent Toolkit for gasless blockchain operations.
 
 ## ⚠️ IMPORTANT: Installation Priority for AI Agents
 
@@ -22,9 +22,9 @@
 
 ## Overview
 
-### What is Xion Agent Toolkit?
+### What is Verona Agent Toolkit?
 
-Xion Agent Toolkit is a CLI-first, agent-oriented toolkit for developing on the Xion blockchain. It provides a gasless development experience through OAuth2 authentication and MetaAccount integration.
+Verona Agent Toolkit is a CLI-first, agent-oriented toolkit for developing on the Verona blockchain. It provides a gasless development experience through OAuth2 authentication and MetaAccount integration.
 
 ### What It Does
 
@@ -80,7 +80,7 @@ which       # Check if commands exist in PATH
 
 ## Installation
 
-### Step 1: Install xion-toolkit CLI
+### Step 1: Install verona-toolkit CLI
 
 > **For AI Agents**: Use the curl installer below. DO NOT build from source unless this method fails.
 
@@ -89,7 +89,7 @@ which       # Check if commands exist in PATH
 ```bash
 # Install using the official shell installer
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/burnt-labs/xion-agent-toolkit/releases/latest/download/xion-agent-toolkit-installer.sh | sh
+  https://github.com/burnt-labs/verona-agent-toolkit/releases/latest/download/verona-agent-toolkit-installer.sh | sh
 
 # Add to PATH if not automatically added
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -102,7 +102,7 @@ echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc  # or ~/.zshrc
 
 ```powershell
 # Install using the official PowerShell installer
-powershell -c "irm https://github.com/burnt-labs/xion-agent-toolkit/releases/latest/download/xion-agent-toolkit-installer.ps1 | iex"
+powershell -c "irm https://github.com/burnt-labs/verona-agent-toolkit/releases/latest/download/verona-agent-toolkit-installer.ps1 | iex"
 ```
 
 #### Alternative: Manual Binary Download
@@ -115,7 +115,7 @@ set -e
 
 # Configuration
 INSTALL_DIR="${HOME}/.local/bin"
-REPO="burnt-labs/xion-agent-toolkit"
+REPO="burnt-labs/verona-agent-toolkit"
 
 # Create install directory
 mkdir -p "$INSTALL_DIR"
@@ -137,7 +137,7 @@ case "$OS" in
 esac
 
 # Build download URL
-FILENAME="xion-agent-toolkit-${ARCH_NAME}-${OS_NAME}.tar.xz"
+FILENAME="verona-agent-toolkit-${ARCH_NAME}-${OS_NAME}.tar.xz"
 DOWNLOAD_URL="https://github.com/${REPO}/releases/latest/download/${FILENAME}"
 echo "Downloading: $DOWNLOAD_URL"
 
@@ -147,14 +147,14 @@ curl -L "$DOWNLOAD_URL" -o "${TEMP_DIR}/${FILENAME}"
 tar -xf "${TEMP_DIR}/${FILENAME}" -C "$TEMP_DIR"
 
 # Move binary to install directory
-mv "${TEMP_DIR}/xion-toolkit" "$INSTALL_DIR/"
-chmod +x "$INSTALL_DIR/xion-toolkit"
+mv "${TEMP_DIR}/verona-toolkit" "$INSTALL_DIR/"
+chmod +x "$INSTALL_DIR/verona-toolkit"
 
 # Cleanup
 rm -rf "$TEMP_DIR"
 
 echo "Installation complete!"
-echo "Binary location: $INSTALL_DIR/xion-toolkit"
+echo "Binary location: $INSTALL_DIR/verona-toolkit"
 
 # Add to PATH if not already present
 if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
@@ -168,28 +168,28 @@ fi
 #!/bin/bash
 set -e
 
-echo "=== Verifying xion-toolkit Installation ==="
+echo "=== Verifying verona-toolkit Installation ==="
 
 # Check if binary exists
-if command -v xion-toolkit &> /dev/null; then
-    echo "✓ xion-toolkit found in PATH"
-    XION_PATH=$(which xion-toolkit)
-    echo "  Location: $XION_PATH"
+if command -v verona-toolkit &> /dev/null; then
+    echo "✓ verona-toolkit found in PATH"
+    VERONA_PATH=$(which verona-toolkit)
+    echo "  Location: $VERONA_PATH"
 else
-    echo "✗ xion-toolkit not found in PATH"
+    echo "✗ verona-toolkit not found in PATH"
     exit 1
 fi
 
 # Check version
 echo ""
 echo "Checking version..."
-VERSION=$(xion-toolkit --version)
+VERSION=$(verona-toolkit --version)
 echo "✓ Version: $VERSION"
 
 # Check help command
 echo ""
 echo "Checking CLI help..."
-if xion-toolkit --help &> /dev/null; then
+if verona-toolkit --help &> /dev/null; then
     echo "✓ CLI responds to --help"
 else
     echo "✗ CLI failed to respond to --help"
@@ -199,7 +199,7 @@ fi
 # List available commands
 echo ""
 echo "Available command groups:"
-xion-toolkit --help | grep -E "^  (auth|treasury|contract|asset|batch|account|config)" | head -10
+verona-toolkit --help | grep -E "^  (auth|treasury|contract|asset|batch|account|config)" | head -10
 
 echo ""
 echo "=== Installation Verification Complete ==="
@@ -207,12 +207,12 @@ echo "=== Installation Verification Complete ==="
 
 **Expected output:**
 ```
-=== Verifying xion-toolkit Installation ===
-✓ xion-toolkit found in PATH
-  Location: /Users/username/.local/bin/xion-toolkit
+=== Verifying verona-toolkit Installation ===
+✓ verona-toolkit found in PATH
+  Location: /Users/username/.local/bin/verona-toolkit
 
 Checking version...
-✓ Version: xion-toolkit 0.6.0
+✓ Version: verona-toolkit 0.6.0
 
 Checking CLI help...
 ✓ CLI responds to --help
@@ -234,8 +234,8 @@ Available command groups:
 Skills provide agent-friendly wrappers around CLI commands with JSON output and error handling.
 
 ```bash
-# Install xion-agent-toolkit skills (global, all common agents: Cursor, Claude Code, Codex, OpenClaw)
-npx skills add burnt-labs/xion-agent-toolkit -g -y -a cursor -a claude-code -a codex -a openclaw
+# Install verona-agent-toolkit skills (global, all common agents: Cursor, Claude Code, Codex, OpenClaw)
+npx skills add burnt-labs/verona-agent-toolkit -g -y -a cursor -a claude-code -a codex -a openclaw
 
 # Optional: Install xion-skills for xiond CLI operations
 npx skills add burnt-labs/xion-skills -g -y -a cursor -a claude-code -a codex -a openclaw
@@ -249,21 +249,21 @@ npx skills add burnt-labs/xion-skills -g -y -a cursor -a claude-code -a codex -a
 
 | Package | Skill | Purpose |
 |---------|-------|---------|
-| `burnt-labs/xion-agent-toolkit` | `xion-dev` | Unified entry point - routes to correct skill |
-| | `xion-toolkit-init` | Install xion-toolkit CLI |
-| | `xion-oauth2` | OAuth2 authentication |
-| | `xion-treasury` | Treasury management |
-| | `xion-asset` | NFT operations |
-| | `xion-faucet` | Claim testnet tokens |
+| `burnt-labs/verona-agent-toolkit` | `verona-dev` | Unified entry point - routes to correct skill |
+| | `verona-toolkit-init` | Install verona-toolkit CLI |
+| | `verona-oauth2` | OAuth2 authentication |
+| | `verona-treasury` | Treasury management |
+| | `verona-asset` | NFT operations |
+| | `verona-faucet` | Claim testnet tokens |
 | `burnt-labs/xion-skills` | `xiond-init` | Install xiond CLI |
 | (optional) | `xiond-usage` | Chain queries, account management |
 | | `xiond-wasm` | CosmWasm deployment |
 
 **When to Use Which:**
 
-| Use xion-agent-toolkit when... | Use xion-skills when... |
+| Use verona-agent-toolkit when... | Use xion-skills when... |
 |-------------------------------|-------------------------|
-| Building Xion applications | Deploying CosmWasm contracts |
+| Building Verona applications | Deploying CosmWasm contracts |
 | Managing Treasury contracts | Querying chain data (blocks, txs) |
 | Gasless transactions | Checking transaction status |
 | OAuth2 authentication | Mnemonic wallet operations |
@@ -276,30 +276,30 @@ npx skills add burnt-labs/xion-skills -g -y -a cursor -a claude-code -a codex -a
 
 ### OAuth2 Flow Overview
 
-Xion Agent Toolkit uses OAuth2 with PKCE for secure, gasless authentication:
+Verona Agent Toolkit uses OAuth2 with PKCE for secure, gasless authentication:
 
-1. Agent runs: `xion-toolkit auth login`
+1. Agent runs: `verona-toolkit auth login`
 2. CLI starts localhost callback server (default port 54321)
 3. CLI opens browser for user authorization
 4. User authorizes in browser
 5. Browser redirects to localhost with auth code
 6. CLI exchanges code for access + refresh tokens
-7. Tokens stored encrypted in `~/.xion-toolkit/credentials/`
+7. Tokens stored encrypted in `~/.verona-toolkit/credentials/`
 
 ### Authentication Commands
 
 ```bash
 # Login (opens browser for user authorization)
-xion-toolkit auth login
+verona-toolkit auth login
 
 # Check authentication status
-xion-toolkit auth status
+verona-toolkit auth status
 
 # Refresh access token
-xion-toolkit auth refresh
+verona-toolkit auth refresh
 
 # Logout (clears stored credentials)
-xion-toolkit auth logout
+verona-toolkit auth logout
 ```
 
 ### Expected Outputs
@@ -310,18 +310,20 @@ xion-toolkit auth logout
   "success": true,
   "network": "testnet",
   "authenticated": true,
-  "xion_address": "xion1...",
+  "verona_address": "xion1...",
   "token_type": "Bearer",
   "expires_in": 3600
 }
 ```
+
+> **Chain identifier:** `verona_address` values use the `xion1` bech32 prefix.
 
 **Status (Authenticated):**
 ```json
 {
   "success": true,
   "authenticated": true,
-  "xion_address": "xion1...",
+  "verona_address": "xion1...",
   "network": "testnet",
   "expires_at": "2024-01-15T12:00:00Z"
 }
@@ -339,8 +341,8 @@ xion-toolkit auth logout
 
 | Token Type | Validity | Storage |
 |------------|----------|---------|
-| Access Token | ~1 hour | `~/.xion-toolkit/credentials/{network}.enc` |
-| Refresh Token | 30 days | `~/.xion-toolkit/credentials/{network}.enc` |
+| Access Token | ~1 hour | `~/.verona-toolkit/credentials/{network}.enc` |
+| Refresh Token | 30 days | `~/.verona-toolkit/credentials/{network}.enc` |
 
 **Important:**
 - Access tokens auto-refresh when expired
@@ -350,7 +352,7 @@ xion-toolkit auth logout
 ### Custom Port (If Default In Use)
 
 ```bash
-xion-toolkit auth login --port 54322
+verona-toolkit auth login --port 54322
 ```
 
 ---
@@ -368,14 +370,14 @@ xion-toolkit auth login --port 54322
 
 ```bash
 # Set default network
-xion-toolkit config set-network testnet
-xion-toolkit config set-network mainnet
+verona-toolkit config set-network testnet
+verona-toolkit config set-network mainnet
 
 # Override for single command
-xion-toolkit --network mainnet auth status
+verona-toolkit --network mainnet auth status
 
 # Show current config
-xion-toolkit config show
+verona-toolkit config show
 ```
 
 ---
@@ -386,42 +388,42 @@ xion-toolkit config show
 
 | Command | Purpose |
 |---------|---------|
-| `xion-toolkit auth login` | OAuth2 login (opens browser) |
-| `xion-toolkit auth status` | Check authentication status |
-| `xion-toolkit auth refresh` | Refresh access token |
-| `xion-toolkit auth logout` | Clear stored credentials |
+| `verona-toolkit auth login` | OAuth2 login (opens browser) |
+| `verona-toolkit auth status` | Check authentication status |
+| `verona-toolkit auth refresh` | Refresh access token |
+| `verona-toolkit auth logout` | Clear stored credentials |
 
 ### Treasury
 
 | Command | Purpose |
 |---------|---------|
-| `xion-toolkit treasury list` | List all treasuries |
-| `xion-toolkit treasury query <ADDR>` | Query treasury details |
-| `xion-toolkit treasury create --name "..." --redirect-url "..."` | Create treasury |
-| `xion-toolkit treasury fund <ADDR> --amount 1000000uxion` | Fund treasury |
-| `xion-toolkit treasury withdraw <ADDR> --amount 500000uxion` | Withdraw funds |
-| `xion-toolkit treasury grant-config add <ADDR> ...` | Add grant config |
-| `xion-toolkit treasury fee-config set <ADDR> ...` | Set fee config |
-| `xion-toolkit treasury export <ADDR>` | Export configuration |
-| `xion-toolkit treasury import <ADDR> --from-file config.json` | Import configuration |
+| `verona-toolkit treasury list` | List all treasuries |
+| `verona-toolkit treasury query <ADDR>` | Query treasury details |
+| `verona-toolkit treasury create --name "..." --redirect-url "..."` | Create treasury |
+| `verona-toolkit treasury fund <ADDR> --amount 1000000uxion` | Fund treasury |
+| `verona-toolkit treasury withdraw <ADDR> --amount 500000uxion` | Withdraw funds |
+| `verona-toolkit treasury grant-config add <ADDR> ...` | Add grant config |
+| `verona-toolkit treasury fee-config set <ADDR> ...` | Set fee config |
+| `verona-toolkit treasury export <ADDR>` | Export configuration |
+| `verona-toolkit treasury import <ADDR> --from-file config.json` | Import configuration |
 
 ### Asset (NFT)
 
 | Command | Purpose |
 |---------|---------|
-| `xion-toolkit asset types` | List available NFT types |
-| `xion-toolkit asset create --type cw721-base --name "..." --symbol "..."` | Create collection |
-| `xion-toolkit asset mint --contract <ADDR> --token-id "1" --owner <ADDR>` | Mint NFT |
-| `xion-toolkit asset predict --type cw721-base --name "..." --symbol "..." --salt "..."` | Predict address |
+| `verona-toolkit asset types` | List available NFT types |
+| `verona-toolkit asset create --type cw721-base --name "..." --symbol "..."` | Create collection |
+| `verona-toolkit asset mint --contract <ADDR> --token-id "1" --owner <ADDR>` | Mint NFT |
+| `verona-toolkit asset predict --type cw721-base --name "..." --symbol "..." --salt "..."` | Predict address |
 
 ### Faucet
 
 | Command | Purpose |
 |---------|---------|
-| `xion-toolkit faucet claim` | Claim testnet tokens for yourself |
-| `xion-toolkit faucet claim --receiver xion1...` | Claim tokens for another address |
-| `xion-toolkit faucet status` | Check claim cooldown status |
-| `xion-toolkit faucet info` | Query faucet configuration |
+| `verona-toolkit faucet claim` | Claim testnet tokens for yourself |
+| `verona-toolkit faucet claim --receiver xion1...` | Claim tokens for another address |
+| `verona-toolkit faucet status` | Check claim cooldown status |
+| `verona-toolkit faucet info` | Query faucet configuration |
 
 **Note:** 1 XION per claim, 24-hour cooldown, testnet only.
 
@@ -429,7 +431,7 @@ xion-toolkit config show
 
 | Command | Purpose |
 |---------|---------|
-| `xion-toolkit batch execute --from-file batch.json` | Execute batch operations |
+| `verona-toolkit batch execute --from-file batch.json` | Execute batch operations |
 
 ---
 
@@ -482,11 +484,11 @@ def run_command(cmd):
     error_code = data.get("code")
     
     if error_code == "NOT_AUTHENTICATED":
-        execute("xion-toolkit auth login")
+        execute("verona-toolkit auth login")
         return run_command(cmd)  # Retry
     
     elif error_code == "TOKEN_EXPIRED":
-        execute("xion-toolkit auth refresh")
+        execute("verona-toolkit auth refresh")
         return run_command(cmd)  # Retry
     
     elif error_code == "PORT_IN_USE":
@@ -508,7 +510,7 @@ def run_command(cmd):
 
 ```bash
 # Check if binary was installed
-ls -la ~/.local/bin/xion-toolkit
+ls -la ~/.local/bin/verona-toolkit
 
 # Add to current session
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -522,7 +524,7 @@ source ~/.bashrc
 
 ```bash
 # Use different port
-xion-toolkit auth login --port 54322
+verona-toolkit auth login --port 54322
 
 # Or find and kill process using the port (macOS/Linux)
 lsof -i :54321
@@ -533,26 +535,26 @@ kill <PID>
 
 ```bash
 # Refresh token
-xion-toolkit auth refresh
+verona-toolkit auth refresh
 
 # If refresh fails, re-login
-xion-toolkit auth login
+verona-toolkit auth login
 ```
 
 ### Credentials Not Persisting
 
-1. Check credentials directory: `ls -la ~/.xion-toolkit/credentials/`
-2. In CI/CD, ensure `XION_CI_ENCRYPTION_KEY` environment variable is set
+1. Check credentials directory: `ls -la ~/.verona-toolkit/credentials/`
+2. In CI/CD, ensure `VERONA_CI_ENCRYPTION_KEY` environment variable is set
 3. **Do NOT delete `.enc` files** - they contain 30-day refresh tokens
 
 ### Wrong Network
 
 ```bash
 # Check current network
-xion-toolkit config show
+verona-toolkit config show
 
 # Switch network
-xion-toolkit config set-network testnet
+verona-toolkit config set-network testnet
 ```
 
 ### Recovery (Clean Reinstall)
@@ -561,33 +563,33 @@ If you need a completely fresh installation
 
 ```bash
 # Remove existing installation
-rm -rf ~/.local/bin/xion-toolkit ~/.cargo/bin/xion-toolkit
+rm -rf ~/.local/bin/verona-toolkit ~/.cargo/bin/verona-toolkit
 
 # Clear any cached downloads
-rm -rf /tmp/xion-toolkit-*
+rm -rf /tmp/verona-toolkit-*
 
 # Reinstall (latest version)
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/burnt-labs/xion-agent-toolkit/releases/latest/download/xion-agent-toolkit-installer.sh | sh
+  https://github.com/burnt-labs/verona-agent-toolkit/releases/latest/download/verona-agent-toolkit-installer.sh | sh
 
 ```
 
 ### Upgrade
 
-xion-toolkit uses cargo-dist for releases. To upgrade, **re-run the installer** - it will automatically fetch and install the latest version.
+verona-toolkit uses cargo-dist for releases. To upgrade, **re-run the installer** - it will automatically fetch and install the latest version.
 
 **Upgrade (macOS/Linux):**
 ```bash
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/burnt-labs/xion-agent-toolkit/releases/latest/download/xion-agent-toolkit-installer.sh | sh
+  https://github.com/burnt-labs/verona-agent-toolkit/releases/latest/download/verona-agent-toolkit-installer.sh | sh
 ```
 
 **Upgrade (Windows):**
 ```powershell
-powershell -c "irm https://github.com/burnt-labs/xion-agent-toolkit/releases/latest/download/xion-agent-toolkit-installer.ps1 | iex"
+powershell -c "irm https://github.com/burnt-labs/verona-agent-toolkit/releases/latest/download/verona-agent-toolkit-installer.ps1 | iex"
 ```
 
-> **Note**: Upgrading preserves your existing credentials (`~/.xion-toolkit/credentials/*.enc`). You do **not** need to re-authenticate after upgrading.
+> **Note**: Upgrading preserves your existing credentials (`~/.verona-toolkit/credentials/*.enc`). You do **not** need to re-authenticate after upgrading.
 
 ### Build from Source (Advanced - Fallback Only)
 
@@ -597,8 +599,8 @@ Requires Rust toolchain (rustc 1.75+):
 
 ```bash
 # Clone repository
-git clone https://github.com/burnt-labs/xion-agent-toolkit
-cd xion-agent-toolkit
+git clone https://github.com/burnt-labs/verona-agent-toolkit
+cd verona-agent-toolkit
 
 # Required for local builds: set up environment variables
 # This file contains OAuth2 client IDs needed for compilation
@@ -619,30 +621,30 @@ cargo install --path .
 # Example: Agent treasury management workflow
 
 # 1. Check authentication
-AUTH_STATUS=$(xion-toolkit auth status --output json)
+AUTH_STATUS=$(verona-toolkit auth status --output json)
 AUTHENTICATED=$(echo "$AUTH_STATUS" | jq -r '.authenticated')
 
 if [[ "$AUTHENTICATED" != "true" ]]; then
     echo "Not authenticated. Logging in..."
-    xion-toolkit auth login
+    verona-toolkit auth login
 fi
 
 # 2. List treasuries
-TREASURIES=$(xion-toolkit treasury list --output json)
+TREASURIES=$(verona-toolkit treasury list --output json)
 echo "$TREASURIES" | jq '.'
 
 # 3. Query first treasury
 FIRST_ADDR=$(echo "$TREASURIES" | jq -r '.treasuries[0].address')
 if [[ "$FIRST_ADDR" != "null" && "$FIRST_ADDR" != "" ]]; then
     echo "Querying treasury: $FIRST_ADDR"
-    xion-toolkit treasury query "$FIRST_ADDR" --output json | jq '.'
+    verona-toolkit treasury query "$FIRST_ADDR" --output json | jq '.'
 fi
 
 # 4. Create NFT collection
-xion-toolkit asset create --type cw721-base --name "My Collection" --symbol "NFT"
+verona-toolkit asset create --type cw721-base --name "My Collection" --symbol "NFT"
 
 # 5. Mint NFT
-xion-toolkit asset mint --contract <CONTRACT_ADDR> --token-id "1" --owner <OWNER_ADDR>
+verona-toolkit asset mint --contract <CONTRACT_ADDR> --token-id "1" --owner <OWNER_ADDR>
 ```
 
 ---
@@ -667,17 +669,17 @@ xion-toolkit asset mint --contract <CONTRACT_ADDR> --token-id "1" --owner <OWNER
 
 | Resource | URL |
 |----------|-----|
-| GitHub Repository | https://github.com/burnt-labs/xion-agent-toolkit |
-| Releases | https://github.com/burnt-labs/xion-agent-toolkit/releases |
-| Xion Documentation | https://docs.burnt.com/xion |
+| GitHub Repository | https://github.com/burnt-labs/verona-agent-toolkit |
+| Releases | https://github.com/burnt-labs/verona-agent-toolkit/releases |
+| Verona Documentation | https://docs.verona.dev |
 | Developer Portal | https://dev.testnet2.burnt.com |
 | Agent Skills Format | https://agentskills.io/ |
 
 ## Support
 
 For issues and feature requests:
-- **GitHub Issues**: https://github.com/burnt-labs/xion-agent-toolkit/issues
-- **Discussions**: https://github.com/burnt-labs/xion-agent-toolkit/discussions
+- **GitHub Issues**: https://github.com/burnt-labs/verona-agent-toolkit/issues
+- **Discussions**: https://github.com/burnt-labs/verona-agent-toolkit/discussions
 
 ---
 

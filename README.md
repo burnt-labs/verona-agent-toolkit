@@ -1,8 +1,8 @@
-# Xion Agent Toolkit
+# Verona Agent Toolkit
 
-**Gasless Xion development toolkit for humans and AI agents.**
+**Gasless Verona development toolkit for humans and AI agents.**
 
-A command-line tool for managing Xion MetaAccounts, Treasury contracts, CosmWasm contracts, and CW721 assets — without handling private keys or paying gas fees.
+A command-line tool for managing Verona MetaAccounts, Treasury contracts, CosmWasm contracts, and CW721 assets — without handling private keys or paying gas fees.
 
 ---
 
@@ -30,20 +30,20 @@ A command-line tool for managing Xion MetaAccounts, Treasury contracts, CosmWasm
 
 ```bash
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/burnt-labs/xion-agent-toolkit/releases/latest/download/xion-agent-toolkit-installer.sh | sh
+  https://github.com/burnt-labs/verona-agent-toolkit/releases/latest/download/verona-agent-toolkit-installer.sh | sh
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
-powershell -c "irm https://github.com/burnt-labs/xion-agent-toolkit/releases/latest/download/xion-agent-toolkit-installer.ps1 | iex"
+powershell -c "irm https://github.com/burnt-labs/verona-agent-toolkit/releases/latest/download/verona-agent-toolkit-installer.ps1 | iex"
 ```
 
 **From Source:**
 
 ```bash
-git clone https://github.com/burnt-labs/xion-agent-toolkit
-cd xion-agent-toolkit
+git clone https://github.com/burnt-labs/verona-agent-toolkit
+cd verona-agent-toolkit
 cp .env.example .env
 cargo install --path .
 ```
@@ -54,21 +54,21 @@ cargo install --path .
 # 1. Install CLI first (see above)
 
 # 2. Install skills
-npx skills add burnt-labs/xion-agent-toolkit -g
+npx skills add burnt-labs/verona-agent-toolkit -g
 
 # 3. Authenticate
-xion-toolkit auth login
+verona-toolkit auth login
 ```
 
-Bundled skills: `xion-dev`, `xion-toolkit-init`, `xion-oauth2`, `xion-oauth2-client`, `xion-treasury`, `xion-faucet`, `xion-asset`. See [INSTALL-FOR-AGENTS.md](./INSTALL-FOR-AGENTS.md) for full details.
+Bundled skills: `verona-dev`, `verona-toolkit-init`, `verona-oauth2`, `verona-oauth2-client`, `verona-treasury`, `verona-faucet`, `verona-asset`. See [INSTALL-FOR-AGENTS.md](./INSTALL-FOR-AGENTS.md) for full details.
 
 ### Authenticate
 
 ```bash
-xion-toolkit auth login
+verona-toolkit auth login
 ```
 
-Opens your browser for OAuth2 authentication. Tokens are stored encrypted locally. If you already have credentials, prefer `xion-toolkit auth refresh` before starting a new `login`.
+Opens your browser for OAuth2 authentication. Tokens are stored encrypted locally. If you already have credentials, prefer `verona-toolkit auth refresh` before starting a new `login`.
 
 ---
 
@@ -77,7 +77,7 @@ Opens your browser for OAuth2 authentication. Tokens are stored encrypted locall
 ### 1. Login
 
 ```bash
-xion-toolkit auth login
+verona-toolkit auth login
 ```
 
 Authenticate with Google, Email, or Passkey — no seed phrases required.
@@ -85,14 +85,14 @@ Authenticate with Google, Email, or Passkey — no seed phrases required.
 ### 2. Check environment
 
 ```bash
-xion-toolkit status
-xion-toolkit account info
+verona-toolkit status
+verona-toolkit account info
 ```
 
 ### 3. Claim Testnet Tokens
 
 ```bash
-xion-toolkit faucet claim
+verona-toolkit faucet claim
 ```
 
 Receive 1 XION (1,000,000 uxion) for testing. Use `faucet status` and `faucet info` for cooldown and contract config.
@@ -100,13 +100,13 @@ Receive 1 XION (1,000,000 uxion) for testing. Use `faucet status` and `faucet in
 ### 4. Create a Treasury
 
 ```bash
-xion-toolkit treasury create --name "My Treasury" --redirect-url "https://your-app.com/callback"
+verona-toolkit treasury create --name "My Treasury" --redirect-url "https://your-app.com/callback"
 ```
 
 Creates a gasless transaction contract. Fund it with claimed tokens:
 
 ```bash
-xion-toolkit treasury fund xion1... --amount 1000000uxion
+verona-toolkit treasury fund xion1... --amount 1000000uxion
 ```
 
 Configure **grant-config** and **fee-config** when you need delegated messages and sponsored fees — see [CLI Reference](./docs/cli-reference.md).
@@ -114,9 +114,9 @@ Configure **grant-config** and **fee-config** when you need delegated messages a
 ### 5. (Optional) Create NFT Collection
 
 ```bash
-xion-toolkit asset types
-xion-toolkit asset create --type cw721-base --name "My Collection" --symbol "NFT"
-xion-toolkit asset mint --contract xion1... --token-id "1" --owner xion1...
+verona-toolkit asset types
+verona-toolkit asset create --type cw721-base --name "My Collection" --symbol "NFT"
+verona-toolkit asset mint --contract xion1... --token-id "1" --owner xion1...
 ```
 
 Use `asset predict` and **instantiate2**-style flows for predictable contract addresses (documented in the CLI reference).
@@ -124,7 +124,7 @@ Use `asset predict` and **instantiate2**-style flows for predictable contract ad
 ### 6. (Optional) Follow a transaction
 
 ```bash
-xion-toolkit tx wait <TX_HASH>
+verona-toolkit tx wait <TX_HASH>
 ```
 
 ---
@@ -132,7 +132,7 @@ xion-toolkit tx wait <TX_HASH>
 ## Global CLI Options
 
 ```text
-xion-toolkit [OPTIONS] <COMMAND>
+verona-toolkit [OPTIONS] <COMMAND>
 
   -n, --network <NETWORK>     testnet | mainnet (default: testnet)
   -o, --output <FORMAT>       json | json-compact | github-actions | human (default: json)
@@ -140,15 +140,15 @@ xion-toolkit [OPTIONS] <COMMAND>
       --no-interactive        Fail if required args are missing (no prompts)
 ```
 
-Run `xion-toolkit --help` and `xion-toolkit <command> --help` for full flags.
+Run `verona-toolkit --help` and `verona-toolkit <command> --help` for full flags.
 
 ---
 
 ## Shell completions
 
 ```bash
-xion-toolkit completions --install   # install for your shell
-xion-toolkit completions bash        # print script to stdout
+verona-toolkit completions --install   # install for your shell
+verona-toolkit completions bash        # print script to stdout
 ```
 
 ---
@@ -158,7 +158,7 @@ xion-toolkit completions bash        # print script to stdout
 If you want your AI agent to install and use this toolkit, give it this instruction:
 
 ```
-Follow this guide https://raw.githubusercontent.com/burnt-labs/xion-agent-toolkit/main/INSTALL-FOR-AGENTS.md to install and configure the Xion Agent Toolkit skills for AI agents.
+Follow this guide https://raw.githubusercontent.com/burnt-labs/verona-agent-toolkit/main/INSTALL-FOR-AGENTS.md to install and configure the Verona Agent Toolkit skills for AI agents.
 ```
 
 ---
@@ -200,13 +200,13 @@ echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc  # or ~/.zshrc
 **Token expired:**
 
 ```bash
-xion-toolkit auth refresh
+verona-toolkit auth refresh
 ```
 
 **Port in use during login:**
 
 ```bash
-xion-toolkit auth login --port 54322
+verona-toolkit auth login --port 54322
 ```
 
 ---
@@ -219,7 +219,7 @@ Apache License 2.0 — see [LICENSE](LICENSE) for details.
 
 ## Resources
 
-- [Xion Documentation](https://docs.burnt.com/xion)
+- [Verona Documentation](https://docs.verona.dev)
 - [Developer Portal](https://dev.testnet2.burnt.com)
 - [Contributing Guide](./CONTRIBUTING.md)
 - [xion-skills](https://github.com/burnt-labs/xion-skills) — Advanced chain operations

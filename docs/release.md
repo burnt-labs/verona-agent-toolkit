@@ -1,6 +1,6 @@
 # Release Process
 
-This document describes the automated release workflow for the Xion Agent Toolkit.
+This document describes the automated release workflow for the Verona Agent Toolkit.
 
 ## Overview
 
@@ -115,7 +115,7 @@ BREAKING CHANGE: The callback server now requires explicit port.
    - The `release-please.yml` workflow dispatches `release.yml`
    - cargo-dist builds artifacts and uploads them to the existing release
 
-4. **Done!** Monitor the [Actions tab](https://github.com/burnt-labs/xion-agent-toolkit/actions) for build status
+4. **Done!** Monitor the [Actions tab](https://github.com/burnt-labs/verona-agent-toolkit/actions) for build status
 
 ### Release PR Example
 
@@ -143,26 +143,26 @@ BREAKING CHANGE: The callback server now requires explicit port.
 ```bash
 # Latest version
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/burnt-labs/xion-agent-toolkit/releases/latest/download/xion-agent-toolkit-installer.sh | sh
+  https://github.com/burnt-labs/verona-agent-toolkit/releases/latest/download/verona-agent-toolkit-installer.sh | sh
 
 # Specific version
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/burnt-labs/xion-agent-toolkit/releases/download/v0.3.0/xion-agent-toolkit-installer.sh | sh
+  https://github.com/burnt-labs/verona-agent-toolkit/releases/download/v0.3.0/verona-agent-toolkit-installer.sh | sh
 ```
 
 ### Using the PowerShell Installer (Windows)
 
 ```powershell
 # Latest version
-powershell -c "irm https://github.com/burnt-labs/xion-agent-toolkit/releases/latest/download/xion-agent-toolkit-installer.ps1 | iex"
+powershell -c "irm https://github.com/burnt-labs/verona-agent-toolkit/releases/latest/download/verona-agent-toolkit-installer.ps1 | iex"
 
 # Specific version
-powershell -c "irm https://github.com/burnt-labs/xion-agent-toolkit/releases/download/v0.3.0/xion-agent-toolkit-installer.ps1 | iex"
+powershell -c "irm https://github.com/burnt-labs/verona-agent-toolkit/releases/download/v0.3.0/verona-agent-toolkit-installer.ps1 | iex"
 ```
 
 ### Manual Installation
 
-Download the appropriate archive from the [Releases page](https://github.com/burnt-labs/xion-agent-toolkit/releases) and extract to a directory in your `PATH`.
+Download the appropriate archive from the [Releases page](https://github.com/burnt-labs/verona-agent-toolkit/releases) and extract to a directory in your `PATH`.
 
 ## Release Artifacts
 
@@ -170,9 +170,9 @@ Each release includes:
 
 | Artifact | Description |
 |----------|-------------|
-| `xion-agent-toolkit-*.tar.xz` / `.zip` | Platform-specific binaries |
-| `xion-agent-toolkit-installer.sh` | Shell installer (macOS/Linux) |
-| `xion-agent-toolkit-installer.ps1` | PowerShell installer (Windows) |
+| `verona-agent-toolkit-*.tar.xz` / `.zip` | Platform-specific binaries |
+| `verona-agent-toolkit-installer.sh` | Shell installer (macOS/Linux) |
+| `verona-agent-toolkit-installer.ps1` | PowerShell installer (Windows) |
 | `*.sha256` | SHA256 checksums |
 | `source.tar.gz` | Source code archive |
 
@@ -233,22 +233,24 @@ In the GitHub repository, configure the following repository **Variables** (not 
 
 `Settings → Secrets and variables → Actions → Variables`
 
-- `XION_TESTNET_OAUTH_CLIENT_ID` – OAuth client ID for testnet
-- `XION_MAINNET_OAUTH_CLIENT_ID` – OAuth client ID for mainnet
+- `VERONA_TESTNET_OAUTH_CLIENT_ID` – OAuth client ID for testnet
+- `VERONA_MAINNET_OAUTH_CLIENT_ID` – OAuth client ID for mainnet
 
 Optional OAuth API URL overrides (embedded at build time; defaults shown below):
 
-- `XION_TESTNET_OAUTH_API_URL` – defaults to `https://oauth2.testnet.burnt.com`
-- `XION_MAINNET_OAUTH_API_URL` – defaults to `https://oauth2.burnt.com`
+- `VERONA_TESTNET_OAUTH_API_URL` – defaults to `https://oauth2.testnet.burnt.com`
+- `VERONA_MAINNET_OAUTH_API_URL` – defaults to `https://oauth2.burnt.com`
+
+Legacy `XION_*` names are accepted as fallback (deprecated).
 
 For local builds, set these in `.env` or the shell environment before `cargo build`. Release builds read the same variables from GitHub Actions.
 
 These map directly to the environment variables read in `build.rs`:
 
-- `XION_TESTNET_OAUTH_CLIENT_ID`
-- `XION_MAINNET_OAUTH_CLIENT_ID`
-- `XION_TESTNET_OAUTH_API_URL` (optional)
-- `XION_MAINNET_OAUTH_API_URL` (optional)
+- `VERONA_TESTNET_OAUTH_CLIENT_ID`
+- `VERONA_MAINNET_OAUTH_CLIENT_ID`
+- `VERONA_TESTNET_OAUTH_API_URL` (optional)
+- `VERONA_MAINNET_OAUTH_API_URL` (optional)
 
 The `cargo-dist` workflow (`.github/workflows/release.yml`) uses `github-build-setup` (configured in `dist-workspace.toml`) to inject these variables into the build environment before `dist build` runs. If either variable is missing, the binaries will fall back to placeholder client IDs and OAuth flows will not work correctly in production.
 
