@@ -12,3 +12,4 @@ Implementation notes and design SSOT for agent handoff. Active plans live in `.m
 | [task-dependency-analysis.md](./task-dependency-analysis.md) | phase4 | Phase 4 task dependency and parallel execution analysis. | Active |
 | [expiration-research.md](./expiration-research.md) | phase4 | Treasury expiration field research. | Active |
 | [xion-skills-update-plan.md](./xion-skills-update-plan.md) | skills | Xion skills update planning notes. | Active |
+| [verona-rebrand-contract.md](./verona-rebrand-contract.md) | verona-rebrand | Rename matrix SSOT for Verona Agent Toolkit rebrand. | Active |

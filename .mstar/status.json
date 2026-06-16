@@ -1,7 +1,26 @@
 {
   "version": 1,
   "updated_at": "2026-06-15",
-  "plans": [],
+  "plans": [
+    {
+      "id": "verona-rebrand",
+      "title": "Verona Agent Toolkit full rebrand",
+      "file": ".mstar/plans/verona-rebrand.md",
+      "status": "Todo",
+      "owner": "@project-manager",
+      "progress": 0,
+      "created_at": "2026-06-15",
+      "updated_at": "2026-06-15",
+      "metadata": {
+        "working_branch": "rebranding",
+        "spec_integration_branch": "rebranding",
+        "merge_target": "main",
+        "primary_spec": ".mstar/knowledge/verona-rebrand-contract.md",
+        "phase": "batch-0-registered",
+        "description": "Full Toolkit rebrand; plan registration only in current iteration"
+      }
+    }
+  ],
   "residual_findings": {},
   "metadata": {
     "active_roadmap": ".mstar/knowledge/feature-roadmap.md",
