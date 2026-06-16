@@ -134,4 +134,4 @@ Post-merge (outside repo):
 | Encryption salt change breaks old files | Dual salt read path |
 | Global skill install breakage | CHANGELOG: `npx skills add burnt-labs/verona-agent-toolkit -g` |
 | CI secrets rename | Sync GitHub repo secrets before Batch 2 merge |
-| Bulk replace misses strings | Optional CI grep gate for product-layer `xion-toolkit` |
+| Bulk replace misses strings | One-time audit at rebrand merge; no standing CI grep gate |
