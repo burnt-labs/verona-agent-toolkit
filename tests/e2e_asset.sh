@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Xion Agent Toolkit - Asset (NFT) E2E Test
+# Verona Agent Toolkit - Asset (NFT) E2E Test
 # Tests the asset module: types, predict, create, mint, query, batch-mint
 #
 
@@ -19,7 +19,7 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Binary path (can be overridden via CLI argument)
-BINARY_PATH="${1:-./target/release/xion-toolkit}"
+BINARY_PATH="${1:-./target/release/verona-toolkit}"
 NETWORK="${NETWORK:-testnet}"
 
 # Test contract (if available - DO NOT use protected treasury)

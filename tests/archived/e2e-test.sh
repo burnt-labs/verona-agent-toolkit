@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# E2E Test Script for Xion Agent Toolkit
+# E2E Test Script for Verona Agent Toolkit
 # Tests all treasury operations against testnet
 #
 # Prerequisites:
-#   1. Run 'xion-toolkit auth login --network testnet' first
+#   1. Run 'verona-toolkit auth login --network testnet' first
 #   2. Ensure you have testnet tokens (get from faucet)
 #
 # Usage:
@@ -21,7 +21,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-TOOLKIT="./target/release/xion-toolkit"
+TOOLKIT="./target/release/verona-toolkit"
 NETWORK="testnet"
 LOG_FILE="e2e-test-$(date +%Y%m%d-%H%M%S).log"
 SKIP_CREATE=false
