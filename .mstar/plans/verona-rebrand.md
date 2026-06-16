@@ -103,11 +103,11 @@ Doc rule: product/commands use Verona; chain examples keep `xion1...`, `uxion`, 
 ## Batch 6 — Verify & deliver
 
 - [x] Full CI gate: fmt, clippy, `cargo test --all-features`, skills mock tests, frontmatter validator
-- [ ] QC tri-review → PR `rebranding` → `main`
+- [x] QC tri-review → QA sign-off → PR `rebranding` → `main` (pending PR)
 
 - [x] QC tri-review (`qc1.md`, `qc2.md`, `qc3.md`, `qc-consolidated.md`) — **Approve with residuals**
-- [ ] QA verification on `rebranding`
-- [ ] Address or waive residuals R1–R4 (pre-merge preferred)
+- [x] QA verification on `rebranding` (2026-06-16) — **pass with open residuals** (R1–R6 tracked; R1–R4 defer/accept per PM)
+- [ ] Address or waive residuals R1–R4 (pre-merge preferred; non-blocking for merge)
 
 ```bash
 cargo fmt -- --check
