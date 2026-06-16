@@ -1,9 +1,10 @@
 use anyhow::{Context, Result};
-use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use super::credentials::CredentialsManager;
+use super::env_compat::env_var_with_legacy;
+use super::paths::config_dir;
 use super::schema::Config;
 
 pub struct ConfigManager {
@@ -13,16 +14,7 @@ pub struct ConfigManager {
 
 impl ConfigManager {
     pub fn new() -> Result<Self> {
-        // Use unified ~/.xion-toolkit/ directory for all platforms
-        let home_dir = env::var("HOME")
-            .or_else(|_| env::var("USERPROFILE"))
-            .context("Failed to determine home directory")?;
-
-        let config_dir = PathBuf::from(home_dir).join(".xion-toolkit");
-
-        // Ensure config directory exists
-        fs::create_dir_all(&config_dir).context("Failed to create config directory")?;
-
+        let config_dir = config_dir()?;
         let config = Self::load_or_create_config(&config_dir)?;
 
         Ok(Self { config_dir, config })
@@ -63,10 +55,9 @@ impl ConfigManager {
     }
 
     pub fn get_current_network(&self) -> &str {
-        // Check for CLI override via environment variable
-        if let Ok(network_override) = std::env::var("XION_NETWORK_OVERRIDE") {
-            // Return the override value (leak to get 'static lifetime)
-            // This is safe because the environment variable lives for the process lifetime
+        if let Some(network_override) =
+            env_var_with_legacy("VERONA_NETWORK_OVERRIDE", "XION_NETWORK_OVERRIDE")
+        {
             Box::leak(network_override.into_boxed_str())
         } else {
             &self.config.network
@@ -144,7 +135,7 @@ fn validate_mainnet_oauth_client_id(client_id: &str) -> Result<()> {
     if is_unconfigured_mainnet_oauth_client_id(client_id) {
         anyhow::bail!(
             "Mainnet OAuth client ID is not configured in this binary. \
-             Rebuild with XION_MAINNET_OAUTH_CLIENT_ID set in the environment or in a .env file \
+             Rebuild with VERONA_MAINNET_OAUTH_CLIENT_ID set in the environment or in a .env file \
              loaded at build time, or use a release binary built with the GitHub Actions variable. \
              See CONTRIBUTING.md and docs/release.md."
         );
@@ -175,7 +166,7 @@ mod tests {
         let err = validate_mainnet_oauth_client_id("your-mainnet-client-id-here").unwrap_err();
         assert!(
             err.to_string()
-                .contains("Rebuild with XION_MAINNET_OAUTH_CLIENT_ID"),
+                .contains("Rebuild with VERONA_MAINNET_OAUTH_CLIENT_ID"),
             "unexpected error: {err}"
         );
     }
@@ -200,7 +191,7 @@ mod tests {
         let err = manager.set_network("mainnet").unwrap_err();
         assert!(
             err.to_string()
-                .contains("Rebuild with XION_MAINNET_OAUTH_CLIENT_ID"),
+                .contains("Rebuild with VERONA_MAINNET_OAUTH_CLIENT_ID"),
             "unexpected error: {err}"
         );
 

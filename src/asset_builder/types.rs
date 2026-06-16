@@ -471,7 +471,7 @@ pub enum AssetBuilderError {
     QueryFailed(String),
 
     /// Not authenticated
-    #[error("Not authenticated. Please run 'xion auth login' first.")]
+    #[error("Not authenticated. Please run 'verona-toolkit auth login' first.")]
     NotAuthenticated,
 
     /// Serialization error

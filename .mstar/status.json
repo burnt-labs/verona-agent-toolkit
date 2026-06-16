@@ -6,9 +6,9 @@
       "id": "verona-rebrand",
       "title": "Verona Agent Toolkit full rebrand",
       "file": ".mstar/plans/verona-rebrand.md",
-      "status": "Todo",
+      "status": "InProgress",
       "owner": "@project-manager",
-      "progress": 0,
+      "progress": 17,
       "created_at": "2026-06-15",
       "updated_at": "2026-06-15",
       "metadata": {
@@ -16,8 +16,8 @@
         "spec_integration_branch": "rebranding",
         "merge_target": "main",
         "primary_spec": ".mstar/knowledge/verona-rebrand-contract.md",
-        "phase": "batch-0-registered",
-        "description": "Full Toolkit rebrand; plan registration only in current iteration"
+        "phase": "batch-1-rust-core-done",
+        "description": "Batch 1 Rust core complete (uncommitted); next Batch 2 CI/release"
       }
     }
   ],

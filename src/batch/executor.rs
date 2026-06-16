@@ -13,7 +13,7 @@ use crate::treasury::types::{BroadcastRequest, TransactionMessage};
 #[derive(Debug, Error)]
 pub enum BatchExecutorError {
     /// Not authenticated
-    #[error("Not authenticated. Please run 'xion auth login' first.")]
+    #[error("Not authenticated. Please run 'verona-toolkit auth login' first.")]
     NotAuthenticated,
 
     /// Batch validation failed
@@ -74,7 +74,7 @@ impl BatchExecutor {
             .ok_or_else(|| anyhow::anyhow!("No credentials found"))?;
 
         credentials
-            .xion_address
+            .verona_address
             .ok_or_else(|| anyhow::anyhow!("No Xion address in credentials"))
     }
 

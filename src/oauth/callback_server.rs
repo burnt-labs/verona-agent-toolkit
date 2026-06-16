@@ -75,7 +75,7 @@ struct CallbackState {
 ///
 /// # Example
 /// ```rust,no_run
-/// use xion_agent_toolkit::oauth::CallbackServer;
+/// use verona_agent_toolkit::oauth::CallbackServer;
 ///
 /// #[tokio::main]
 /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -307,7 +307,7 @@ async fn handle_callback(
 ///
 /// # Example
 /// ```
-/// use xion_agent_toolkit::oauth::callback_server::sanitize_state_for_log;
+/// use verona_agent_toolkit::oauth::callback_server::sanitize_state_for_log;
 ///
 /// let sanitized = sanitize_state_for_log("abcdefghijklmnopqrstuvwxyz1234567890", 8);
 /// assert_eq!(sanitized, "abcdefgh...");

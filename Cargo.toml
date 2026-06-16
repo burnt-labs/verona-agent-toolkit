@@ -1,22 +1,22 @@
 [package]
-name = "xion-agent-toolkit"
+name = "verona-agent-toolkit"
 version = "0.12.1"
 edition = "2021"
-authors = ["Xion Developer Team"]
-description = "CLI-driven, Agent-oriented toolkit for Xion blockchain development"
+authors = ["Verona Developer Team"]
+description = "CLI-driven, Agent-oriented toolkit for Verona blockchain development"
 license = "Apache-2.0"
-repository = "https://github.com/burnt-labs/xion-agent-toolkit"
+repository = "https://github.com/burnt-labs/verona-agent-toolkit"
 readme = "README.md"
-keywords = ["xion", "blockchain", "cli", "agent", "oauth2"]
+keywords = ["verona", "blockchain", "cli", "agent", "oauth2"]
 categories = ["command-line-utilities", "cryptography::cryptocurrencies"]
 build = "build.rs"
 
 [lib]
-name = "xion_agent_toolkit"
+name = "verona_agent_toolkit"
 path = "src/lib.rs"
 
 [[bin]]
-name = "xion-toolkit"
+name = "verona-toolkit"
 path = "src/main.rs"
 
 [[bin]]

@@ -26,7 +26,7 @@ impl TxClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::tx::TxClient;
+    /// use verona_agent_toolkit::tx::TxClient;
     ///
     /// let client = TxClient::new("https://api.xion-testnet-2.burnt.com".to_string());
     /// ```
@@ -57,7 +57,7 @@ impl TxClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::tx::TxClient;
+    /// use verona_agent_toolkit::tx::TxClient;
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -199,7 +199,7 @@ impl TxClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::tx::TxClient;
+    /// use verona_agent_toolkit::tx::TxClient;
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {

@@ -8,9 +8,9 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use tracing::{debug, instrument};
 
-use crate::shared::error::{AuthError, NetworkError, XionResult};
+use crate::shared::error::{AuthError, NetworkError, VeronaResult};
 
-/// OAuth2 API Client for Xion
+/// OAuth2 API Client for Verona
 ///
 /// Handles communication with the OAuth2 service for:
 /// - Token exchange (authorization code -> access token)
@@ -66,9 +66,9 @@ pub struct TokenResponse {
     pub refresh_token_expires_at: Option<String>,
     /// Token type (usually "Bearer")
     pub token_type: String,
-    /// Xion blockchain address associated with the account
-    #[serde(default)]
-    pub xion_address: Option<String>,
+    /// Xion blockchain address associated with the account (API field: xion_address)
+    #[serde(default, alias = "xion_address")]
+    pub verona_address: Option<String>,
     /// Space-separated OAuth2 scopes granted by the authorization server.
     #[serde(default)]
     pub scope: Option<String>,
@@ -124,7 +124,7 @@ impl TokenResponse {
 /// User information from OAuth2 service
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserInfo {
-    /// MetaAccount address (same as xion_address)
+    /// MetaAccount address (same as verona_address)
     pub id: String,
     /// Authenticators associated with the account
     #[serde(default)]
@@ -187,7 +187,7 @@ impl OAuth2ApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::api::OAuth2ApiClient;
+    /// use verona_agent_toolkit::api::OAuth2ApiClient;
     ///
     /// let client = OAuth2ApiClient::new("https://oauth2.testnet.burnt.com".to_string());
     /// ```
@@ -227,7 +227,7 @@ impl OAuth2ApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::api::OAuth2ApiClient;
+    /// use verona_agent_toolkit::api::OAuth2ApiClient;
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -250,7 +250,7 @@ impl OAuth2ApiClient {
         code_verifier: &str,
         redirect_uri: &str,
         client_id: &str,
-    ) -> XionResult<TokenResponse> {
+    ) -> VeronaResult<TokenResponse> {
         debug!("Exchanging authorization code for token");
 
         let request = TokenRequest {
@@ -290,7 +290,7 @@ impl OAuth2ApiClient {
         redirect_uri: &str,
         client_id: &str,
         token_endpoint: &str,
-    ) -> XionResult<TokenResponse> {
+    ) -> VeronaResult<TokenResponse> {
         debug!(
             "Exchanging authorization code for token using custom endpoint: {}",
             token_endpoint
@@ -335,7 +335,7 @@ impl OAuth2ApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::api::OAuth2ApiClient;
+    /// use verona_agent_toolkit::api::OAuth2ApiClient;
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -353,7 +353,7 @@ impl OAuth2ApiClient {
         &self,
         refresh_token: &str,
         client_id: &str,
-    ) -> XionResult<TokenResponse> {
+    ) -> VeronaResult<TokenResponse> {
         debug!("Refreshing access token");
 
         let request = TokenRequest {
@@ -388,7 +388,7 @@ impl OAuth2ApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::api::OAuth2ApiClient;
+    /// use verona_agent_toolkit::api::OAuth2ApiClient;
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -399,7 +399,7 @@ impl OAuth2ApiClient {
     /// # }
     /// ```
     #[instrument(skip(self, access_token))]
-    pub async fn get_user_info(&self, access_token: &str) -> XionResult<UserInfo> {
+    pub async fn get_user_info(&self, access_token: &str) -> VeronaResult<UserInfo> {
         debug!("Fetching user info from /api/v1/me");
 
         let url = format!("{}/api/v1/me", self.base_url);
@@ -443,7 +443,7 @@ impl OAuth2ApiClient {
     /// Internal method to request tokens from the OAuth2 service
     ///
     /// Makes a POST request to the /oauth/token endpoint
-    async fn request_token(&self, request: &TokenRequest) -> XionResult<TokenResponse> {
+    async fn request_token(&self, request: &TokenRequest) -> VeronaResult<TokenResponse> {
         let url = format!("{}/oauth/token", self.base_url);
 
         debug!("Making token request to: {}", url);
@@ -511,7 +511,7 @@ impl OAuth2ApiClient {
 
         debug!(
             "Successfully obtained token for address: {:?}",
-            token_response.xion_address
+            token_response.verona_address
         );
 
         Ok(token_response)
@@ -524,7 +524,7 @@ impl OAuth2ApiClient {
         &self,
         request: &TokenRequest,
         token_endpoint: &str,
-    ) -> XionResult<TokenResponse> {
+    ) -> VeronaResult<TokenResponse> {
         debug!(
             "Making token request to custom endpoint: {}",
             token_endpoint
@@ -583,7 +583,7 @@ impl OAuth2ApiClient {
 
         debug!(
             "Successfully obtained token for address: {:?}",
-            token_response.xion_address
+            token_response.verona_address
         );
 
         Ok(token_response)
@@ -616,7 +616,7 @@ mod tests {
             refresh_token_expires_in: None,
             refresh_token_expires_at: None,
             token_type: "Bearer".to_string(),
-            xion_address: Some("xion1test".to_string()),
+            verona_address: Some("xion1test".to_string()),
             scope: None,
         };
 
@@ -635,7 +635,7 @@ mod tests {
             refresh_token_expires_in: None,
             refresh_token_expires_at: None,
             token_type: "Bearer".to_string(),
-            xion_address: Some("xion1test".to_string()),
+            verona_address: Some("xion1test".to_string()),
             scope: None,
         };
         token.expires_at = Some(token.calculate_expires_at());
@@ -779,7 +779,7 @@ mod tests {
             assert_eq!(token.access_token, "test_access_token");
             assert_eq!(token.refresh_token, "test_refresh_token");
             assert_eq!(token.expires_in, 3600);
-            assert_eq!(token.xion_address, Some("xion1test123".to_string()));
+            assert_eq!(token.verona_address, Some("xion1test123".to_string()));
         }
 
         #[tokio::test]
@@ -812,7 +812,7 @@ mod tests {
             assert_eq!(token.access_token, "new_access_token");
             assert_eq!(token.refresh_token, "new_refresh_token");
             assert_eq!(token.expires_in, 3600);
-            assert_eq!(token.xion_address, Some("xion1test123".to_string()));
+            assert_eq!(token.verona_address, Some("xion1test123".to_string()));
         }
 
         #[tokio::test]

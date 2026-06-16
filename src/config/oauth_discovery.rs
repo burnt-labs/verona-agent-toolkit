@@ -104,13 +104,7 @@ impl OAuth2EndpointsCache {
 
     /// Get the cache file path
     fn get_cache_path() -> Result<PathBuf> {
-        let home = std::env::var("HOME")
-            .or_else(|_| std::env::var("USERPROFILE"))
-            .context("Failed to determine home directory")?;
-
-        let cache_dir = PathBuf::from(home).join(".xion-toolkit");
-        fs::create_dir_all(&cache_dir).context("Failed to create cache directory")?;
-
+        let cache_dir = super::paths::config_dir()?;
         Ok(cache_dir.join(Self::CACHE_FILENAME))
     }
 

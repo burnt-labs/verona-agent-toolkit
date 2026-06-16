@@ -1,9 +1,9 @@
 use clap::Parser;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-use xion_agent_toolkit::cli;
-use xion_agent_toolkit::cli::{Cli, Commands};
-use xion_agent_toolkit::shared::exit_codes::exit_code;
-use xion_agent_toolkit::utils::output::{anyhow_to_xion_error, print_formatted};
+use verona_agent_toolkit::cli;
+use verona_agent_toolkit::cli::{Cli, Commands};
+use verona_agent_toolkit::shared::exit_codes::exit_code;
+use verona_agent_toolkit::utils::output::{anyhow_to_verona_error, print_formatted};
 
 #[tokio::main]
 async fn main() {
@@ -38,7 +38,7 @@ async fn main() {
     let ctx = cli.to_context();
 
     // Set environment variable for network override (used by commands)
-    std::env::set_var("XION_NETWORK_OVERRIDE", &ctx.network);
+    std::env::set_var("VERONA_NETWORK_OVERRIDE", &ctx.network);
 
     let result = match cli.command {
         Commands::Auth(auth_cmd) => cli::handle_auth_command(auth_cmd, &ctx).await,
@@ -62,12 +62,12 @@ async fn main() {
             std::process::exit(exit_code::SUCCESS);
         }
         Err(e) => {
-            // Convert anyhow error to XionError for proper exit code
-            let xion_error = anyhow_to_xion_error(&e);
-            let exit_code_value = xion_error.code().exit_code();
+            // Convert anyhow error to VeronaError for proper exit code
+            let verona_error = anyhow_to_verona_error(&e);
+            let exit_code_value = verona_error.code().exit_code();
 
             // Print error in appropriate format
-            let response = xion_error.to_response();
+            let response = verona_error.to_response();
             if let Err(print_err) = print_formatted(&response, ctx.output_format) {
                 eprintln!("Failed to print error: {}", print_err);
             }

@@ -7,20 +7,20 @@
 
 use base64::Engine;
 use serde_json::json;
-use wiremock::matchers::{method, path};
-use wiremock::{Mock, MockServer, ResponseTemplate};
-use xion_agent_toolkit::config::NetworkConfig;
-use xion_agent_toolkit::oauth::OAuthClient;
-use xion_agent_toolkit::treasury::encoding::{
+use verona_agent_toolkit::config::NetworkConfig;
+use verona_agent_toolkit::oauth::OAuthClient;
+use verona_agent_toolkit::treasury::encoding::{
     encode_basic_allowance, encode_generic_authorization, encode_periodic_allowance,
     encode_send_authorization, parse_coin_string, Coin,
 };
-use xion_agent_toolkit::treasury::types::{
+use verona_agent_toolkit::treasury::types::{
     AuthorizationInput, CreateTreasuryRequest, FeeConfigInput, FeeConfigMessage, GrantConfigInput,
     GrantConfigMessage, TreasuryCreateRequest, TreasuryParamsInput, TreasuryParamsMessage,
     TypeUrlValue,
 };
-use xion_agent_toolkit::treasury::{TreasuryApiClient, TreasuryManager};
+use verona_agent_toolkit::treasury::{TreasuryApiClient, TreasuryManager};
+use wiremock::matchers::{method, path};
+use wiremock::{Mock, MockServer, ResponseTemplate};
 
 // ============================================================================
 // Helper Functions

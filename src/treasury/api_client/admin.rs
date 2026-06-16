@@ -10,7 +10,7 @@
 use serde::Deserialize;
 use tracing::{debug, instrument, warn};
 
-use crate::shared::error::{NetworkError, XionResult};
+use crate::shared::error::{NetworkError, VeronaResult};
 use crate::treasury::types::{BroadcastRequest, QueryOptions};
 
 use super::helpers::bytes_to_json_array;
@@ -37,7 +37,7 @@ impl super::TreasuryApiClient {
         treasury_address: &str,
         new_admin: &str,
         from_address: &str,
-    ) -> XionResult<crate::treasury::types::AdminResult> {
+    ) -> VeronaResult<crate::treasury::types::AdminResult> {
         debug!(
             "Proposing new admin {} for treasury: {}",
             new_admin, treasury_address
@@ -83,7 +83,7 @@ impl super::TreasuryApiClient {
         access_token: &str,
         treasury_address: &str,
         from_address: &str,
-    ) -> XionResult<crate::treasury::types::AdminResult> {
+    ) -> VeronaResult<crate::treasury::types::AdminResult> {
         debug!("Accepting admin role for treasury: {}", treasury_address);
 
         // Create the accept_admin message (matches contract's ExecuteMsg)
@@ -124,7 +124,7 @@ impl super::TreasuryApiClient {
         access_token: &str,
         treasury_address: &str,
         from_address: &str,
-    ) -> XionResult<crate::treasury::types::AdminResult> {
+    ) -> VeronaResult<crate::treasury::types::AdminResult> {
         debug!(
             "Canceling proposed admin for treasury: {}",
             treasury_address
@@ -174,7 +174,7 @@ impl super::TreasuryApiClient {
         treasury_address: &str,
         params: crate::treasury::types::UpdateParamsInput,
         from_address: &str,
-    ) -> XionResult<crate::treasury::types::ParamsResult> {
+    ) -> VeronaResult<crate::treasury::types::ParamsResult> {
         debug!("Updating params for treasury: {}", treasury_address);
 
         // Validate that at least one parameter is provided
@@ -271,7 +271,7 @@ impl super::TreasuryApiClient {
         treasury_address: &str,
         grant_configs: Vec<(String, crate::treasury::types::GrantConfigInput)>,
         from_address: &str,
-    ) -> XionResult<crate::treasury::types::BatchGrantConfigResult> {
+    ) -> VeronaResult<crate::treasury::types::BatchGrantConfigResult> {
         debug!(
             "Adding {} grant configs in batch to treasury: {}",
             grant_configs.len(),
@@ -360,7 +360,7 @@ impl super::TreasuryApiClient {
     pub async fn list_authz_grants(
         &self,
         treasury_address: &str,
-    ) -> XionResult<Vec<crate::treasury::types::AuthzGrantInfo>> {
+    ) -> VeronaResult<Vec<crate::treasury::types::AuthzGrantInfo>> {
         debug!("Listing authz grants for treasury: {}", treasury_address);
 
         // Query authz grants via RPC
@@ -441,7 +441,7 @@ impl super::TreasuryApiClient {
     pub async fn list_fee_allowances(
         &self,
         treasury_address: &str,
-    ) -> XionResult<Vec<crate::treasury::types::FeeAllowanceInfo>> {
+    ) -> VeronaResult<Vec<crate::treasury::types::FeeAllowanceInfo>> {
         debug!("Listing fee allowances for treasury: {}", treasury_address);
 
         // Query fee allowances via RPC
@@ -588,7 +588,7 @@ impl super::TreasuryApiClient {
         &self,
         access_token: &str,
         treasury_address: &str,
-    ) -> XionResult<crate::treasury::types::TreasuryExportData> {
+    ) -> VeronaResult<crate::treasury::types::TreasuryExportData> {
         debug!("Exporting treasury state for: {}", treasury_address);
 
         // Query basic treasury info from indexer

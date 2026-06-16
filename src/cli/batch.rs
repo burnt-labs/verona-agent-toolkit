@@ -74,7 +74,7 @@ async fn handle_execute(args: ExecuteArgs, ctx: &ExecuteContext) -> Result<()> {
     if !executor.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -128,9 +128,10 @@ async fn handle_execute(args: ExecuteArgs, ctx: &ExecuteContext) -> Result<()> {
         }
         Err(e) => {
             let (code, suggestion) = match &e {
-                crate::batch::BatchExecutorError::NotAuthenticated => {
-                    ("NOT_AUTHENTICATED", "Please run 'xion auth login' first.")
-                }
+                crate::batch::BatchExecutorError::NotAuthenticated => (
+                    "NOT_AUTHENTICATED",
+                    "Please run 'verona-toolkit auth login' first.",
+                ),
                 crate::batch::BatchExecutorError::ValidationFailed(_) => {
                     ("BATCH_VALIDATION_FAILED", "Check your batch file format.")
                 }

@@ -12,30 +12,70 @@ fn escape_rust_string(value: &str) -> String {
         .replace('\t', "\\t")
 }
 
+/// Read a build-time env var, preferring VERONA_* with XION_* fallback.
+fn build_env(primary: &str, legacy: &str) -> String {
+    if let Ok(value) = env::var(primary) {
+        return value;
+    }
+    if let Ok(value) = env::var(legacy) {
+        eprintln!("warning: {legacy} is deprecated; use {primary} for build-time configuration");
+        return value;
+    }
+    String::new()
+}
+
 fn main() {
     // Load .env file if it exists
     dotenvy::dotenv().ok();
 
     // Read OAuth2 client IDs from environment variables
     let testnet_client_id = escape_rust_string(
-        &env::var("XION_TESTNET_OAUTH_CLIENT_ID")
-            .unwrap_or_else(|_| "PLACEHOLDER_TESTNET_CLIENT_ID".to_string()),
+        &build_env(
+            "VERONA_TESTNET_OAUTH_CLIENT_ID",
+            "XION_TESTNET_OAUTH_CLIENT_ID",
+        )
+        .pipe(|v| {
+            if v.is_empty() {
+                "PLACEHOLDER_TESTNET_CLIENT_ID".to_string()
+            } else {
+                v
+            }
+        }),
     );
 
     let mainnet_client_id = escape_rust_string(
-        &env::var("XION_MAINNET_OAUTH_CLIENT_ID")
-            .unwrap_or_else(|_| "PLACEHOLDER_MAINNET_CLIENT_ID".to_string()),
+        &build_env(
+            "VERONA_MAINNET_OAUTH_CLIENT_ID",
+            "XION_MAINNET_OAUTH_CLIENT_ID",
+        )
+        .pipe(|v| {
+            if v.is_empty() {
+                "PLACEHOLDER_MAINNET_CLIENT_ID".to_string()
+            } else {
+                v
+            }
+        }),
     );
 
     // Optional: override OAuth API URL for local development
     let testnet_oauth_api_url = escape_rust_string(
-        &env::var("XION_TESTNET_OAUTH_API_URL")
-            .unwrap_or_else(|_| "https://oauth2.testnet.burnt.com".to_string()),
+        &build_env("VERONA_TESTNET_OAUTH_API_URL", "XION_TESTNET_OAUTH_API_URL").pipe(|v| {
+            if v.is_empty() {
+                "https://oauth2.testnet.burnt.com".to_string()
+            } else {
+                v
+            }
+        }),
     );
 
     let mainnet_oauth_api_url = escape_rust_string(
-        &env::var("XION_MAINNET_OAUTH_API_URL")
-            .unwrap_or_else(|_| "https://oauth2.burnt.com".to_string()),
+        &build_env("VERONA_MAINNET_OAUTH_API_URL", "XION_MAINNET_OAUTH_API_URL").pipe(|v| {
+            if v.is_empty() {
+                "https://oauth2.burnt.com".to_string()
+            } else {
+                v
+            }
+        }),
     );
 
     // Generate network_config.rs
@@ -117,12 +157,31 @@ pub fn get_mainnet_config() -> NetworkConfig {{
 
     fs::write(&dest_path, config_content).unwrap();
 
+    println!("cargo:rerun-if-env-changed=VERONA_TESTNET_OAUTH_CLIENT_ID");
+    println!("cargo:rerun-if-env-changed=VERONA_TESTNET_OAUTH_API_URL");
+    println!("cargo:rerun-if-env-changed=VERONA_MAINNET_OAUTH_CLIENT_ID");
+    println!("cargo:rerun-if-env-changed=VERONA_MAINNET_OAUTH_API_URL");
     println!("cargo:rerun-if-env-changed=XION_TESTNET_OAUTH_CLIENT_ID");
     println!("cargo:rerun-if-env-changed=XION_TESTNET_OAUTH_API_URL");
     println!("cargo:rerun-if-env-changed=XION_MAINNET_OAUTH_CLIENT_ID");
     println!("cargo:rerun-if-env-changed=XION_MAINNET_OAUTH_API_URL");
     println!("cargo:rerun-if-changed=.env");
     println!("cargo:rerun-if-changed=build.rs");
+}
+
+trait Pipe: Sized {
+    fn pipe<F, R>(self, f: F) -> R
+    where
+        F: FnOnce(Self) -> R;
+}
+
+impl<T> Pipe for T {
+    fn pipe<F, R>(self, f: F) -> R
+    where
+        F: FnOnce(Self) -> R,
+    {
+        f(self)
+    }
 }
 
 #[cfg(test)]

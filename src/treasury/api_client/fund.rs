@@ -6,7 +6,7 @@
 
 use tracing::{debug, instrument};
 
-use crate::shared::error::XionResult;
+use crate::shared::error::VeronaResult;
 use crate::treasury::types::{BroadcastRequest, BroadcastResponse};
 
 use super::helpers::parse_coin;
@@ -28,7 +28,7 @@ impl super::TreasuryApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::treasury::TreasuryApiClient;
+    /// use verona_agent_toolkit::treasury::TreasuryApiClient;
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -54,7 +54,7 @@ impl super::TreasuryApiClient {
         treasury_address: &str,
         amount: &str,
         from_address: &str,
-    ) -> XionResult<BroadcastResponse> {
+    ) -> VeronaResult<BroadcastResponse> {
         debug!(
             "Funding treasury {} with {} from {}",
             treasury_address, amount, from_address
@@ -94,7 +94,7 @@ impl super::TreasuryApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::treasury::TreasuryApiClient;
+    /// use verona_agent_toolkit::treasury::TreasuryApiClient;
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -120,7 +120,7 @@ impl super::TreasuryApiClient {
         treasury_address: &str,
         amount: &str,
         from_address: &str,
-    ) -> XionResult<BroadcastResponse> {
+    ) -> VeronaResult<BroadcastResponse> {
         debug!(
             "Withdrawing {} from treasury {} to {}",
             amount, treasury_address, from_address

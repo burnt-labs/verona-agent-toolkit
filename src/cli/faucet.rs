@@ -126,9 +126,9 @@ async fn handle_claim(receiver: Option<&str>, ctx: &ExecuteContext) -> Result<()
     if !oauth_client.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion-toolkit auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "EFAUCET003",
-            "hint": "Run 'xion-toolkit auth login' to authenticate"
+            "hint": "Run 'verona-toolkit auth login' to authenticate"
         });
         return print_formatted(&result, ctx.output_format());
     }
@@ -139,7 +139,7 @@ async fn handle_claim(receiver: Option<&str>, ctx: &ExecuteContext) -> Result<()
         .context("No credentials found")?;
 
     let sender = credentials
-        .xion_address
+        .verona_address
         .context("No Xion address found in credentials")?;
 
     let access_token = oauth_client.get_valid_token().await?.access_token;
@@ -182,7 +182,7 @@ async fn handle_claim(receiver: Option<&str>, ctx: &ExecuteContext) -> Result<()
             FAUCET_TESTNET_ADDRESS,
             &execute_msg,
             None,
-            "Claim from faucet via Xion Agent Toolkit",
+            "Claim from faucet via Verona Agent Toolkit",
         )
         .await
     {
@@ -251,9 +251,9 @@ async fn handle_status(address: Option<&str>, ctx: &ExecuteContext) -> Result<()
         if !oauth_client.is_authenticated()? {
             let result = serde_json::json!({
                 "success": false,
-                "error": "Not authenticated. Provide --address or run 'xion-toolkit auth login' first.",
+                "error": "Not authenticated. Provide --address or run 'verona-toolkit auth login' first.",
                 "code": "EFAUCET003",
-                "hint": "Provide --address flag or authenticate with 'xion-toolkit auth login'"
+                "hint": "Provide --address flag or authenticate with 'verona-toolkit auth login'"
             });
             return print_formatted(&result, ctx.output_format());
         }
@@ -263,7 +263,7 @@ async fn handle_status(address: Option<&str>, ctx: &ExecuteContext) -> Result<()
             .context("No credentials found")?;
 
         credentials
-            .xion_address
+            .verona_address
             .context("No Xion address found in credentials")?
     };
 

@@ -85,7 +85,7 @@ pub enum EncodingError {
 ///
 /// # Examples
 /// ```
-/// use xion_agent_toolkit::treasury::encoding::{parse_coin_string, Coin};
+/// use verona_agent_toolkit::treasury::encoding::{parse_coin_string, Coin};
 ///
 /// let coins = parse_coin_string("1000000uxion").unwrap();
 /// assert_eq!(coins.len(), 1);
@@ -255,7 +255,7 @@ fn encode_any(type_url: &str, value: &[u8]) -> Vec<u8> {
 ///
 /// # Example
 /// ```
-/// use xion_agent_toolkit::treasury::encoding::{encode_basic_allowance, Coin};
+/// use verona_agent_toolkit::treasury::encoding::{encode_basic_allowance, Coin};
 ///
 /// let coins = vec![Coin {
 ///     denom: "uxion".into(),

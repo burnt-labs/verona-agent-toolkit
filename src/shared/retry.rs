@@ -14,7 +14,7 @@
 //! # Example
 //!
 //! ```rust,ignore
-//! use xion_agent_toolkit::shared::retry::{with_retry, RetryConfig};
+//! use verona_agent_toolkit::shared::retry::{with_retry, RetryConfig};
 //!
 //! async fn fetch_data() -> Result<Data, NetworkError> {
 //!     // ... network operation
@@ -29,7 +29,7 @@ use std::time::Duration;
 use tokio::time::sleep;
 use tracing::{debug, warn};
 
-use super::error::{NetworkError, XionError, XionErrorCode};
+use super::error::{NetworkError, VeronaError, VeronaErrorCode};
 
 /// Configuration for retry behavior
 #[derive(Debug, Clone)]
@@ -145,20 +145,20 @@ pub struct RetryResult<T> {
 /// # Example
 ///
 /// ```rust,ignore
-/// use xion_agent_toolkit::shared::retry::{with_retry, RetryConfig};
-/// use xion_agent_toolkit::shared::error::{NetworkError, XionError};
+/// use verona_agent_toolkit::shared::retry::{with_retry, RetryConfig};
+/// use verona_agent_toolkit::shared::error::{NetworkError, VeronaError};
 ///
-/// async fn fetch_data() -> Result<String, XionError> {
+/// async fn fetch_data() -> Result<String, VeronaError> {
 ///     // ... network operation
 ///     Ok("data".to_string())
 /// }
 ///
-/// # async fn example() -> Result<String, XionError> {
+/// # async fn example() -> Result<String, VeronaError> {
 /// let config = RetryConfig::default();
 /// let result = with_retry(
 ///     &config,
 ///     || fetch_data(),
-///     |err: &XionError| err.is_retryable()
+///     |err: &VeronaError| err.is_retryable()
 /// ).await?;
 /// # Ok(result)
 /// # }
@@ -288,23 +288,23 @@ pub fn is_retryable_reqwest_error(err: &reqwest::Error) -> bool {
     false
 }
 
-/// Convert a reqwest error to a XionError
-pub fn reqwest_to_xion_error(err: reqwest::Error) -> XionError {
+/// Convert a reqwest error to a VeronaError
+pub fn reqwest_to_verona_error(err: reqwest::Error) -> VeronaError {
     if err.is_timeout() {
-        XionError::from(NetworkError::Timeout(err.to_string()))
+        VeronaError::from(NetworkError::Timeout(err.to_string()))
     } else if err.is_connect() {
-        XionError::from(NetworkError::ConnectionRefused(err.to_string()))
+        VeronaError::from(NetworkError::ConnectionRefused(err.to_string()))
     } else if let Some(status) = err.status() {
         match status.as_u16() {
-            429 => XionError::from(NetworkError::RateLimited(err.to_string())),
-            503 => XionError::from(NetworkError::ServiceUnavailable(err.to_string())),
-            _ => XionError::from(NetworkError::RequestFailed(format!(
+            429 => VeronaError::from(NetworkError::RateLimited(err.to_string())),
+            503 => VeronaError::from(NetworkError::ServiceUnavailable(err.to_string())),
+            _ => VeronaError::from(NetworkError::RequestFailed(format!(
                 "HTTP {}: {}",
                 status, err
             ))),
         }
     } else {
-        XionError::from(NetworkError::RequestFailed(err.to_string()))
+        VeronaError::from(NetworkError::RequestFailed(err.to_string()))
     }
 }
 
@@ -314,15 +314,15 @@ pub trait Retryable {
     fn is_retryable(&self) -> bool;
 }
 
-impl Retryable for XionError {
+impl Retryable for VeronaError {
     fn is_retryable(&self) -> bool {
-        XionError::is_retryable(self)
+        VeronaError::is_retryable(self)
     }
 }
 
-impl Retryable for XionErrorCode {
+impl Retryable for VeronaErrorCode {
     fn is_retryable(&self) -> bool {
-        XionErrorCode::is_retryable(self)
+        VeronaErrorCode::is_retryable(self)
     }
 }
 
@@ -522,13 +522,13 @@ mod tests {
     }
 
     #[test]
-    fn test_xion_error_retryable() {
+    fn test_verona_error_retryable() {
         // Network errors are retryable
-        let net_err = XionError::from(NetworkError::Timeout("test".to_string()));
+        let net_err = VeronaError::from(NetworkError::Timeout("test".to_string()));
         assert!(net_err.is_retryable());
 
         // Auth errors (except token expired) are not retryable
-        let auth_err = XionError::from(super::super::error::AuthError::NotAuthenticated(
+        let auth_err = VeronaError::from(super::super::error::AuthError::NotAuthenticated(
             "test".to_string(),
         ));
         assert!(!auth_err.is_retryable());

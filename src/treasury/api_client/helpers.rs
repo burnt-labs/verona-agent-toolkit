@@ -2,10 +2,10 @@
 //!
 //! These functions are used across multiple modules within the api_client module.
 
-use crate::shared::error::{TreasuryError, XionResult};
+use crate::shared::error::{TreasuryError, VeronaResult};
 
 /// Parse a coin string (e.g., "1000000uxion") into (amount, denom)
-pub(crate) fn parse_coin(coin: &str) -> XionResult<(String, String)> {
+pub(crate) fn parse_coin(coin: &str) -> VeronaResult<(String, String)> {
     // Find where digits end and letters begin
     let split_pos = coin
         .chars()
@@ -26,7 +26,7 @@ pub(crate) fn parse_coin(coin: &str) -> XionResult<(String, String)> {
 ///
 /// Token format: {userId}:{grantId}:{secret}
 /// userId is the user's Xion address (starts with "xion1")
-pub(crate) fn extract_address_from_token(token: &str) -> XionResult<String> {
+pub(crate) fn extract_address_from_token(token: &str) -> VeronaResult<String> {
     let parts: Vec<&str> = token.split(':').collect();
     if parts.len() != 3 {
         return Err(TreasuryError::InvalidAddress(
@@ -68,7 +68,7 @@ pub(crate) fn base64_encode(input: &str) -> String {
 }
 
 /// Base64 decode a string
-pub(crate) fn base64_decode(input: &str) -> XionResult<String> {
+pub(crate) fn base64_decode(input: &str) -> VeronaResult<String> {
     use base64::{engine::general_purpose::STANDARD, Engine as _};
     let bytes = STANDARD.decode(input).map_err(|e| {
         TreasuryError::OperationFailed(format!("Failed to decode base64 string: {}", e))

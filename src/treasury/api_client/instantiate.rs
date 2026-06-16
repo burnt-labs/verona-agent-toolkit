@@ -9,7 +9,7 @@ use std::time::Duration;
 use tokio::time::sleep;
 use tracing::{debug, instrument, warn};
 
-use crate::shared::error::{TreasuryError, XionResult};
+use crate::shared::error::{TreasuryError, VeronaResult};
 use crate::treasury::types::CreateTreasuryRequest;
 
 /// Default delay before polling for new treasury (in seconds)
@@ -27,7 +27,7 @@ const POLL_INTERVAL_SECS: u64 = 2;
 /// - All fields use snake_case naming (matching the CosmWasm contract)
 pub(crate) fn build_treasury_instantiate_msg(
     request: &CreateTreasuryRequest,
-) -> XionResult<serde_json::Value> {
+) -> VeronaResult<serde_json::Value> {
     // Build the metadata JSON string
     let metadata = serde_json::json!({
         "name": request.name.as_deref().unwrap_or(""),
@@ -127,7 +127,7 @@ impl super::TreasuryApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::treasury::{TreasuryApiClient, CreateTreasuryRequest, FeeConfigMessage, GrantConfigMessage, TreasuryParamsMessage, TypeUrlValue};
+    /// use verona_agent_toolkit::treasury::{TreasuryApiClient, CreateTreasuryRequest, FeeConfigMessage, GrantConfigMessage, TreasuryParamsMessage, TypeUrlValue};
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -181,7 +181,7 @@ impl super::TreasuryApiClient {
         treasury_code_id: u64,
         request: crate::treasury::types::CreateTreasuryRequest,
         salt: &[u8],
-    ) -> XionResult<crate::treasury::types::CreateTreasuryResult> {
+    ) -> VeronaResult<crate::treasury::types::CreateTreasuryResult> {
         debug!("Creating treasury with code ID: {}", treasury_code_id);
 
         // CRITICAL: Compute predicted instantiate2 address BEFORE broadcasting
@@ -222,7 +222,7 @@ impl super::TreasuryApiClient {
                 &label,
                 salt,
                 Some(&request.admin), // admin for contract migrations
-                "Create Treasury via Xion Agent Toolkit",
+                "Create Treasury via Verona Agent Toolkit",
             )
             .await?;
 
@@ -263,7 +263,7 @@ impl super::TreasuryApiClient {
         access_token: &str,
         expected_address: &str,
         tx_hash: &str,
-    ) -> XionResult<String> {
+    ) -> VeronaResult<String> {
         debug!(
             "Waiting for treasury creation to be indexed (expected: {})",
             expected_address

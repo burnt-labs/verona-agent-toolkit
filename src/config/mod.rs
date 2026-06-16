@@ -1,8 +1,10 @@
 pub mod constants;
 pub mod credentials;
 pub mod encryption;
+pub mod env_compat;
 pub mod manager;
 pub mod oauth_discovery;
+pub mod paths;
 pub mod schema;
 
 pub use constants::NetworkConfig;

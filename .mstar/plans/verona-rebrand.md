@@ -1,5 +1,5 @@
 ---
-status: Todo
+status: InProgress
 created_at: 2026-06-15
 updated_at: 2026-06-15
 priority: P0
@@ -45,24 +45,12 @@ No product code changes in Batch 0.
 
 ## Batch 1 — Rust core
 
-**Manifest & build**
-
-- `Cargo.toml`: package name, bin, lib, authors, description, keywords, repository URL
-- `build.rs`: `VERONA_*` compile-time env (chain URLs unchanged)
-- `release-please-config.json`: package name
-
-**Config & credentials (highest risk)**
-
-- `src/config/manager.rs`: `~/.verona-toolkit/` as SSOT; startup migration from `~/.xion-toolkit/`
-- `src/config/credentials.rs`, `oauth_discovery.rs`: path updates
-- `src/config/encryption.rs`: new salt prefix; dual-read for legacy files
-- `src/config/schema.rs`: `verona_address` + serde alias
-
-**CLI & errors**
-
-- `src/cli/mod.rs`: `name = "verona-toolkit"`
-- `src/shared/error.rs`: `VeronaError`, `VeronaErrorCode`, hint strings
-- `src/utils/output.rs`, `src/main.rs`, all CLI handlers
+- [x] Manifest & build (`Cargo.toml`, `build.rs`, `release-please-config.json`)
+- [x] Config paths + migration (`paths.rs`, `~/.verona-toolkit/`)
+- [x] Env compat (`env_compat.rs`, `VERONA_*` + `XION_*` fallback)
+- [x] Encryption dual salt + credentials schema (`verona_address`)
+- [x] CLI & errors (`verona-toolkit`, `VeronaError`)
+- [x] Verification: fmt / clippy / **615 tests** green
 
 **Verify:** `cargo fmt --check`, `cargo clippy --all-targets --all-features -- -D warnings`, `cargo test --all-features`
 

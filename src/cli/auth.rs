@@ -90,7 +90,7 @@ async fn handle_login(
                 let result = serde_json::json!({
                     "success": true,
                     "network": network,
-                    "xion_address": credentials.xion_address,
+                    "verona_address": credentials.verona_address,
                     "expires_at": credentials.expires_at,
                     "refreshed": true,
                     "message": "Token refreshed successfully. No browser auth needed."
@@ -130,7 +130,7 @@ async fn handle_login(
             let result = serde_json::json!({
                 "success": true,
                 "network": network,
-                "xion_address": credentials.xion_address,
+                    "verona_address": credentials.verona_address,
                 "expires_at": credentials.expires_at,
                 "refreshed": false,
             });
@@ -217,10 +217,10 @@ fn handle_status(ctx: &ExecuteContext) -> Result<()> {
         // Load credentials to show details
         match oauth_client.get_credentials() {
             Ok(Some(creds)) => {
-                result["xion_address"] = serde_json::json!(creds.xion_address);
+                result["verona_address"] = serde_json::json!(creds.verona_address);
                 result["expires_at"] = serde_json::json!(creds.expires_at);
                 result["scope"] = serde_json::json!(creds.scope);
-                info!("User is authenticated: {:?}", creds.xion_address);
+                info!("User is authenticated: {:?}", creds.verona_address);
             }
             Ok(None) => {
                 result["error"] = serde_json::json!("Credentials not found");
@@ -233,7 +233,7 @@ fn handle_status(ctx: &ExecuteContext) -> Result<()> {
         }
     } else {
         result["message"] =
-            serde_json::json!("Not authenticated. Please run 'xion auth login' first.");
+            serde_json::json!("Not authenticated. Please run 'verona-toolkit auth login' first.");
         info!("User is not authenticated");
     }
 
@@ -272,7 +272,7 @@ async fn handle_refresh(ctx: &ExecuteContext) -> Result<()> {
                 "success": false,
                 "error": format!("Token refresh failed: {}", e),
                 "code": "AUTH_REFRESH_FAILED",
-                "suggestion": "Your session may have expired. Please run 'xion auth login' to re-authenticate."
+                "suggestion": "Your session may have expired. Please run 'verona-toolkit auth login' to re-authenticate."
             });
             print_formatted(&result, ctx.output_format())
         }
