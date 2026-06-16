@@ -1,7 +1,7 @@
 ---
-status: InProgress
+status: Done
 created_at: 2026-06-15
-updated_at: 2026-06-15
+updated_at: 2026-06-16
 priority: P0
 complexity: High
 effort: XL (6 batches)
@@ -137,13 +137,13 @@ scripts/validate-skill-frontmatter.sh
 
 ## Done criteria (full rebrand)
 
-- [ ] Zero product-layer `xion-toolkit` / `xion-agent-toolkit` / `~/.xion-toolkit/` (archived plans excluded)
-- [ ] `verona-toolkit --version` works; skills call `verona-toolkit`
-- [ ] Seven `verona-*` skill folders
-- [ ] `~/.xion-toolkit/` auto-migrates
-- [ ] Chain examples valid (`xion1...`, `uxion`)
-- [ ] `cargo test --all-features` green
-- [ ] Contract doc available for docs team
+- [x] Zero product-layer `xion-toolkit` / `xion-agent-toolkit` / `~/.xion-toolkit/` (archived plans excluded)
+- [x] `verona-toolkit --version` works; skills call `verona-toolkit`
+- [x] Seven `verona-*` skill folders
+- [x] `~/.xion-toolkit/` auto-migrates
+- [x] Chain examples valid (`xion1...`, `uxion`)
+- [x] `cargo test --all-features` green
+- [x] Contract doc available for docs team
 
 ---
 
@@ -155,4 +155,4 @@ scripts/validate-skill-frontmatter.sh
 | Encryption salt change | Dual salt read path |
 | Skill global install breakage | CHANGELOG + reinstall guide |
 | CI secrets rename | Sync GitHub secrets before Batch 2 |
-| Bulk replace misses | Optional CI grep gate |
+| Bulk replace misses | One-time audit at rebrand merge; no standing CI grep gate |
