@@ -105,6 +105,10 @@ Doc rule: product/commands use Verona; chain examples keep `xion1...`, `uxion`, 
 - [x] Full CI gate: fmt, clippy, `cargo test --all-features`, skills mock tests, frontmatter validator
 - [ ] QC tri-review → PR `rebranding` → `main`
 
+- [x] QC tri-review (`qc1.md`, `qc2.md`, `qc3.md`, `qc-consolidated.md`) — **Approve with residuals**
+- [ ] QA verification on `rebranding`
+- [ ] Address or waive residuals R1–R4 (pre-merge preferred)
+
 ```bash
 cargo fmt -- --check
 cargo clippy --all-targets --all-features -- -D warnings
