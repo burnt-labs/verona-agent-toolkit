@@ -69,14 +69,13 @@ No product code changes in Batch 0.
 
 **Folder renames (7):** `xion-*` → `verona-*` via `git mv`
 
-Per skill:
-
-- `SKILL.md` frontmatter `name`, `metadata.requires/recommends`, triggers (Verona-primary)
-- 24 scripts: `command -v verona-toolkit`, `VERONA_*` env
-- 40 schemas: `verona-address` format, remediation text, field names
-- `verona-dev/schemas/routing.json`: all skill targets
-- 8 evals JSON files
-- `.agents/AGENTS.md`, `validate-skill-frontmatter.sh` if hardcoded names
+- [x] `git mv` seven skill folders to `verona-*`
+- [x] `SKILL.md` frontmatter `name`, `metadata.requires/recommends`, triggers (Verona-primary)
+- [x] 24 scripts: `command -v verona-toolkit`, `VERONA_*` env
+- [x] 40 schemas: `verona-address` format, remediation text, field names
+- [x] `verona-dev/schemas/routing.json`: all skill targets
+- [x] 8 evals JSON files
+- [x] `.agents/AGENTS.md`, `tests/skills/*` path and binary updates
 
 ---
 

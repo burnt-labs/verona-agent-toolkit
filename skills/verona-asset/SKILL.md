@@ -1,0 +1,315 @@
+---
+name: verona-asset
+description: |
+  Asset Builder skill for CW721 NFT operations on Verona/Xion. Use this skill when users want to:
+  - Create NFT collections
+  - Mint NFT tokens (standard or with royalties)
+  - Predict contract addresses before deployment
+  - Batch mint multiple tokens
+  - Query NFT contracts
+  
+  Supports 5 NFT types: cw721-base, cw2981-royalties, cw721-expiration, cw721-metadata-onchain, cw721-non-transferable.
+  
+  Triggers on: NFT, CW721, CW721 NFT, NFT collection, NFT token, mint NFT, minting, create NFT collection, NFT royalties, NFT royalty, NFT soulbound, non-transferable NFT, expirable NFT, on-chain metadata NFT, metadata-onchain, predict NFT address, batch mint NFT, batch mint tokens, mint multiple NFTs, NFT contract, NFT on Xion, Xion NFT, CosmWasm NFT, CosmWasm 721, asset builder, NFT 徽章, NFT 凭证, 创建 NFT, 铸造 NFT, NFT 版税.
+metadata:
+  author: burnt-labs
+  version: "1.2.0"
+  recommends:
+    - verona-dev
+    - verona-oauth2
+    - verona-toolkit-init
+---
+
+# verona-asset
+
+CW721 NFT Asset Builder for Xion blockchain. Create, mint, and manage NFT collections with gasless transactions.
+
+## Prerequisites
+
+- verona-toolkit CLI installed (use `verona-toolkit-init` skill)
+- Authenticated with OAuth2 (use `verona-oauth2` skill)
+
+## Quick Start
+
+```bash
+# 1. List available NFT types
+verona-toolkit asset types
+
+# 2. Create collection
+verona-toolkit asset create --type cw721-base --name "My Collection" --symbol "NFT"
+
+# 3. Mint token
+verona-toolkit asset mint --contract xion1... --token-id "1" --owner xion1...
+```
+
+## Which NFT Type Should I Use?
+
+| Type | Use Case | Example |
+|------|----------|---------|
+| `cw721-base` | Standard NFTs without special features | Art collections, basic tokens |
+| `cw2981-royalties` | Commercial NFTs with royalties | Marketplace sales, creator earnings |
+| `cw721-non-transferable` | Soulbound credentials, badges | Certifications, achievements, SBTs |
+| `cw721-expiration` | Time-limited access tokens | Event tickets, subscriptions |
+| `cw721-metadata-onchain` | Fully on-chain data | On-chain art, immutable records |
+
+**Decision Guide:**
+- Need royalties on secondary sales? → `cw2981-royalties`
+- Need non-transferable credentials? → `cw721-non-transferable`
+- Need time-based expiration? → `cw721-expiration`
+- Need all data on-chain? → `cw721-metadata-onchain`
+- Just need basic NFT? → `cw721-base`
+
+## Commands
+
+### List Asset Types
+
+```bash
+verona-toolkit asset types
+```
+
+Output:
+```json
+{
+  "success": true,
+  "types": [...],
+  "count": 5
+}
+```
+
+### Create Collection
+
+```bash
+verona-toolkit asset create \
+  --type cw721-base \
+  --name "My Collection" \
+  --symbol "NFT" \
+  [--minter xion1...] \
+  [--salt "my-salt"]
+```
+
+### Mint Token
+
+```bash
+# Standard mint
+verona-toolkit asset mint \
+  --contract xion1... \
+  --token-id "1" \
+  --owner xion1... \
+  [--token-uri "ipfs://..."]
+
+# Mint with royalties (CW2981)
+verona-toolkit asset mint \
+  --contract xion1... \
+  --token-id "1" \
+  --owner xion1... \
+  --asset-type cw2981-royalties \
+  --royalty-address xion1... \
+  --royalty-percentage 0.05
+
+# Mint with expiration
+verona-toolkit asset mint \
+  --contract xion1... \
+  --token-id "1" \
+  --owner xion1... \
+  --asset-type cw721-expiration \
+  --expires-at "2025-12-31T23:59:59Z"
+```
+
+### Predict Address
+
+```bash
+verona-toolkit asset predict \
+  --type cw721-base \
+  --name "My Collection" \
+  --symbol "NFT" \
+  --salt "my-unique-salt"
+```
+
+### Batch Mint
+
+```bash
+# Create tokens.json
+cat > tokens.json << 'EOF'
+[
+  {"token_id": "1", "owner": "xion1abc...", "token_uri": "ipfs://QmHash1"},
+  {"token_id": "2", "owner": "xion1def...", "token_uri": "ipfs://QmHash2"}
+]
+EOF
+
+# Batch mint
+verona-toolkit asset batch-mint \
+  --contract xion1... \
+  --tokens-file tokens.json
+```
+
+### Query Contract
+
+```bash
+# Get NFT info
+verona-toolkit asset query \
+  --contract xion1... \
+  --msg '{"nft_info": {"token_id": "1"}}'
+
+# Get all tokens
+verona-toolkit asset query \
+  --contract xion1... \
+  --msg '{"all_tokens": {}}'
+```
+
+## Scripts Reference
+
+**路径 (Path)**: `skills/verona-asset/scripts/`
+
+| Script | Description |
+|--------|-------------|
+| `types.sh` | List available asset types |
+| `create.sh` | Create NFT collection |
+| `mint.sh` | Mint NFT token |
+| `predict.sh` | Predict contract address |
+| `batch-mint.sh` | Batch mint from JSON |
+| `query.sh` | Query NFT contract |
+
+## Error Handling
+
+All commands return JSON:
+
+**Success:**
+```json
+{"success": true, ...}
+```
+
+**Error:**
+```json
+{"success": false, "error": "...", "error_code": "..."}
+```
+
+**Common Errors:**
+- `INVALID_ASSET_TYPE` - Use one of the 5 supported types
+- `INVALID_ROYALTY_PERCENTAGE` - Must be 0.0-1.0
+- `INCOMPLETE_ROYALTY_INFO` - Both address and percentage required
+- `INVALID_OPTION_FOR_TYPE` - Option not valid for this asset type
+
+## Related Skills
+
+- **verona-dev** - Unified entry point
+- **verona-oauth2** - Authentication (use before this skill)
+- **verona-toolkit-init** - CLI installation
+- **verona-treasury** - Treasury management for funding
+
+## Version
+
+- Skill Version: 1.2.0
+- Compatible CLI Version: >=0.1.0
+
+## Parameter Collection Workflow
+
+Before executing any command, ensure all required parameters are collected.
+
+### Step 1: Identify Operation
+Determine which operation the user wants to perform (types, create, mint, predict, batch-mint, query).
+
+### Step 2: Check Parameter Schema
+Refer to the `schemas/` directory for detailed parameter definitions.
+
+### Step 3: Collect Missing Parameters
+Collect ALL missing required parameters in a SINGLE interaction:
+
+> Example for mint:
+> "I need the following to mint an NFT:
+> - Contract address
+> - Token ID (unique identifier)
+> - Owner address (who will own the NFT)
+> - (Optional) Token URI for metadata"
+
+### Step 4: Confirm Before Execution
+```
+Will execute: mint
+├─ Contract: xion1abc...
+├─ Token ID: 1
+├─ Owner: xion1owner...
+└─ Token URI: ipfs://QmHash...
+Confirm? [y/n]
+```
+
+## Parameter Schemas
+
+See `schemas/` directory for detailed parameter definitions:
+
+| Schema File | Command | Description |
+|-------------|---------|-------------|
+| `types.json` | `types` | List NFT types |
+| `create.json` | `create` | Create collection |
+| `mint.json` | `mint` | Mint NFT token |
+| `predict.json` | `predict` | Predict address |
+| `batch-mint.json` | `batch-mint` | Batch mint from file |
+| `query.json` | `query` | Query contract |
+
+### Quick Parameter Reference
+
+#### create
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `type` | Yes | NFT type (cw721-base, cw2981-royalties, etc.) |
+| `name` | Yes | Collection name |
+| `symbol` | Yes | Collection symbol |
+| `minter` | No | Minter address |
+| `salt` | No | Unique salt for predictable address |
+
+> **Note**: See `schemas/create.json` for complete parameter list including conditional parameters.
+
+#### mint
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `contract` | Yes | NFT contract address |
+| `token-id` | Yes | Unique token ID |
+| `owner` | Yes | Token owner address |
+| `token-uri` | No | Metadata URI |
+| `asset-type` | No | Asset type (default: cw721-base) |
+| `royalty-address` | Conditional | Required for cw2981-royalties |
+| `royalty-percentage` | Conditional | Required for cw2981-royalties |
+| `expires-at` | Conditional | Required for cw721-expiration |
+
+> **Note**: See `schemas/mint.json` for complete parameter list including conditional parameters.
+
+> **Conditional Parameters**:
+> - Default `asset-type` is `cw721-base`
+> - `royalty-address`/`royalty-percentage`: Required for `cw2981-royalties`
+> - `expires-at`: Required for `cw721-expiration`
+
+#### batch-mint
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `contract` | Yes | NFT contract address |
+| `tokens-file` | Yes | JSON file with token data |
+| `network` | No | Network (default: testnet) |
+
+> **Note**: See `schemas/batch-mint.json` for complete parameter list including conditional parameters.
+
+#### predict
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `type` | Yes | NFT type |
+| `name` | Yes | Collection name |
+| `symbol` | Yes | Collection symbol |
+| `salt` | Yes | Unique salt |
+| `minter` | No | Minter address |
+
+> **Note**: See `schemas/predict.json` for complete parameter list including conditional parameters.
+
+### Asset Types
+
+| Type | Code ID | Features |
+|------|---------|----------|
+| `cw721-base` | 522 | Standard NFT |
+| `cw721-metadata-onchain` | 525 | On-chain metadata |
+| `cw721-expiration` | 523 | Time-based expiry |
+| `cw721-non-transferable` | 526 | Soulbound NFT |
+| `cw2981-royalties` | 528 | Royalties at mint time |
+
+## Validation
+
+Use the validation script to check parameters before execution:
+
+```bash
+skills/verona-dev/scripts/validate-params.sh verona-asset mint '{"contract": "xion1abc...", "token-id": "1", "owner": "xion1owner..."}'
+```

@@ -111,7 +111,7 @@
     "error": {
       "code": "ETREASURY002",
       "message": "Transaction simulation failed: insufficient balance",
-      "hint": "Fund treasury with 'xion-toolkit treasury fund'",
+      "hint": "Fund treasury with 'verona-toolkit treasury fund'",
       "retryable": false
     }
   }

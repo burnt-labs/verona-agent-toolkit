@@ -38,8 +38,8 @@
     "success": false,
     "error": {
       "code": "EAUTH001",
-      "message": "Not authenticated: Please use 'xion-oauth2/login.sh' first",
-      "hint": "Run 'xion-toolkit auth login' first",
+      "message": "Not authenticated: Please use 'verona-oauth2/login.sh' first",
+      "hint": "Run 'verona-toolkit auth login' first",
       "retryable": false
     }
   },
@@ -110,7 +110,7 @@
     "error": {
       "code": "ETREASURY001",
       "message": "Treasury not found: xion1invalidaddress1234567890abcdef",
-      "hint": "Run 'xion-toolkit treasury list' to see available treasuries",
+      "hint": "Run 'verona-toolkit treasury list' to see available treasuries",
       "retryable": false
     }
   },
@@ -127,8 +127,8 @@
     "success": false,
     "error": {
       "code": "EAUTH001",
-      "message": "Not authenticated: Please use 'xion-oauth2/login.sh' first",
-      "hint": "Run 'xion-toolkit auth login' first",
+      "message": "Not authenticated: Please use 'verona-oauth2/login.sh' first",
+      "hint": "Run 'verona-toolkit auth login' first",
       "retryable": false
     }
   },
@@ -189,7 +189,7 @@
     "error": {
       "code": "ETREASURY002",
       "message": "Insufficient balance: Required: 10000000uxion, Available: 500000uxion",
-      "hint": "Fund treasury with 'xion-toolkit treasury fund'",
+      "hint": "Fund treasury with 'verona-toolkit treasury fund'",
       "retryable": false
     }
   },
@@ -198,7 +198,7 @@
     "error": {
       "code": "ETREASURY002",
       "message": "Insufficient balance: Treasury balance too low for withdrawal",
-      "hint": "Fund treasury with 'xion-toolkit treasury fund'",
+      "hint": "Fund treasury with 'verona-toolkit treasury fund'",
       "retryable": false
     }
   },

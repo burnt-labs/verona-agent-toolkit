@@ -82,7 +82,7 @@
     "error": {
       "code": "EASSET004",
       "message": "Code ID not found: Invalid asset type 'invalid-type'",
-      "hint": "Check available code IDs with 'xion-toolkit asset code-ids'",
+      "hint": "Check available code IDs with 'verona-toolkit asset code-ids'",
       "retryable": false
     }
   },
@@ -173,7 +173,7 @@
     "error": {
       "code": "ETREASURY001",
       "message": "Token not found: token-999",
-      "hint": "Run 'xion-toolkit asset query' to see available tokens",
+      "hint": "Run 'verona-toolkit asset query' to see available tokens",
       "retryable": false
     }
   },

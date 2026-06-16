@@ -1,0 +1,226 @@
+{
+  "command": "grant-config add",
+  "description": "Add an authz grant to a Treasury",
+  "parameters": [
+    {
+      "name": "address",
+      "type": "string",
+      "required": true,
+      "format": "verona-address",
+      "description": "Treasury contract address"
+    },
+    {
+      "name": "type-url",
+      "type": "string",
+      "required": false,
+      "description": "Message type URL (e.g., /cosmos.bank.v1beta1.MsgSend)",
+      "conflicts_with": ["preset"]
+    },
+    {
+      "name": "auth-type",
+      "type": "enum",
+      "required": false,
+      "enum": ["generic", "send", "contract-execution", "stake", "ibc-transfer"],
+      "description": "Authorization type",
+      "conflicts_with": ["preset"]
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": true,
+      "description": "Grant description"
+    },
+    {
+      "name": "spend-limit",
+      "type": "string",
+      "required": false,
+      "format": "coin",
+      "description": "Spend limit (e.g., 1000000uxion)",
+      "depends_on": {
+        "parameter": "auth-type",
+        "values": ["send"]
+      }
+    },
+    {
+      "name": "allow-list",
+      "type": "string",
+      "required": false,
+      "description": "Comma-separated list of allowed recipient addresses",
+      "depends_on": {
+        "parameter": "auth-type",
+        "values": ["send"]
+      }
+    },
+    {
+      "name": "contract",
+      "type": "string",
+      "required": false,
+      "format": "verona-address",
+      "description": "Contract address for contract-execution (can be used multiple times)",
+      "depends_on": {
+        "parameter": "auth-type",
+        "values": ["contract-execution"]
+      }
+    },
+    {
+      "name": "max-calls",
+      "type": "integer",
+      "required": false,
+      "description": "Maximum number of calls per contract",
+      "depends_on": {
+        "parameter": "auth-type",
+        "values": ["contract-execution"]
+      }
+    },
+    {
+      "name": "max-funds",
+      "type": "string",
+      "required": false,
+      "format": "coin",
+      "description": "Maximum funds per contract",
+      "depends_on": {
+        "parameter": "auth-type",
+        "values": ["contract-execution"]
+      }
+    },
+    {
+      "name": "filter-type",
+      "type": "enum",
+      "required": false,
+      "enum": ["allow-all", "accepted-keys"],
+      "default": "allow-all",
+      "description": "Filter type for contract-execution",
+      "depends_on": {
+        "parameter": "auth-type",
+        "values": ["contract-execution"]
+      }
+    },
+    {
+      "name": "keys",
+      "type": "string",
+      "required": false,
+      "description": "Comma-separated list of accepted message keys (for accepted-keys filter)",
+      "depends_on": {
+        "parameter": "filter-type",
+        "values": ["accepted-keys"]
+      }
+    },
+    {
+      "name": "preset",
+      "type": "enum",
+      "required": false,
+      "enum": [
+        "send", "execute", "instantiate", "instantiate2",
+        "delegate", "undelegate", "redelegate", "withdraw-rewards",
+        "vote", "gov-deposit", "gov-submit-proposal", "ibc-transfer",
+        "authz-exec", "authz-revoke", "feegrant-grant", "feegrant-revoke",
+        "unjail", "crisis-verify", "evidence-submit", "vesting-create",
+        "tokenfactory-mint", "tokenfactory-burn"
+      ],
+      "description": "Use preset to auto-fill type-url and auth-type",
+      "conflicts_with": ["type-url", "auth-type"]
+    },
+    {
+      "name": "config",
+      "type": "file",
+      "required": false,
+      "description": "JSON config file with grant configuration",
+      "conflicts_with": ["type-url", "auth-type", "preset", "spend-limit", "contract"]
+    },
+    {
+      "name": "network",
+      "type": "enum",
+      "required": false,
+      "enum": ["local", "testnet", "mainnet"],
+      "default": "testnet",
+      "description": "Network to use"
+    }
+  ],
+  "presets": {
+    "send": {
+      "type-url": "/cosmos.bank.v1beta1.MsgSend",
+      "auth-type": "send",
+      "requires": ["spend-limit"]
+    },
+    "execute": {
+      "type-url": "/cosmwasm.wasm.v1.MsgExecuteContract",
+      "auth-type": "contract-execution",
+      "requires": ["contract"]
+    },
+    "instantiate": {
+      "type-url": "/cosmwasm.wasm.v1.MsgInstantiateContract",
+      "auth-type": "generic"
+    },
+    "delegate": {
+      "type-url": "/cosmos.staking.v1beta1.MsgDelegate",
+      "auth-type": "generic"
+    },
+    "vote": {
+      "type-url": "/cosmos.gov.v1beta1.MsgVote",
+      "auth-type": "generic"
+    }
+  },
+  "errors": [
+    {
+      "code": "NOT_AUTHENTICATED",
+      "description": "User is not logged in",
+      "remediation": "Run 'verona-toolkit auth login' first"
+    },
+    {
+      "code": "INVALID_ADDRESS",
+      "description": "Invalid treasury address format",
+      "remediation": "Provide a valid Xion address starting with 'xion1'"
+    },
+    {
+      "code": "INVALID_ARGS",
+      "description": "Missing required parameters (type-url/auth-type or preset required)",
+      "remediation": "Provide either preset or both type-url and auth-type"
+    },
+    {
+      "code": "MISSING_SPEND_LIMIT",
+      "description": "Spend limit required for send authorization",
+      "remediation": "Add --spend-limit parameter"
+    },
+    {
+      "code": "MISSING_CONTRACT",
+      "description": "Contract address required for contract-execution",
+      "remediation": "Add --contract parameter"
+    },
+    {
+      "code": "GRANT_EXISTS",
+      "description": "Grant already exists for this type",
+      "remediation": "Remove existing grant first or update it"
+    },
+    {
+      "code": "ADD_GRANT_FAILED",
+      "description": "Failed to add grant configuration",
+      "remediation": "Check logs for detailed error message"
+    },
+    {
+      "code": "NETWORK_ERROR",
+      "description": "Failed to connect to network",
+      "remediation": "Check network connectivity and try again"
+    }
+  ],
+  "examples": [
+    {
+      "description": "Add send authorization with spend limit",
+      "params": {
+        "address": "xion1abc...",
+        "preset": "send",
+        "spend-limit": "1000000uxion",
+        "description": "Allow sending funds"
+      }
+    },
+    {
+      "description": "Add contract-execution authorization",
+      "params": {
+        "address": "xion1abc...",
+        "preset": "execute",
+        "contract": "xion1contract...",
+        "max-calls": 100,
+        "description": "Execute contract"
+      }
+    }
+  ]
+}

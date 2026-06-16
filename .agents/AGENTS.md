@@ -17,13 +17,13 @@ Bundled skill packages live at **`skills/`** (repository root). Each package inc
 | Global skill install root | `~/.agents/skills/<skill-name>/` (e.g. via `npx skills add` / `skills.sh -g`) |
 | Validate frontmatter in CI | `scripts/validate-skill-frontmatter.sh` |
 
-Install skills so **`xion-dev`** sits beside other Xion skills under the same parent directory; param validation resolves schemas from sibling skill folders.
+Install skills so **`verona-dev`** sits beside other Verona toolkit skills under the same parent directory; param validation resolves schemas from sibling skill folders.
 
 ## Bundled skills (this repo)
 
-`xion-dev`, `xion-toolkit-init`, `xion-oauth2`, `xion-oauth2-client`, `xion-treasury`, `xion-faucet`, `xion-asset`.
+`verona-dev`, `verona-toolkit-init`, `verona-oauth2`, `verona-oauth2-client`, `verona-treasury`, `verona-faucet`, `verona-asset`.
 
-Before treasury, faucet, or NFT operations: authenticate per `xion-oauth2` / `xion-toolkit-init` skill docs.
+Before treasury, faucet, or NFT operations: authenticate per `verona-oauth2` / `verona-toolkit-init` skill docs.
 
 ## Skill authoring rules
 

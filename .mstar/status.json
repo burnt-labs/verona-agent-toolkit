@@ -8,7 +8,7 @@
       "file": ".mstar/plans/verona-rebrand.md",
       "status": "InProgress",
       "owner": "@project-manager",
-      "progress": 33,
+      "progress": 50,
       "created_at": "2026-06-15",
       "updated_at": "2026-06-16",
       "metadata": {
@@ -16,8 +16,8 @@
         "spec_integration_branch": "rebranding",
         "merge_target": "main",
         "primary_spec": ".mstar/knowledge/verona-rebrand-contract.md",
-        "phase": "batch-2-ci-done",
-        "description": "Batch 2 CI/release/dist complete; next Batch 3 skills"
+        "phase": "batch-3-skills-done",
+        "description": "Batch 3 skills rename complete; next Batch 4 documentation"
       }
     }
   ],
