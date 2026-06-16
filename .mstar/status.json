@@ -8,7 +8,7 @@
       "file": ".mstar/plans/verona-rebrand.md",
       "status": "InProgress",
       "owner": "@project-manager",
-      "progress": 67,
+      "progress": 90,
       "created_at": "2026-06-15",
       "updated_at": "2026-06-16",
       "metadata": {
@@ -16,8 +16,8 @@
         "spec_integration_branch": "rebranding",
         "merge_target": "main",
         "primary_spec": ".mstar/knowledge/verona-rebrand-contract.md",
-        "phase": "batch-4-docs-done",
-        "description": "Batch 4 documentation rebrand complete; next Batch 5 tests"
+        "phase": "batch-6-pr-ready",
+        "description": "Batch 5+6 complete; QC tri-review pending"
       }
     }
   ],

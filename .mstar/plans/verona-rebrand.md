@@ -93,23 +93,25 @@ Doc rule: product/commands use Verona; chain examples keep `xion1...`, `uxion`, 
 
 ## Batch 5 — Tests & migration
 
-- `tests/skills/`: rename `test_xion_*.sh` → `test_verona_*.sh`; update mocks
-- E2E scripts: binary invocations
-- Migration tests: config dir, `xion_address` deserialization, `XION_*` env fallback
-- Update `#[serial(encryption_key)]` tests for `VERONA_CI_ENCRYPTION_KEY`
+- [x] `tests/skills/`: rename `test_xion_*.sh` → `test_verona_*.sh`; update mocks (Batch 3)
+- [x] E2E scripts: binary invocations (`verona-toolkit`)
+- [x] Migration tests: config dir (`paths.rs`), `xion_address` deserialization (`schema.rs`), `XION_*` env fallback (`encryption.rs`, `env_compat.rs`)
+- [x] `#[serial(encryption_key)]` tests use `VERONA_CI_ENCRYPTION_KEY` (Batch 1)
 
 ---
 
 ## Batch 6 — Verify & deliver
 
+- [x] Full CI gate: fmt, clippy, `cargo test --all-features`, skills mock tests, frontmatter validator
+- [ ] QC tri-review → PR `rebranding` → `main`
+
 ```bash
 cargo fmt -- --check
 cargo clippy --all-targets --all-features -- -D warnings
 cargo test --all-features
-tests/skills/run_all.sh
+MOCK_ENABLED=true bash tests/skills/run_all.sh
+scripts/validate-skill-frontmatter.sh
 ```
-
-QC tri-review → PR `rebranding` → `main`
 
 **Post-merge coordination:**
 

@@ -130,8 +130,6 @@ jobs:
         run: |
           chmod +x target/release/verona-toolkit
           sudo ln -sf "$PWD/target/release/verona-toolkit" /usr/local/bin/verona-toolkit
-          # Transition symlink until Batch 3 skills rename (skills still invoke xion-toolkit).
-          sudo ln -sf /usr/local/bin/verona-toolkit /usr/local/bin/xion-toolkit
           verona-toolkit --version
 
       - name: Install jq
@@ -222,8 +220,6 @@ jobs:
         run: |
           chmod +x target/release/verona-toolkit
           sudo ln -sf "$PWD/target/release/verona-toolkit" /usr/local/bin/verona-toolkit
-          # Transition symlink until Batch 3 skills rename (skills still invoke xion-toolkit).
-          sudo ln -sf /usr/local/bin/verona-toolkit /usr/local/bin/xion-toolkit
           verona-toolkit --version
 
       - name: Install jq
