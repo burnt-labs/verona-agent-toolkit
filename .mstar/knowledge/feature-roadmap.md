@@ -6,7 +6,7 @@ updated_at: 2026-04-03
 
 # Feature Roadmap: verona-agent-toolkit
 
-This document outlines the feature roadmap for the Xion Agent Toolkit.
+This document outlines the feature roadmap for the Verona Agent Toolkit.
 
 ## Current Status
 
@@ -344,7 +344,7 @@ These features are acknowledged but deferred to external projects or future cons
 - Phase 1: Basic CW721 deployment and minting
 - Phase 2: All 5 variants supported (cw721-base, metadata-onchain, expiration, non-transferable, cw2981-royalties)
 - Phase 3: Address prediction and batch minting
-- Skills integration: `skills/xion-asset/`
+- Skills integration: `skills/verona-asset/`
 - 232 tests passing
 
 ---
