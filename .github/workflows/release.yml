@@ -134,6 +134,7 @@ jobs:
       - name: "Export OAuth client IDs for build.rs"
         run: |
           # Primary: VERONA_* (build.rs also accepts legacy XION_* fallback during transition).
+          # Prefer VERONA GitHub repo vars; fall back to XION_* vars if not yet renamed.
           if [ -n "${{ vars.VERONA_TESTNET_OAUTH_CLIENT_ID }}" ]; then
             echo "VERONA_TESTNET_OAUTH_CLIENT_ID=${{ vars.VERONA_TESTNET_OAUTH_CLIENT_ID }}" >> "$GITHUB_ENV"
           elif [ -n "${{ vars.XION_TESTNET_OAUTH_CLIENT_ID }}" ]; then
