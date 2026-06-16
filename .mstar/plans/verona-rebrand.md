@@ -58,10 +58,10 @@ No product code changes in Batch 0.
 
 ## Batch 2 — CI / release / dist
 
-- `.github/workflows/ci.yml`: binary name, `VERONA_CI_ENCRYPTION_KEY`, artifact `verona-toolkit-binary`
-- `.github/workflows/release.yml`, `dist/build-setup.yml`
-- `.env.example`: env var rename + comments
-- Installer artifact names (dist templates if present in repo)
+- [x] `.github/workflows/ci.yml`: binary name, `VERONA_CI_ENCRYPTION_KEY`, artifact `verona-toolkit-binary`
+- [x] `.github/workflows/release.yml`, `dist/build-setup.yml`
+- [x] `.env.example`: env var rename + comments
+- [x] Installer artifact names (dist derives from `verona-agent-toolkit` package name)
 
 ---
 

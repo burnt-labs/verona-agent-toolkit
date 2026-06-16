@@ -10,7 +10,8 @@ on:
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
-  XION_CI_ENCRYPTION_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  # Primary CI encryption key; build/tests also accept legacy XION_CI_ENCRYPTION_KEY fallback.
+  VERONA_CI_ENCRYPTION_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
 
 jobs:
   # ===========================================================================
@@ -104,8 +105,8 @@ jobs:
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
         with:
-          name: xion-toolkit-binary
-          path: target/release/xion-toolkit
+          name: verona-toolkit-binary
+          path: target/release/verona-toolkit
           retention-days: 1
 
   # ===========================================================================
@@ -119,17 +120,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Download xion-toolkit binary
+      - name: Download verona-toolkit binary
         uses: actions/download-artifact@v4
         with:
-          name: xion-toolkit-binary
+          name: verona-toolkit-binary
           path: target/release/
 
-      - name: Install xion-toolkit
+      - name: Install verona-toolkit
         run: |
-          chmod +x target/release/xion-toolkit
-          sudo ln -sf "$PWD/target/release/xion-toolkit" /usr/local/bin/xion-toolkit
-          xion-toolkit --version
+          chmod +x target/release/verona-toolkit
+          sudo ln -sf "$PWD/target/release/verona-toolkit" /usr/local/bin/verona-toolkit
+          # Transition symlink until Batch 3 skills rename (skills still invoke xion-toolkit).
+          sudo ln -sf /usr/local/bin/verona-toolkit /usr/local/bin/xion-toolkit
+          verona-toolkit --version
 
       - name: Install jq
         run: sudo apt-get install -y jq
@@ -209,25 +212,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Download xion-toolkit binary
+      - name: Download verona-toolkit binary
         uses: actions/download-artifact@v4
         with:
-          name: xion-toolkit-binary
+          name: verona-toolkit-binary
           path: target/release/
 
-      - name: Install xion-toolkit
+      - name: Install verona-toolkit
         run: |
-          chmod +x target/release/xion-toolkit
-          sudo ln -sf "$PWD/target/release/xion-toolkit" /usr/local/bin/xion-toolkit
-          xion-toolkit --version
+          chmod +x target/release/verona-toolkit
+          sudo ln -sf "$PWD/target/release/verona-toolkit" /usr/local/bin/verona-toolkit
+          # Transition symlink until Batch 3 skills rename (skills still invoke xion-toolkit).
+          sudo ln -sf /usr/local/bin/verona-toolkit /usr/local/bin/xion-toolkit
+          verona-toolkit --version
 
       - name: Install jq
         run: sudo apt-get install -y jq
 
       - name: Setup credentials
         run: |
-          mkdir -p ~/.xion-toolkit/credentials
-          echo "${{ secrets.XION_TESTNET_CREDENTIALS }}" | base64 --decode > ~/.xion-toolkit/credentials/testnet.enc
+          mkdir -p ~/.verona-toolkit/credentials
+          echo "${{ secrets.XION_TESTNET_CREDENTIALS }}" | base64 --decode > ~/.verona-toolkit/credentials/testnet.enc
 
       - name: Run E2E Treasury Lifecycle Test
         run: |
