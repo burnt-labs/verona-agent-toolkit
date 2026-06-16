@@ -68,7 +68,7 @@ jobs:
         run: cargo fmt -- --check
 
       - name: Run clippy
-        run: cargo clippy --all-features -- -D warnings
+        run: cargo clippy --all-targets --all-features -- -D warnings
 
   security-audit:
     if: "${{ github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore(main): release') }}"

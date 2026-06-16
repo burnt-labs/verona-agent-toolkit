@@ -25,6 +25,7 @@
 #
 # Environment:
 #   VERONA_SKIP_CONFIRM=true - Skip all confirmation prompts (useful for CI/CD)
+#   XION_SKIP_CONFIRM is deprecated but still honored via security-utils.sh
 #
 # Security: This script uses array-based command execution and requires
 # confirmation for fund operations to prevent accidental token transfers.

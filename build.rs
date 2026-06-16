@@ -15,11 +15,17 @@ fn escape_rust_string(value: &str) -> String {
 /// Read a build-time env var, preferring VERONA_* with XION_* fallback.
 fn build_env(primary: &str, legacy: &str) -> String {
     if let Ok(value) = env::var(primary) {
-        return value;
+        if !value.trim().is_empty() {
+            return value;
+        }
     }
     if let Ok(value) = env::var(legacy) {
-        eprintln!("warning: {legacy} is deprecated; use {primary} for build-time configuration");
-        return value;
+        if !value.trim().is_empty() {
+            eprintln!(
+                "warning: {legacy} is deprecated; use {primary} for build-time configuration"
+            );
+            return value;
+        }
     }
     String::new()
 }

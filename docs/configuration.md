@@ -17,6 +17,54 @@ All configuration and credentials are stored in:
 
 ---
 
+## Migrating from Xion Agent Toolkit
+
+If you previously used **Xion Agent Toolkit** (`xion-toolkit`, `~/.xion-toolkit/`), follow this guide when upgrading to Verona Agent Toolkit.
+
+### Automatic config migration
+
+On first run, if `~/.verona-toolkit/` does not exist and `~/.xion-toolkit/` is present, the CLI **renames** the legacy directory to `~/.verona-toolkit/`. Encrypted credential files (`.enc`) move with the directory; no re-login is required.
+
+```bash
+verona-toolkit --version   # triggers migration on first config access
+ls ~/.verona-toolkit/credentials/
+```
+
+### Manual steps
+
+1. **Reinstall the CLI** — use the latest `verona-agent-toolkit` installer or `cargo install` from this repository.
+2. **Reinstall skills** — global installs must use the new folder names:
+   ```bash
+   npx skills add burnt-labs/verona-agent-toolkit -g -y
+   ```
+3. **Update environment variables** — prefer `VERONA_*` names; legacy `XION_*` vars still work with a deprecation warning (see [Environment Variables](#environment-variables)).
+4. **Update scripts and CI** — replace `xion-toolkit` invocations with `verona-toolkit`; update credential paths to `~/.verona-toolkit/`.
+
+### Edge case: empty Verona directory
+
+If you created an **empty** `~/.verona-toolkit/` before upgrading while credentials remain under `~/.xion-toolkit/`, automatic migration is skipped. Fix manually:
+
+```bash
+# If ~/.verona-toolkit/ is empty and ~/.xion-toolkit/ has credentials:
+mv ~/.xion-toolkit/credentials ~/.verona-toolkit/
+rmdir ~/.xion-toolkit 2>/dev/null || true
+```
+
+Or remove the empty `~/.verona-toolkit/` and run `verona-toolkit auth status` again to trigger rename migration.
+
+### Skill script environment variables
+
+Skill bash scripts accept legacy names during the transition:
+
+| Verona (preferred) | Legacy (deprecated) |
+|--------------------|---------------------|
+| `VERONA_SKIP_CONFIRM` | `XION_SKIP_CONFIRM` |
+| `VERONA_AUDIT_LOG` | `XION_AUDIT_LOG` |
+| `VERONA_AUDIT_LOG_FILE` | `XION_AUDIT_LOG_FILE` |
+| `VERONA_SKILLS_DIR` | `XION_SKILLS_DIR` |
+
+---
+
 ## User Configuration (`config.json`)
 
 ### Schema

@@ -8,7 +8,7 @@
 
 ## Overview
 
-This document records the research and deployment for adding faucet functionality to xion-toolkit CLI.
+This document records the research and deployment for adding faucet functionality to verona-toolkit CLI.
 
 ---
 
@@ -122,16 +122,16 @@ See `.mstar/plans/archived/faucet-command.md` for the full development plan.
 
 ```bash
 # Claim tokens for current authenticated account
-xion-toolkit faucet claim
+verona-toolkit faucet claim
 
 # Claim tokens for another address (uses Delegate message)
-xion-toolkit faucet claim --receiver xion1xxx...
+verona-toolkit faucet claim --receiver xion1xxx...
 
 # Check if an address can claim (cooldown status)
-xion-toolkit faucet status [--address xion1xxx...]
+verona-toolkit faucet status [--address xion1xxx...]
 
 # Query faucet configuration
-xion-toolkit faucet info
+verona-toolkit faucet info
 ```
 
 ### Configuration Schema

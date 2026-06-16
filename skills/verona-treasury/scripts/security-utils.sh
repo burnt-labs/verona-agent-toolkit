@@ -19,14 +19,30 @@
 # Configuration
 # ==============================================================================
 
-# Set to "true" to enable audit logging, "false" to disable
-: "${VERONA_AUDIT_LOG:=true}"
+# Read primary env var, falling back to legacy XION_* with deprecation warning.
+# Empty or whitespace-only primary values are treated as unset.
+_read_env_with_legacy() {
+    local primary="$1"
+    local legacy="$2"
+    local default="${3:-}"
+    local primary_val="${!primary-}"
+    local legacy_val="${!legacy-}"
 
-# Audit log file location
-: "${VERONA_AUDIT_LOG_FILE:=$HOME/.verona-toolkit/audit.log}"
+    if [[ -n "${primary_val//[[:space:]]/}" ]]; then
+        printf '%s' "$primary_val"
+        return
+    fi
+    if [[ -n "${legacy_val//[[:space:]]/}" ]]; then
+        echo "[WARN] ${legacy} is deprecated; use ${primary} instead" >&2
+        printf '%s' "$legacy_val"
+        return
+    fi
+    printf '%s' "$default"
+}
 
-# Set to "true" to skip all confirmation prompts (useful for CI/CD)
-: "${VERONA_SKIP_CONFIRM:=false}"
+VERONA_AUDIT_LOG="$(_read_env_with_legacy VERONA_AUDIT_LOG XION_AUDIT_LOG true)"
+VERONA_AUDIT_LOG_FILE="$(_read_env_with_legacy VERONA_AUDIT_LOG_FILE XION_AUDIT_LOG_FILE "$HOME/.verona-toolkit/audit.log")"
+VERONA_SKIP_CONFIRM="$(_read_env_with_legacy VERONA_SKIP_CONFIRM XION_SKIP_CONFIRM false)"
 
 # ==============================================================================
 # Color Codes

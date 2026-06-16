@@ -30,7 +30,14 @@ set -o pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Sibling skill packages live under the same install root (e.g. ~/.agents/skills).
-SKILLS_DIR="${VERONA_SKILLS_DIR:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
+if [[ -n "${VERONA_SKILLS_DIR//[[:space:]]/}" ]]; then
+    SKILLS_DIR="$VERONA_SKILLS_DIR"
+elif [[ -n "${XION_SKILLS_DIR//[[:space:]]/}" ]]; then
+    echo "[WARN] XION_SKILLS_DIR is deprecated; use VERONA_SKILLS_DIR instead" >&2
+    SKILLS_DIR="$XION_SKILLS_DIR"
+else
+    SKILLS_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+fi
 
 # ==============================================================================
 # Helper Functions

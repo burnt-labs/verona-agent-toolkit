@@ -16,8 +16,8 @@
         "spec_integration_branch": "rebranding",
         "merge_target": "main",
         "primary_spec": ".mstar/knowledge/verona-rebrand-contract.md",
-        "phase": "qa-verified",
-        "description": "QA verification passed on rebranding; open residuals R1–R6 tracked (defer/accept). Ready for PR to main.",
+        "phase": "residuals-resolved",
+        "description": "QC residuals R1-R6 resolved; PR #81 ready for merge",
         "gates": {
           "qc": "Approve with residuals",
           "qa": "pass with open residuals"
@@ -25,82 +25,7 @@
       }
     }
   ],
-  "residual_findings": {
-    "verona-rebrand": [
-      {
-        "id": "R1",
-        "title": "Skill bash scripts missing XION_* env fallback",
-        "severity": "high",
-        "source": "QC-#1, QC-#2, QC-#3",
-        "scope": "skills/verona-*/scripts/",
-        "decision": "defer",
-        "owner": "@fullstack-dev",
-        "target": "Pre-merge or fast-follow release",
-        "tracking": null,
-        "detail_doc": null
-      },
-      {
-        "id": "R2",
-        "title": "Dual config-dir edge case when empty verona dir coexists with legacy",
-        "severity": "medium",
-        "source": "QC-#1, QC-#2",
-        "scope": "src/config/paths.rs",
-        "decision": "accept",
-        "owner": "@project-manager",
-        "target": "Document in docs/configuration.md",
-        "tracking": null,
-        "detail_doc": null
-      },
-      {
-        "id": "R3",
-        "title": "User docs lack migration runbook in docs/configuration.md",
-        "severity": "medium",
-        "source": "QC-#3",
-        "scope": "docs/configuration.md",
-        "decision": "defer",
-        "owner": "@fullstack-dev",
-        "target": "Pre-merge preferred",
-        "tracking": null,
-        "detail_doc": null
-      },
-      {
-        "id": "R4",
-        "title": "CI clippy missing --all-targets vs AGENTS.md",
-        "severity": "medium",
-        "source": "QC-#3",
-        "scope": ".github/workflows/ci.yml",
-        "decision": "defer",
-        "owner": "@ops-engineer",
-        "target": "Pre-merge preferred",
-        "tracking": null,
-        "detail_doc": null
-      },
-      {
-        "id": "R5",
-        "title": "Empty VERONA_* env blocks legacy fallback",
-        "severity": "low",
-        "source": "QC-#2, QC-#3",
-        "scope": "src/config/env_compat.rs",
-        "decision": "accept",
-        "owner": "@fullstack-dev",
-        "target": "Optional follow-up",
-        "tracking": null,
-        "detail_doc": null
-      },
-      {
-        "id": "R6",
-        "title": "Harness knowledge docs still reference xion-toolkit",
-        "severity": "low",
-        "source": "QC-#1",
-        "scope": ".mstar/knowledge/",
-        "decision": "defer",
-        "owner": "@project-manager",
-        "target": "Post-merge harness cleanup",
-        "tracking": null,
-        "detail_doc": null
-      }
-    ]
-  },
+  "residual_findings": {},
   "metadata": {
     "active_roadmap": ".mstar/knowledge/feature-roadmap.md",
     "knowledge_index": ".mstar/knowledge/README.md",

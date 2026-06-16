@@ -4,7 +4,7 @@ created_at: 2026-03-13
 updated_at: 2026-04-03
 ---
 
-# Feature Roadmap: xion-agent-toolkit
+# Feature Roadmap: verona-agent-toolkit
 
 This document outlines the feature roadmap for the Xion Agent Toolkit.
 
@@ -183,8 +183,8 @@ Phase 2 focuses on improving developer experience, code quality, and production 
 **Completed: 2026-03-15**
 
 ```bash
-xion-toolkit tx status <tx_hash> --output json
-xion-toolkit tx wait <tx_hash> --timeout 60 --interval 2 --output json
+verona-toolkit tx status <tx_hash> --output json
+verona-toolkit tx wait <tx_hash> --timeout 60 --interval 2 --output json
 ```
 
 - Query transaction status from RPC
@@ -221,9 +221,9 @@ xion-toolkit tx wait <tx_hash> --timeout 60 --interval 2 --output json
 
 **Usage:**
 ```bash
-xion-toolkit auth status --output json           # Pretty-printed (default)
-xion-toolkit auth status --output json-compact   # Single-line JSON
-xion-toolkit auth status --output github-actions # GitHub Actions format
+verona-toolkit auth status --output json           # Pretty-printed (default)
+verona-toolkit auth status --output json-compact   # Single-line JSON
+verona-toolkit auth status --output github-actions # GitHub Actions format
 ```
 
 **Acceptance Criteria:**
@@ -256,11 +256,11 @@ xion-toolkit auth status --output github-actions # GitHub Actions format
 **Usage:**
 ```bash
 # Predict address without deploying
-xion-toolkit treasury create --predict --salt "my-salt"
+verona-toolkit treasury create --predict --salt "my-salt"
 # Output: {"success":true,"data":{"predicted_address":"xion1...","salt":"my-salt","code_id":1260}}
 
 # Deploy with same salt to get same address
-xion-toolkit treasury create --salt "my-salt"
+verona-toolkit treasury create --salt "my-salt"
 ```
 
 **Acceptance Criteria:**
@@ -280,13 +280,13 @@ xion-toolkit treasury create --salt "my-salt"
 **Usage:**
 ```bash
 # Batch fund treasuries
-xion-toolkit treasury batch fund --config funds.json
+verona-toolkit treasury batch fund --config funds.json
 
 # Batch configure grants
-xion-toolkit treasury batch grant-config --config grants.json
+verona-toolkit treasury batch grant-config --config grants.json
 
 # Export all treasuries
-xion-toolkit treasury export --output treasuries.json
+verona-toolkit treasury export --output treasuries.json
 ```
 
 **Acceptance Criteria:**
@@ -326,7 +326,7 @@ These features are acknowledged but deferred to external projects or future cons
 | Asset Builder (CW721) | P4 | High | 2026-03-14 |
 
 #### MetaAccount Info (P1)
-- Added `xion-toolkit account info` command
+- Added `verona-toolkit account info` command
 - Uses OAuth2 API `/api/v1/me` endpoint
 - Returns MetaAccount authenticators data
 
@@ -337,7 +337,7 @@ These features are acknowledged but deferred to external projects or future cons
 
 #### Batch Operations (P3)
 - Added `src/batch/` module with executor and types
-- Added `xion-toolkit batch execute` command
+- Added `verona-toolkit batch execute` command
 - 23 unit tests passing
 
 #### Asset Builder (P4)
