@@ -133,11 +133,17 @@ jobs:
           fi
       - name: "Export OAuth client IDs for build.rs"
         run: |
+          # Prefer VERONA_* GitHub vars; fall back to legacy XION_* during transition.
+          # build.rs reads env at compile time — vars must be exported to GITHUB_ENV.
           if [ -n "${{ vars.VERONA_TESTNET_OAUTH_CLIENT_ID }}" ]; then
             echo "VERONA_TESTNET_OAUTH_CLIENT_ID=${{ vars.VERONA_TESTNET_OAUTH_CLIENT_ID }}" >> "$GITHUB_ENV"
+          elif [ -n "${{ vars.XION_TESTNET_OAUTH_CLIENT_ID }}" ]; then
+            echo "XION_TESTNET_OAUTH_CLIENT_ID=${{ vars.XION_TESTNET_OAUTH_CLIENT_ID }}" >> "$GITHUB_ENV"
           fi
           if [ -n "${{ vars.VERONA_MAINNET_OAUTH_CLIENT_ID }}" ]; then
             echo "VERONA_MAINNET_OAUTH_CLIENT_ID=${{ vars.VERONA_MAINNET_OAUTH_CLIENT_ID }}" >> "$GITHUB_ENV"
+          elif [ -n "${{ vars.XION_MAINNET_OAUTH_CLIENT_ID }}" ]; then
+            echo "XION_MAINNET_OAUTH_CLIENT_ID=${{ vars.XION_MAINNET_OAUTH_CLIENT_ID }}" >> "$GITHUB_ENV"
           fi
       - name: Install dist
         run: ${{ matrix.install_dist.run }}
