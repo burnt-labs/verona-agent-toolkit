@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document specifies the CLI interface, data structures, and encoding module design for enhancing the `xion-toolkit treasury create` command to match Developer Portal capabilities.
+This document specifies the CLI interface, data structures, and encoding module design for enhancing the `verona-toolkit treasury create` command to match Developer Portal capabilities.
 
 ## 1. CLI Interface Specification
 
@@ -13,8 +13,8 @@ The command will support two approaches:
 2. **Config-file-based**: Complex configurations using a JSON file
 
 ```bash
-xion-toolkit treasury create [OPTIONS]
-xion-toolkit treasury create --config <FILE>
+verona-toolkit treasury create [OPTIONS]
+verona-toolkit treasury create --config <FILE>
 ```
 
 ### 1.2 Complete Flag List
@@ -87,7 +87,7 @@ xion-toolkit treasury create --config <FILE>
 #### Example 1: Minimal Treasury Creation
 
 ```bash
-xion-toolkit treasury create \
+verona-toolkit treasury create \
   --redirect-url "https://myapp.com/callback" \
   --icon-url "https://myapp.com/icon.png" \
   --name "My Treasury" \
@@ -114,7 +114,7 @@ xion-toolkit treasury create \
 #### Example 2: Treasury with Basic Fee Grant (Simplest)
 
 ```bash
-xion-toolkit treasury create \
+verona-toolkit treasury create \
   --redirect-url "https://myapp.com/callback" \
   --icon-url "https://myapp.com/icon.png" \
   --fee-allowance-type basic \
@@ -128,7 +128,7 @@ xion-toolkit treasury create \
 #### Example 3: Treasury with Periodic Fee Grant
 
 ```bash
-xion-toolkit treasury create \
+verona-toolkit treasury create \
   --redirect-url "https://myapp.com/callback" \
   --icon-url "https://myapp.com/icon.png" \
   --fee-allowance-type periodic \
@@ -145,7 +145,7 @@ xion-toolkit treasury create \
 #### Example 4: Treasury with Single Permission (Generic)
 
 ```bash
-xion-toolkit treasury create \
+verona-toolkit treasury create \
   --redirect-url "https://myapp.com/callback" \
   --icon-url "https://myapp.com/icon.png" \
   --fee-allowance-type basic \
@@ -161,7 +161,7 @@ xion-toolkit treasury create \
 Using flag approach (for moderate complexity):
 
 ```bash
-xion-toolkit treasury create \
+verona-toolkit treasury create \
   --redirect-url "https://myapp.com/callback" \
   --icon-url "https://myapp.com/icon.png" \
   --name "Production Treasury" \
@@ -189,7 +189,7 @@ xion-toolkit treasury create \
 For very complex configurations, use a config file:
 
 ```bash
-xion-toolkit treasury create --config treasury-config.json
+verona-toolkit treasury create --config treasury-config.json
 ```
 
 **treasury-config.json:**

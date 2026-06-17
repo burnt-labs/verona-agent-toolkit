@@ -23,11 +23,11 @@
 //! ## Usage
 //!
 //! ```no_run
-//! use xion_agent_toolkit::asset_builder::{
+//! use verona_agent_toolkit::asset_builder::{
 //!     AssetBuilderManager, AssetType, CreateCollectionInput, MintTokenInput,
 //! };
-//! use xion_agent_toolkit::oauth::OAuthClient;
-//! use xion_agent_toolkit::config::NetworkConfig;
+//! use verona_agent_toolkit::oauth::OAuthClient;
+//! use verona_agent_toolkit::config::NetworkConfig;
 //!
 //! # #[tokio::main]
 //! # async fn main() -> anyhow::Result<()> {

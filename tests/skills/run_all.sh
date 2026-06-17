@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Xion Agent Toolkit - Skills Test Runner
+# Verona Agent Toolkit - Skills Test Runner
 # Discovers and runs all skill test suites
 #
 # Usage:
@@ -66,7 +66,7 @@ source "$LIB_PATH"
 print_header() {
     echo ""
     echo -e "${BOLD}========================================${NC}"
-    echo -e "${BOLD}Xion Agent Toolkit - Skills Tests${NC}"
+    echo -e "${BOLD}Verona Agent Toolkit - Skills Tests${NC}"
     echo -e "${BOLD}========================================${NC}"
     echo ""
     echo "Mode: $([ "$MOCK_ENABLED" == "true" ] && echo "Mock" || echo "E2E")"
@@ -156,11 +156,11 @@ preflight_checks() {
         fi
     fi
     
-    # In E2E mode, check xion-toolkit
+    # In E2E mode, check verona-toolkit
     if [[ "$MOCK_ENABLED" != "true" ]]; then
-        if ! command -v xion-toolkit >/dev/null 2>&1; then
-            log_warn "xion-toolkit not found in PATH - some tests may fail"
-            log_info "Install with: ./skills/xion-toolkit-init/scripts/install.sh"
+        if ! command -v verona-toolkit >/dev/null 2>&1; then
+            log_warn "verona-toolkit not found in PATH - some tests may fail"
+            log_info "Install with: ./skills/verona-toolkit-init/scripts/install.sh"
         fi
     fi
     

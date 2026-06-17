@@ -4,7 +4,7 @@
 
 ## Background
 
-The xion-skills repository provides `xiond` CLI skills that complement xion-agent-toolkit. After integrating with xion-agent-toolkit, we need to:
+The xion-skills repository provides `xiond` CLI skills that complement verona-agent-toolkit. After integrating with verona-agent-toolkit, we need to:
 
 1. Position xion-skills as the "advanced/specialized" toolset
 2. Optimize trigger keywords to avoid confusion with toolkit skills
@@ -19,7 +19,7 @@ The xion-skills repository provides `xiond` CLI skills that complement xion-agen
 │                                                                 │
 │   MetaAccount Developers (90%)        Contract Developers (10%) │
 │   ┌─────────────────────────┐        ┌─────────────────────────┐│
-│   │   xion-agent-toolkit    │        │     xion-skills         ││
+│   │   verona-agent-toolkit    │        │     xion-skills         ││
 │   │   (Primary Tool)        │        │   (Advanced Tool)       ││
 │   ├─────────────────────────┤        ├─────────────────────────┤│
 │   │ • OAuth2 authentication │        │ • Chain queries         ││
@@ -55,7 +55,7 @@ description: |
   Use when user specifically mentions xiond, contract development environment,
   validator setup, or needs the traditional Cosmos SDK CLI.
   
-  For most Xion developers, xion-toolkit (MetaAccount) is recommended instead.
+  For most Xion developers, verona-toolkit (MetaAccount) is recommended instead.
   
   Triggers: xiond, xiond install, contract development, validator, cosmos CLI,
   traditional wallet, mnemonic-based.
@@ -64,12 +64,12 @@ description: |
 
 **Add section:**
 ```markdown
-## When to Use xiond vs xion-toolkit
+## When to Use xiond vs verona-toolkit
 
 | Scenario | Recommended Tool |
 |----------|------------------|
-| Regular development | xion-toolkit (MetaAccount) |
-| Gasless transactions | xion-toolkit |
+| Regular development | verona-toolkit (MetaAccount) |
+| Gasless transactions | verona-toolkit |
 | Contract deployment | xiond (this skill) |
 | Chain queries | xiond (this skill) |
 | Validator operations | xiond (this skill) |
@@ -100,7 +100,7 @@ description: |
   - Balance queries (any address)
   - Mnemonic-based wallet management
   
-  For gasless transactions and Treasury operations, use xion-toolkit instead.
+  For gasless transactions and Treasury operations, use verona-toolkit instead.
   
   Triggers: 链上查询, chain query, 交易查询, tx status, block query,
   balance query, mnemonic, 传统钱包, cosmos wallet.
@@ -120,12 +120,12 @@ This skill excels at chain queries:
 | Balance | `query-balance.sh <address>` |
 | Account list | `list-accounts.sh` |
 
-## When to Use xiond vs xion-toolkit
+## When to Use xiond vs verona-toolkit
 
 | Scenario | Recommended Tool |
 |----------|------------------|
-| Gasless transactions | xion-toolkit |
-| Treasury operations | xion-toolkit |
+| Gasless transactions | verona-toolkit |
+| Treasury operations | verona-toolkit |
 | Chain queries | xiond (this skill) |
 | Transaction queries | xiond (this skill) |
 | Mnemonic wallet | xiond (this skill) |
@@ -169,9 +169,9 @@ This skill is specifically designed for CosmWasm contract developers:
 4. **Execute/Query** - Interact with contracts
 5. **Migrate** - Upgrade contract logic
 
-## Integration with xion-toolkit
+## Integration with verona-toolkit
 
-After deploying contracts, you can use xion-toolkit's Treasury to:
+After deploying contracts, you can use verona-toolkit's Treasury to:
 - Fund contract operations gaslessly
 - Configure authz grants for contract interactions
 ```
@@ -183,18 +183,18 @@ After deploying contracts, you can use xion-toolkit's Treasury to:
 Add section to `README.md`:
 
 ```markdown
-## Relationship with xion-toolkit
+## Relationship with verona-toolkit
 
 **xion-skills** provides `xiond` CLI skills for advanced scenarios:
 
-| Use xion-skills when... | Use xion-toolkit when... |
+| Use xion-skills when... | Use verona-toolkit when... |
 |------------------------|--------------------------|
 | Deploying CosmWasm contracts | Building apps with MetaAccount |
 | Querying chain data | Managing Treasury contracts |
 | Validator operations | Gasless transactions |
 | Mnemonic-based wallets | OAuth2 authentication |
 
-**For most Xion developers, start with [xion-toolkit](https://github.com/burnt-labs/xion-agent-toolkit).**
+**For most Xion developers, start with [verona-toolkit](https://github.com/burnt-labs/verona-agent-toolkit).**
 ```
 
 ---
@@ -203,25 +203,25 @@ Add section to `README.md`:
 
 Consider adding a lightweight cross-reference file:
 
-`skills/xion-toolkit-bridge/SKILL.md`:
+`skills/verona-toolkit-bridge/SKILL.md`:
 ```markdown
 ---
-name: xion-toolkit-bridge
+name: verona-toolkit-bridge
 description: |
-  MetaAccount development with xion-toolkit. 
+  MetaAccount development with verona-toolkit. 
   For gasless transactions and Treasury management.
-  See: https://github.com/burnt-labs/xion-agent-toolkit
+  See: https://github.com/burnt-labs/verona-agent-toolkit
 ---
 
-# xion-toolkit Bridge
+# verona-toolkit Bridge
 
 For MetaAccount-based development (gasless, OAuth2, Treasury):
 
-👉 **Use xion-toolkit**: https://github.com/burnt-labs/xion-agent-toolkit
+👉 **Use verona-toolkit**: https://github.com/burnt-labs/verona-agent-toolkit
 
 ## Quick Comparison
 
-| Feature | xion-toolkit | xiond |
+| Feature | verona-toolkit | xiond |
 |---------|--------------|-------|
 | Auth | OAuth2 + MetaAccount | Mnemonic |
 | Gas | Gasless | Paid |
@@ -255,22 +255,22 @@ For MetaAccount-based development (gasless, OAuth2, Treasury):
 | `skills/xiond-init/SKILL.md` | Update description, add comparison section |
 | `skills/xiond-usage/SKILL.md` | Update description, emphasize query capabilities |
 | `skills/xiond-wasm/SKILL.md` | Update description, add integration notes |
-| `README.md` | Add xion-toolkit relationship section |
-| `skills/xion-toolkit-bridge/SKILL.md` | (Optional) New bridge skill |
+| `README.md` | Add verona-toolkit relationship section |
+| `skills/verona-toolkit-bridge/SKILL.md` | (Optional) New bridge skill |
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] All skills clearly differentiate from xion-toolkit
+- [ ] All skills clearly differentiate from verona-toolkit
 - [ ] Trigger keywords don't overlap with toolkit skills
-- [ ] README explains relationship with xion-toolkit
+- [ ] README explains relationship with verona-toolkit
 - [ ] Chain query capabilities are emphasized
 
 ---
 
 ## Notes
 
-- This plan should be implemented after xion-agent-toolkit integration is complete
+- This plan should be implemented after verona-agent-toolkit integration is complete
 - Consider versioning the skill updates (e.g., v2.0.0)
 - Update evals to test new trigger conditions

@@ -61,8 +61,8 @@ impl ExecuteContext {
 }
 
 #[derive(Parser)]
-#[command(name = "xion-toolkit")]
-#[command(about = "CLI-driven, Agent-oriented toolkit for Xion blockchain", long_about = None)]
+#[command(name = "verona-toolkit")]
+#[command(about = "CLI-driven, Agent-oriented toolkit for Verona blockchain", long_about = None)]
 #[command(version)]
 pub struct Cli {
     /// Network to use (testnet, mainnet)
@@ -279,13 +279,13 @@ pub fn handle_completions_command(
             )
         })?;
         Ok(match shell {
-            clap_complete::Shell::Bash => home.join(".local/share/xion-toolkit/completions.bash"),
-            clap_complete::Shell::Zsh => home.join(".local/share/xion-toolkit/completions.zsh"),
-            clap_complete::Shell::Fish => home.join(".config/fish/completions/xion-toolkit.fish"),
+            clap_complete::Shell::Bash => home.join(".local/share/verona-toolkit/completions.bash"),
+            clap_complete::Shell::Zsh => home.join(".local/share/verona-toolkit/completions.zsh"),
+            clap_complete::Shell::Fish => home.join(".config/fish/completions/verona-toolkit.fish"),
             clap_complete::Shell::PowerShell => {
-                home.join(".local/share/xion-toolkit/completions.ps1")
+                home.join(".local/share/verona-toolkit/completions.ps1")
             }
-            _ => home.join(".local/share/xion-toolkit/completions"),
+            _ => home.join(".local/share/verona-toolkit/completions"),
         })
     }
 
@@ -327,7 +327,7 @@ pub fn handle_completions_command(
             return false;
         }
         let content = std::fs::read_to_string(profile_path).unwrap_or_default();
-        content.contains("# BEGIN xion-toolkit completions")
+        content.contains("# BEGIN verona-toolkit completions")
     }
 
     /// Add source line to profile
@@ -358,7 +358,7 @@ pub fn handle_completions_command(
         };
 
         let block = format!(
-            "\n# BEGIN xion-toolkit completions\n{}\n# END xion-toolkit completions\n",
+            "\n# BEGIN verona-toolkit completions\n{}\n# END verona-toolkit completions\n",
             source_line
         );
 
@@ -376,7 +376,7 @@ pub fn handle_completions_command(
     /// Generate completion script for the given shell
     fn generate_completion(shell: clap_complete::Shell) -> String {
         let mut cmd = Cli::command();
-        let bin_name = "xion-toolkit";
+        let bin_name = "verona-toolkit";
         let mut output = Vec::new();
         clap_complete::generate(shell, &mut cmd, bin_name, &mut output);
         String::from_utf8(output).expect("Generated completion should be valid UTF-8")
@@ -391,7 +391,7 @@ pub fn handle_completions_command(
     // If not installing, just print to stdout
     if !install {
         let mut cmd = Cli::command();
-        let bin_name = "xion-toolkit";
+        let bin_name = "verona-toolkit";
         clap_complete::generate(detected_shell, &mut cmd, bin_name, &mut std::io::stdout());
         return Ok(());
     }
@@ -457,7 +457,7 @@ pub fn handle_completions_command(
             completion_file: Some(completion_path.to_string_lossy().to_string()),
             profile_file: Some(profile_path.to_string_lossy().to_string()),
             already_installed: Some(true),
-            message: "Completions already installed. To reinstall, remove the 'BEGIN xion-toolkit completions' block from your profile first.".to_string(),
+            message: "Completions already installed. To reinstall, remove the 'BEGIN verona-toolkit completions' block from your profile first.".to_string(),
         };
         crate::utils::output::print_formatted(&result, ctx.output_format())?;
         return Ok(());

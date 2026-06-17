@@ -1,11 +1,11 @@
 //! Transaction Monitoring Module
 //!
-//! Provides transaction status tracking and waiting capabilities for Xion blockchain.
+//! Provides transaction status tracking and waiting capabilities for Verona blockchain.
 //!
 //! ## Usage
 //!
 //! ```no_run
-//! use xion_agent_toolkit::tx::{TxClient, TxInfo, TxStatus};
+//! use verona_agent_toolkit::tx::{TxClient, TxInfo, TxStatus};
 //!
 //! # #[tokio::main]
 //! # async fn main() -> anyhow::Result<()> {

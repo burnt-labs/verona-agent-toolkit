@@ -4,7 +4,7 @@
 
 ## Overview
 
-The Xion Agent Toolkit returns standardized exit codes to enable reliable error handling in CI/CD pipelines and shell scripts.
+The Verona Agent Toolkit returns standardized exit codes to enable reliable error handling in CI/CD pipelines and shell scripts.
 
 ## Exit Code Ranges
 
@@ -42,7 +42,7 @@ The Xion Agent Toolkit returns standardized exit codes to enable reliable error 
 
 | Code | Name | Description | Action |
 |------|------|-------------|--------|
-| 2 | AUTH_REQUIRED | Not authenticated | Run `xion-toolkit auth login` |
+| 2 | AUTH_REQUIRED | Not authenticated | Run `verona-toolkit auth login` |
 | 3 | TOKEN_EXPIRED | Access token has expired | Token refreshed automatically, retry |
 | 4 | REFRESH_TOKEN_EXPIRED | Refresh token expired | Re-login required |
 | 5 | INVALID_CREDENTIALS | Invalid credentials | Check credentials |
@@ -55,7 +55,7 @@ The Xion Agent Toolkit returns standardized exit codes to enable reliable error 
 ```bash
 #!/bin/bash
 
-xion-toolkit auth status
+verona-toolkit auth status
 exit_code=$?
 
 case $exit_code in
@@ -64,15 +64,15 @@ case $exit_code in
         ;;
     2)
         echo "Not authenticated, logging in..."
-        xion-toolkit auth login
+        verona-toolkit auth login
         ;;
     3)
         echo "Token expired, refreshing..."
-        xion-toolkit auth refresh
+        verona-toolkit auth refresh
         ;;
     4)
         echo "Session expired, please login again"
-        xion-toolkit auth login
+        verona-toolkit auth login
         ;;
 esac
 ```
@@ -83,7 +83,7 @@ esac
 
 | Code | Name | Description | Action |
 |------|------|-------------|--------|
-| 20 | CONFIG_NOT_FOUND | Configuration file not found | Run `xion-toolkit config init` |
+| 20 | CONFIG_NOT_FOUND | Configuration file not found | Run `verona-toolkit config init` |
 | 21 | INVALID_CONFIG | Invalid configuration | Check config file format |
 | 22 | ENCRYPTION_FAILED | Encryption operation failed | Check encryption key |
 | 23 | DECRYPTION_FAILED | Decryption operation failed | Check encryption key |
@@ -94,12 +94,12 @@ esac
 ```bash
 #!/bin/bash
 
-xion-toolkit config show
+verona-toolkit config show
 exit_code=$?
 
 if [ $exit_code -eq 20 ]; then
     echo "Initializing configuration..."
-    xion-toolkit config init
+    verona-toolkit config init
 fi
 ```
 
@@ -127,7 +127,7 @@ max_retries=3
 retry_count=0
 
 while [ $retry_count -lt $max_retries ]; do
-    xion-toolkit treasury list
+    verona-toolkit treasury list
     exit_code=$?
     
     # Check for retryable network errors
@@ -156,12 +156,12 @@ done
 ```bash
 #!/bin/bash
 
-xion-toolkit tx wait $TX_HASH --timeout 60
+verona-toolkit tx wait $TX_HASH --timeout 60
 exit_code=$?
 
 if [ $exit_code -eq 62 ]; then
     echo "Transaction taking longer than expected"
-    echo "Check status: xion-toolkit tx status $TX_HASH"
+    echo "Check status: verona-toolkit tx status $TX_HASH"
 fi
 ```
 
@@ -186,13 +186,13 @@ fi
 ```bash
 #!/bin/bash
 
-xion-toolkit treasury fund $ADDRESS 1000000uxion
+verona-toolkit treasury fund $ADDRESS 1000000uxion
 exit_code=$?
 
 case $exit_code in
     80)
         echo "Treasury not found: $ADDRESS"
-        xion-toolkit treasury list
+        verona-toolkit treasury list
         ;;
     81)
         echo "Insufficient balance"
@@ -294,18 +294,18 @@ jobs:
       - name: Check Authentication
         id: auth
         run: |
-          xion-toolkit auth status --output github-actions
+          verona-toolkit auth status --output github-actions
         continue-on-error: true
         
       - name: Login if needed
         if: steps.auth.outcome == 'failure' && steps.auth.outputs.exit_code == '2'
         run: |
-          xion-toolkit auth login
+          verona-toolkit auth login
           
       - name: Create Treasury
         id: create
         run: |
-          xion-toolkit treasury create \
+          verona-toolkit treasury create \
             --redirect-url "https://example.com/callback" \
             --name "CI Treasury" \
             --output github-actions
@@ -329,7 +329,7 @@ handle_error() {
     case $exit_code in
         2|3|4)
             echo "Authentication error during $operation"
-            xion-toolkit auth login
+            verona-toolkit auth login
             ;;
         40|41|42|45|46)
             echo "Network error during $operation, retrying..."
@@ -345,7 +345,7 @@ handle_error() {
 
 # Example usage
 perform_operation() {
-    xion-toolkit treasury list
+    verona-toolkit treasury list
     return $?
 }
 
@@ -371,7 +371,7 @@ log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # Check authentication
 check_auth() {
-    xion-toolkit auth status > /dev/null 2>&1
+    verona-toolkit auth status > /dev/null 2>&1
     local exit_code=$?
     
     if [ $exit_code -eq 0 ]; then
@@ -405,10 +405,10 @@ main() {
             break
         elif [ $auth_status -eq 1 ]; then
             log_info "Logging in..."
-            xion-toolkit auth login
+            verona-toolkit auth login
         elif [ $auth_status -eq 2 ]; then
             log_info "Refreshing token..."
-            xion-toolkit auth refresh
+            verona-toolkit auth refresh
         fi
         
         attempt=$((attempt + 1))

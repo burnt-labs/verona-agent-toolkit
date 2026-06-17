@@ -1,4 +1,4 @@
-//! API clients for Xion services
+//! API clients for Verona services
 //!
 //! This module provides client implementations for various Xion APIs:
 //! - OAuth2 API Service for authentication

@@ -284,7 +284,7 @@ async fn prepare_api_client(_ctx: &ExecuteContext) -> Result<(String, MgrApiClie
 
     // Check authentication
     if !oauth_client.is_authenticated()? {
-        anyhow::bail!("Not authenticated. Please run 'xion-toolkit auth login' first.");
+        anyhow::bail!("Not authenticated. Please run 'verona-toolkit auth login' first.");
     }
 
     let credentials = oauth_client.get_valid_token().await?;
@@ -297,7 +297,7 @@ async fn prepare_api_client(_ctx: &ExecuteContext) -> Result<(String, MgrApiClie
             .copied()
             .collect();
         anyhow::bail!(
-            "Insufficient scope: missing {}. Re-login with --dev-mode: xion-toolkit auth login --dev-mode",
+            "Insufficient scope: missing {}. Re-login with --dev-mode: verona-toolkit auth login --dev-mode",
             missing.join(", ")
         );
     }
@@ -312,7 +312,7 @@ async fn prepare_api_client(_ctx: &ExecuteContext) -> Result<(String, MgrApiClie
     Ok((access_token, mgr_client))
 }
 
-/// Format an XionError into a structured error JSON output for print_formatted
+/// Format an VeronaError into a structured error JSON output for print_formatted
 #[derive(Serialize)]
 struct CliErrorResponse {
     success: bool,
@@ -327,7 +327,7 @@ struct CliErrorDetail {
 }
 
 impl CliErrorResponse {
-    fn from_xion_error(err: &crate::shared::error::XionError) -> Self {
+    fn from_verona_error(err: &crate::shared::error::VeronaError) -> Self {
         Self {
             success: false,
             error: CliErrorDetail {
@@ -351,7 +351,7 @@ async fn handle_list(args: ListArgs, ctx: &ExecuteContext) -> Result<()> {
         .list_clients(&access_token, args.limit, args.cursor.as_deref())
         .await
         .map_err(|e| {
-            let resp = CliErrorResponse::from_xion_error(&e);
+            let resp = CliErrorResponse::from_verona_error(&e);
             anyhow::anyhow!(serde_json::to_string(&resp).unwrap_or_else(|_| e.to_string()))
         })?;
 
@@ -396,7 +396,7 @@ async fn handle_create(args: CreateClientArgs, ctx: &ExecuteContext) -> Result<(
         .create_client(&access_token, request)
         .await
         .map_err(|e| {
-            let resp = CliErrorResponse::from_xion_error(&e);
+            let resp = CliErrorResponse::from_verona_error(&e);
             anyhow::anyhow!(serde_json::to_string(&resp).unwrap_or_else(|_| e.to_string()))
         })?;
 
@@ -425,7 +425,7 @@ async fn handle_get(client_id: &str, ctx: &ExecuteContext) -> Result<()> {
         .get_client(&access_token, client_id)
         .await
         .map_err(|e| {
-            let resp = CliErrorResponse::from_xion_error(&e);
+            let resp = CliErrorResponse::from_verona_error(&e);
             anyhow::anyhow!(serde_json::to_string(&resp).unwrap_or_else(|_| e.to_string()))
         })?;
 
@@ -458,7 +458,7 @@ async fn handle_update(args: UpdateClientArgs, ctx: &ExecuteContext) -> Result<(
         .update_client(&access_token, &args.client_id, request)
         .await
         .map_err(|e| {
-            let resp = CliErrorResponse::from_xion_error(&e);
+            let resp = CliErrorResponse::from_verona_error(&e);
             anyhow::anyhow!(serde_json::to_string(&resp).unwrap_or_else(|_| e.to_string()))
         })?;
 
@@ -490,7 +490,7 @@ async fn handle_delete(client_id: &str, force: bool, ctx: &ExecuteContext) -> Re
         .delete_client(&access_token, client_id)
         .await
         .map_err(|e| {
-            let resp = CliErrorResponse::from_xion_error(&e);
+            let resp = CliErrorResponse::from_verona_error(&e);
             anyhow::anyhow!(serde_json::to_string(&resp).unwrap_or_else(|_| e.to_string()))
         })?;
 
@@ -507,7 +507,7 @@ async fn handle_extension(cmd: ExtensionCommands, ctx: &ExecuteContext) -> Resul
                 .get_extension(&access_token, &client_id)
                 .await
                 .map_err(|e| {
-                    let resp = CliErrorResponse::from_xion_error(&e);
+                    let resp = CliErrorResponse::from_verona_error(&e);
                     anyhow::anyhow!(serde_json::to_string(&resp).unwrap_or_else(|_| e.to_string()))
                 })?;
 
@@ -527,7 +527,7 @@ async fn handle_extension(cmd: ExtensionCommands, ctx: &ExecuteContext) -> Resul
                 .update_extension(&access_token, &client_id, request)
                 .await
                 .map_err(|e| {
-                    let resp = CliErrorResponse::from_xion_error(&e);
+                    let resp = CliErrorResponse::from_verona_error(&e);
                     anyhow::anyhow!(serde_json::to_string(&resp).unwrap_or_else(|_| e.to_string()))
                 })?;
 
@@ -549,7 +549,7 @@ async fn handle_managers(cmd: ManagersCommands, ctx: &ExecuteContext) -> Result<
                 .add_manager(&access_token, &client_id, &manager_id)
                 .await
                 .map_err(|e| {
-                    let resp = CliErrorResponse::from_xion_error(&e);
+                    let resp = CliErrorResponse::from_verona_error(&e);
                     anyhow::anyhow!(serde_json::to_string(&resp).unwrap_or_else(|_| e.to_string()))
                 })?;
 
@@ -565,7 +565,7 @@ async fn handle_managers(cmd: ManagersCommands, ctx: &ExecuteContext) -> Result<
                 .remove_manager(&access_token, &client_id, &manager_id)
                 .await
                 .map_err(|e| {
-                    let resp = CliErrorResponse::from_xion_error(&e);
+                    let resp = CliErrorResponse::from_verona_error(&e);
                     anyhow::anyhow!(serde_json::to_string(&resp).unwrap_or_else(|_| e.to_string()))
                 })?;
 
@@ -604,7 +604,7 @@ async fn handle_transfer_ownership(
         .transfer_ownership(&access_token, client_id, new_owner)
         .await
         .map_err(|e| {
-            let resp = CliErrorResponse::from_xion_error(&e);
+            let resp = CliErrorResponse::from_verona_error(&e);
             anyhow::anyhow!(serde_json::to_string(&resp).unwrap_or_else(|_| e.to_string()))
         })?;
 
@@ -618,7 +618,7 @@ async fn handle_rotate_secret(client_id: &str, ctx: &ExecuteContext) -> Result<(
         .rotate_secret(&access_token, client_id)
         .await
         .map_err(|e| {
-            let resp = CliErrorResponse::from_xion_error(&e);
+            let resp = CliErrorResponse::from_verona_error(&e);
             anyhow::anyhow!(serde_json::to_string(&resp).unwrap_or_else(|_| e.to_string()))
         })?;
     print_formatted(&result, ctx.output_format())?;
@@ -633,7 +633,7 @@ mod tests {
 
     /// Helper to parse OAuth2 client subcommands from args.
     ///
-    /// Prepends a fake binary name ("xion-toolkit") so that `parse_from`
+    /// Prepends a fake binary name ("verona-toolkit") so that `parse_from`
     /// does not consume the first real argument as the program name.
     fn parse_oauth2_client(args: &[&str]) -> OAuth2ClientCommands {
         #[derive(Parser)]
@@ -642,7 +642,7 @@ mod tests {
             command: OAuth2ClientCommands,
         }
         let cli = TestCli::parse_from(
-            std::iter::once("xion-toolkit" as &str).chain(args.iter().copied()),
+            std::iter::once("verona-toolkit" as &str).chain(args.iter().copied()),
         );
         cli.command
     }
@@ -654,7 +654,7 @@ mod tests {
             #[command(subcommand)]
             command: OAuth2ClientCommands,
         }
-        let result = TestCli::try_parse_from(["xion-toolkit", "get", "client_abc123"]);
+        let result = TestCli::try_parse_from(["verona-toolkit", "get", "client_abc123"]);
         match result {
             Ok(cli) => match cli.command {
                 OAuth2ClientCommands::Get(args) => {
@@ -833,7 +833,7 @@ mod tests {
             #[command(subcommand)]
             command: OAuth2ClientCommands,
         }
-        let cli = TestCli::parse_from(["xion-toolkit", "extension", "get", "client_abc123"]);
+        let cli = TestCli::parse_from(["verona-toolkit", "extension", "get", "client_abc123"]);
         match cli.command {
             OAuth2ClientCommands::Extension(ExtensionCommands::Get { client_id }) => {
                 assert_eq!(client_id, "client_abc123");
@@ -850,7 +850,7 @@ mod tests {
             command: OAuth2ClientCommands,
         }
         let cli = TestCli::parse_from([
-            "xion-toolkit",
+            "verona-toolkit",
             "extension",
             "update",
             "client_abc123",
@@ -877,7 +877,7 @@ mod tests {
             command: OAuth2ClientCommands,
         }
         let cli = TestCli::parse_from([
-            "xion-toolkit",
+            "verona-toolkit",
             "managers",
             "add",
             "client_abc123",
@@ -904,7 +904,7 @@ mod tests {
             command: OAuth2ClientCommands,
         }
         let cli = TestCli::parse_from([
-            "xion-toolkit",
+            "verona-toolkit",
             "managers",
             "remove",
             "client_abc123",
@@ -969,10 +969,10 @@ mod tests {
         let err = crate::shared::error::OAuthClientError::ConfirmationRequired {
             message: "Destructive operation cancelled.".to_string(),
         };
-        let xion_err: crate::shared::error::XionError = err.into();
+        let xion_err: crate::shared::error::VeronaError = err.into();
         assert_eq!(
             xion_err.code(),
-            crate::shared::error::XionErrorCode::EOAUTHCLIENT019
+            crate::shared::error::VeronaErrorCode::EOAUTHCLIENT019
         );
         let display = format!("{}", xion_err);
         assert!(display.contains("Destructive operation cancelled"));
@@ -984,10 +984,10 @@ mod tests {
             message: "Re-run with --force to confirm ownership transfer of client 'c1' to 'u1'."
                 .to_string(),
         };
-        let xion_err: crate::shared::error::XionError = err.into();
+        let xion_err: crate::shared::error::VeronaError = err.into();
         assert_eq!(
             xion_err.code(),
-            crate::shared::error::XionErrorCode::EOAUTHCLIENT019
+            crate::shared::error::VeronaErrorCode::EOAUTHCLIENT019
         );
         let hint = xion_err.hint();
         assert!(hint.contains("--force"));
@@ -998,7 +998,7 @@ mod tests {
         let err = crate::shared::error::OAuthClientError::ConfirmationRequired {
             message: "test".to_string(),
         };
-        let xion_err: crate::shared::error::XionError = err.into();
+        let xion_err: crate::shared::error::VeronaError = err.into();
         assert_eq!(xion_err.code().exit_code(), 178);
     }
 
@@ -1021,7 +1021,7 @@ mod tests {
             #[command(subcommand)]
             command: OAuth2ClientCommands,
         }
-        let result = TestCli::try_parse_from(["xion-toolkit", "rotate-secret"]);
+        let result = TestCli::try_parse_from(["verona-toolkit", "rotate-secret"]);
         assert!(
             result.is_err(),
             "rotate-secret should require a CLIENT_ID argument"

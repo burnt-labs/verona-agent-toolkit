@@ -210,7 +210,7 @@ async fn handle_create(args: CreateArgs, ctx: &ExecuteContext) -> Result<()> {
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -348,7 +348,7 @@ async fn handle_mint(args: MintArgs, ctx: &ExecuteContext) -> Result<()> {
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -422,7 +422,7 @@ async fn handle_query(args: QueryArgs, ctx: &ExecuteContext) -> Result<()> {
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -496,7 +496,7 @@ async fn handle_predict(args: PredictArgs, ctx: &ExecuteContext) -> Result<()> {
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -601,7 +601,7 @@ async fn handle_batch_mint(args: BatchMintArgs, ctx: &ExecuteContext) -> Result<
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());

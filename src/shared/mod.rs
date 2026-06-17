@@ -20,15 +20,15 @@
 //! ## Example
 //!
 //! ```rust,ignore
-//! use xion_agent_toolkit::shared::error::{XionError, XionErrorCode, ErrorResponse};
+//! use verona_agent_toolkit::shared::error::{VeronaError, VeronaErrorCode, ErrorResponse};
 //!
 //! // Create an error with context
-//! let error = XionError::from(AuthError::NotAuthenticated(
+//! let error = VeronaError::from(AuthError::NotAuthenticated(
 //!     "Please login first".to_string()
 //! ));
 //!
 //! // Get the error code
-//! assert_eq!(error.code(), XionErrorCode::EAUTH001);
+//! assert_eq!(error.code(), VeronaErrorCode::EAUTH001);
 //!
 //! // Convert to JSON response
 //! let response = error.to_response();
@@ -40,7 +40,7 @@
 //! Transient network errors are automatically retried with exponential backoff:
 //!
 //! ```rust,ignore
-//! use xion_agent_toolkit::shared::retry::{with_retry, RetryConfig};
+//! use verona_agent_toolkit::shared::retry::{with_retry, RetryConfig};
 //!
 //! let config = RetryConfig::default();
 //! let result = with_retry(&config, || async_operation(), |err| err.is_retryable()).await;
@@ -51,7 +51,7 @@
 //! The CLI returns standardized exit codes for CI/CD integration:
 //!
 //! ```rust,ignore
-//! use xion_agent_toolkit::shared::exit_codes::exit_code;
+//! use verona_agent_toolkit::shared::exit_codes::exit_code;
 //!
 //! // Success
 //! assert_eq!(exit_code::SUCCESS, 0);
@@ -65,7 +65,7 @@
 //! Predict contract addresses before deployment:
 //!
 //! ```rust,ignore
-//! use xion_agent_toolkit::shared::instantiate2::{predict_treasury_address, SaltEncoding};
+//! use verona_agent_toolkit::shared::instantiate2::{predict_treasury_address, SaltEncoding};
 //!
 //! // Auto-detect salt encoding and predict address
 //! let predicted = predict_treasury_address(
@@ -84,7 +84,7 @@ pub mod retry;
 // Re-export commonly used types
 pub use error::{
     AssetError, AuthError, BatchError, ConfigError, ErrorDetail, ErrorResponse, NetworkError,
-    TreasuryError, TxError, XionError, XionErrorCode, XionResult,
+    TreasuryError, TxError, VeronaError, VeronaErrorCode, VeronaResult,
 };
 pub use exit_codes::{exit_code, exit_code_name};
 pub use instantiate2::{
@@ -92,6 +92,6 @@ pub use instantiate2::{
     PredictedAddress, SaltEncoding,
 };
 pub use retry::{
-    is_retryable_reqwest_error, is_retryable_status, reqwest_to_xion_error, with_retry,
+    is_retryable_reqwest_error, is_retryable_status, reqwest_to_verona_error, with_retry,
     with_retry_metadata, RetryConfig, RetryResult,
 };

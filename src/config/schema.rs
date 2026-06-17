@@ -37,8 +37,9 @@ pub struct UserCredentials {
     #[serde(default)]
     pub refresh_token_expires_at: Option<String>,
 
-    /// Optional: User's Xion address
-    pub xion_address: Option<String>,
+    /// Optional: User's chain address (xion1 bech32 prefix)
+    #[serde(default, alias = "xion_address")]
+    pub verona_address: Option<String>,
     /// Space-separated OAuth2 scopes granted by the authorization server.
     /// None if credentials were created before scope tracking was added.
     #[serde(default)]
@@ -70,7 +71,7 @@ mod tests {
             refresh_token: "test".to_string(),
             expires_at: "2099-01-01T00:00:00Z".to_string(),
             refresh_token_expires_at: None,
-            xion_address: None,
+            verona_address: None,
             scope: scope.map(|s| s.to_string()),
         }
     }
@@ -97,6 +98,18 @@ mod tests {
         let creds = make_creds(None);
         assert!(!creds.has_scope("xion:identity:read"));
         assert!(!creds.has_all_scopes(&["xion:mgr:read"]));
+    }
+
+    #[test]
+    fn test_verona_address_deserializes_legacy_xion_address_field() {
+        let json = r#"{
+            "access_token": "tok",
+            "refresh_token": "ref",
+            "expires_at": "2099-01-01T00:00:00Z",
+            "xion_address": "xion1legacy"
+        }"#;
+        let creds: UserCredentials = serde_json::from_str(json).unwrap();
+        assert_eq!(creds.verona_address.as_deref(), Some("xion1legacy"));
     }
 
     #[test]

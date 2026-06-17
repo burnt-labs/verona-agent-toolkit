@@ -38,7 +38,7 @@ async fn handle_info(ctx: &ExecuteContext) -> Result<()> {
             "success": false,
             "error": "Not authenticated",
             "code": "NOT_AUTHENTICATED",
-            "hint": "Run 'xion-toolkit auth login' first"
+            "hint": "Run 'verona-toolkit auth login' first"
         });
         return print_formatted(&result, ctx.output_format());
     }
@@ -50,14 +50,14 @@ async fn handle_info(ctx: &ExecuteContext) -> Result<()> {
                 "success": false,
                 "error": "Credentials not found",
                 "code": "CREDENTIALS_NOT_FOUND",
-                "hint": "Run 'xion-toolkit auth login' to authenticate"
+                "hint": "Run 'verona-toolkit auth login' to authenticate"
             });
             return print_formatted(&result, ctx.output_format());
         }
     };
 
     let address = credentials
-        .xion_address
+        .verona_address
         .clone()
         .unwrap_or_else(|| "unknown".to_string());
     info!("Querying MetaAccount info for: {}", address);

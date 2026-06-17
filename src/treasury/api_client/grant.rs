@@ -6,7 +6,7 @@
 
 use tracing::{debug, instrument};
 
-use crate::shared::error::XionResult;
+use crate::shared::error::VeronaResult;
 use crate::treasury::types::QueryOptions;
 
 impl super::TreasuryApiClient {
@@ -28,8 +28,8 @@ impl super::TreasuryApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::treasury::{TreasuryApiClient, GrantConfigInput};
-    /// use xion_agent_toolkit::treasury::types::AuthorizationInput;
+    /// use verona_agent_toolkit::treasury::{TreasuryApiClient, GrantConfigInput};
+    /// use verona_agent_toolkit::treasury::types::AuthorizationInput;
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -70,7 +70,7 @@ impl super::TreasuryApiClient {
         type_url: &str,
         grant_config: crate::treasury::types::GrantConfigInput,
         from_address: &str,
-    ) -> XionResult<crate::treasury::types::GrantConfigResult> {
+    ) -> VeronaResult<crate::treasury::types::GrantConfigResult> {
         debug!(
             "Adding grant config for type_url: {} to treasury: {}",
             type_url, treasury_address
@@ -126,7 +126,7 @@ impl super::TreasuryApiClient {
         treasury_address: &str,
         type_url: &str,
         from_address: &str,
-    ) -> XionResult<crate::treasury::types::GrantConfigResult> {
+    ) -> VeronaResult<crate::treasury::types::GrantConfigResult> {
         debug!(
             "Removing grant config for type_url: {} from treasury: {}",
             type_url, treasury_address
@@ -163,7 +163,7 @@ impl super::TreasuryApiClient {
         &self,
         access_token: &str,
         treasury_address: &str,
-    ) -> XionResult<Vec<crate::treasury::types::GrantConfigInfo>> {
+    ) -> VeronaResult<Vec<crate::treasury::types::GrantConfigInfo>> {
         debug!("Listing grant configs for treasury: {}", treasury_address);
 
         // Query the treasury info which includes grant configs
@@ -221,7 +221,7 @@ impl super::TreasuryApiClient {
         treasury_address: &str,
         fee_config: crate::treasury::types::FeeConfigInput,
         from_address: &str,
-    ) -> XionResult<crate::treasury::types::FeeConfigResult> {
+    ) -> VeronaResult<crate::treasury::types::FeeConfigResult> {
         debug!("Setting fee config for treasury: {}", treasury_address);
 
         // Encode the fee allowance
@@ -280,7 +280,7 @@ impl super::TreasuryApiClient {
         treasury_address: &str,
         grantee: &str,
         from_address: &str,
-    ) -> XionResult<crate::treasury::types::FeeConfigResult> {
+    ) -> VeronaResult<crate::treasury::types::FeeConfigResult> {
         debug!(
             "Revoking allowance from grantee: {} for treasury: {}",
             grantee, treasury_address
@@ -316,7 +316,7 @@ impl super::TreasuryApiClient {
         &self,
         access_token: &str,
         treasury_address: &str,
-    ) -> XionResult<Option<crate::treasury::types::FeeConfigInfo>> {
+    ) -> VeronaResult<Option<crate::treasury::types::FeeConfigInfo>> {
         debug!("Querying fee config for treasury: {}", treasury_address);
         // Query the treasury info which includes fee config
         let options = QueryOptions {

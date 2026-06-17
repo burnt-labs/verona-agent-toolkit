@@ -1,0 +1,64 @@
+{
+  "command": "admin",
+  "description": "Manage Treasury admin operations (propose, accept, cancel)",
+  "parameters": [
+    {
+      "name": "address",
+      "type": "string",
+      "required": true,
+      "format": "verona-address",
+      "description": "Treasury contract address"
+    },
+    {
+      "name": "action",
+      "type": "enum",
+      "enum": ["propose", "accept", "cancel"],
+      "required": true,
+      "description": "Admin action to perform"
+    },
+    {
+      "name": "new-admin",
+      "type": "string",
+      "required": false,
+      "format": "verona-address",
+      "description": "New admin address",
+      "depends_on": {
+        "parameter": "action",
+        "values": ["propose"]
+      },
+      "notes": ["Required when action is 'propose' - the address that will become the new admin"]
+    },
+    {
+      "name": "network",
+      "type": "enum",
+      "enum": ["local", "testnet", "mainnet"],
+      "required": false,
+      "default": "testnet",
+      "description": "Network to use"
+    }
+  ],
+  "examples": [
+    {
+      "description": "Propose new admin",
+      "params": {
+        "address": "xion1abc...",
+        "action": "propose",
+        "new-admin": "xion1newadmin..."
+      }
+    },
+    {
+      "description": "Accept admin role",
+      "params": {
+        "address": "xion1abc...",
+        "action": "accept"
+      }
+    },
+    {
+      "description": "Cancel proposed admin",
+      "params": {
+        "address": "xion1abc...",
+        "action": "cancel"
+      }
+    }
+  ]
+}

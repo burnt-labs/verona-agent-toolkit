@@ -8,7 +8,7 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use tracing::{debug, instrument};
 
-use crate::shared::error::{OAuthClientError, XionError, XionResult};
+use crate::shared::error::{OAuthClientError, VeronaError, VeronaResult};
 use crate::shared::retry::{is_retryable_status, with_retry, RetryConfig};
 
 // ============================================================================
@@ -244,9 +244,9 @@ pub struct RotateSecretResponse {
 pub struct MeUserInfo {
     /// User ID
     pub user_id: String,
-    /// Xion blockchain address
-    #[serde(default)]
-    pub xion_address: Option<String>,
+    /// Chain address (API field: xionAddress)
+    #[serde(default, alias = "xionAddress")]
+    pub verona_address: Option<String>,
     /// Authenticator type (undefined in OAuth mode)
     #[serde(default)]
     pub authenticator_type: Option<String>,
@@ -335,7 +335,7 @@ pub struct BackendError {
 // MGR API Client
 // ============================================================================
 
-/// MGR API Client for Xion
+/// MGR API Client for Verona
 ///
 /// Handles communication with the MGR API endpoints for:
 /// - OAuth client CRUD operations
@@ -356,12 +356,12 @@ impl MgrApiClient {
     ///
     /// # Arguments
     /// * `base_url` - Base URL of the OAuth2 API service (e.g., "https://oauth2.testnet.burnt.com")
-    pub fn new(base_url: String) -> Result<Self, XionError> {
+    pub fn new(base_url: String) -> Result<Self, VeronaError> {
         let http_client = Client::builder()
             .timeout(std::time::Duration::from_secs(30))
             .build()
             .map_err(|e| {
-                XionError::from(OAuthClientError::NetworkError {
+                VeronaError::from(OAuthClientError::NetworkError {
                     message: format!("Failed to create HTTP client: {}", e),
                 })
             })?;
@@ -383,7 +383,7 @@ impl MgrApiClient {
         access_token: &str,
         limit: Option<u32>,
         cursor: Option<&str>,
-    ) -> XionResult<ClientListResponse> {
+    ) -> VeronaResult<ClientListResponse> {
         debug!(
             "Listing OAuth clients (limit={:?}, cursor={:?})",
             limit, cursor
@@ -412,11 +412,11 @@ impl MgrApiClient {
         &self,
         access_token: &str,
         request: CreateClientRequest,
-    ) -> XionResult<CreateClientResponse> {
+    ) -> VeronaResult<CreateClientResponse> {
         debug!("Creating OAuth client: {:?}", request.client_name);
 
         let body = serde_json::to_value(&request).map_err(|e| {
-            XionError::from(OAuthClientError::InvalidResponse {
+            VeronaError::from(OAuthClientError::InvalidResponse {
                 message: e.to_string(),
             })
         })?;
@@ -431,7 +431,7 @@ impl MgrApiClient {
         &self,
         access_token: &str,
         client_id: &str,
-    ) -> XionResult<ClientResponse> {
+    ) -> VeronaResult<ClientResponse> {
         debug!("Getting OAuth client: {}", client_id);
 
         let path = format!("/mgr-api/clients/{}", client_id);
@@ -445,11 +445,11 @@ impl MgrApiClient {
         access_token: &str,
         client_id: &str,
         request: UpdateClientRequest,
-    ) -> XionResult<ClientResponse> {
+    ) -> VeronaResult<ClientResponse> {
         debug!("Updating OAuth client: {}", client_id);
 
         let body = serde_json::to_value(&request).map_err(|e| {
-            XionError::from(OAuthClientError::InvalidResponse {
+            VeronaError::from(OAuthClientError::InvalidResponse {
                 message: e.to_string(),
             })
         })?;
@@ -464,7 +464,7 @@ impl MgrApiClient {
         &self,
         access_token: &str,
         client_id: &str,
-    ) -> XionResult<MessageResponse> {
+    ) -> VeronaResult<MessageResponse> {
         debug!("Deleting OAuth client: {}", client_id);
 
         let path = format!("/mgr-api/clients/{}", client_id);
@@ -481,7 +481,7 @@ impl MgrApiClient {
         &self,
         access_token: &str,
         client_id: &str,
-    ) -> XionResult<ExtensionResponse> {
+    ) -> VeronaResult<ExtensionResponse> {
         debug!("Getting extension for client: {}", client_id);
 
         let path = format!("/mgr-api/clients/{}/extension", client_id);
@@ -495,11 +495,11 @@ impl MgrApiClient {
         access_token: &str,
         client_id: &str,
         request: UpdateExtensionRequest,
-    ) -> XionResult<ClientResponse> {
+    ) -> VeronaResult<ClientResponse> {
         debug!("Updating extension for client: {}", client_id);
 
         let body = serde_json::to_value(&request).map_err(|e| {
-            XionError::from(OAuthClientError::InvalidResponse {
+            VeronaError::from(OAuthClientError::InvalidResponse {
                 message: e.to_string(),
             })
         })?;
@@ -520,7 +520,7 @@ impl MgrApiClient {
         access_token: &str,
         client_id: &str,
         manager_user_id: &str,
-    ) -> XionResult<MessageResponse> {
+    ) -> VeronaResult<MessageResponse> {
         debug!(
             "Adding manager {} to client: {}",
             manager_user_id, client_id
@@ -530,7 +530,7 @@ impl MgrApiClient {
             manager_user_id: manager_user_id.to_string(),
         })
         .map_err(|e| {
-            XionError::from(OAuthClientError::InvalidResponse {
+            VeronaError::from(OAuthClientError::InvalidResponse {
                 message: e.to_string(),
             })
         })?;
@@ -546,7 +546,7 @@ impl MgrApiClient {
         access_token: &str,
         client_id: &str,
         manager_user_id: &str,
-    ) -> XionResult<MessageResponse> {
+    ) -> VeronaResult<MessageResponse> {
         debug!(
             "Removing manager {} from client: {}",
             manager_user_id, client_id
@@ -570,14 +570,14 @@ impl MgrApiClient {
         access_token: &str,
         client_id: &str,
         new_owner: &str,
-    ) -> XionResult<MessageResponse> {
+    ) -> VeronaResult<MessageResponse> {
         debug!("Transferring ownership of {} to {}", client_id, new_owner);
 
         let body = serde_json::to_value(TransferOwnershipRequest {
             new_owner: new_owner.to_string(),
         })
         .map_err(|e| {
-            XionError::from(OAuthClientError::InvalidResponse {
+            VeronaError::from(OAuthClientError::InvalidResponse {
                 message: e.to_string(),
             })
         })?;
@@ -592,7 +592,7 @@ impl MgrApiClient {
         &self,
         access_token: &str,
         client_id: &str,
-    ) -> XionResult<RotateSecretResponse> {
+    ) -> VeronaResult<RotateSecretResponse> {
         debug!("Rotating secret for client {}", client_id);
         let path = format!("/mgr-api/clients/{}/rotate-secret", client_id);
         self.request("POST", &path, access_token, None).await
@@ -604,7 +604,7 @@ impl MgrApiClient {
 
     /// Get the current authenticated user info
     #[instrument(skip(self, access_token))]
-    pub async fn get_me(&self, access_token: &str) -> XionResult<MeResponse> {
+    pub async fn get_me(&self, access_token: &str) -> VeronaResult<MeResponse> {
         debug!("Getting current user info from /mgr-api/me");
 
         self.request("GET", "/mgr-api/me", access_token, None).await
@@ -616,7 +616,7 @@ impl MgrApiClient {
 
     /// List treasuries for the authenticated user
     #[instrument(skip(self, access_token))]
-    pub async fn list_treasuries(&self, access_token: &str) -> XionResult<TreasuryListResponse> {
+    pub async fn list_treasuries(&self, access_token: &str) -> VeronaResult<TreasuryListResponse> {
         debug!("Listing treasuries from /mgr-api/treasuries");
 
         self.request("GET", "/mgr-api/treasuries", access_token, None)
@@ -632,7 +632,7 @@ impl MgrApiClient {
         grants: bool,
         fee: bool,
         admin: bool,
-    ) -> XionResult<TreasuryResponse> {
+    ) -> VeronaResult<TreasuryResponse> {
         debug!("Querying treasury: {}", address);
 
         let mut params = Vec::new();
@@ -668,7 +668,7 @@ impl MgrApiClient {
         path: &str,
         access_token: &str,
         body: Option<&serde_json::Value>,
-    ) -> XionResult<T> {
+    ) -> VeronaResult<T> {
         let url = format!("{}{}", self.base_url, path);
         let config = RetryConfig::default();
 
@@ -687,7 +687,7 @@ impl MgrApiClient {
                         "PATCH" => self.http_client.patch(&url),
                         "DELETE" => self.http_client.delete(&url),
                         _ => {
-                            return Err(XionError::from(OAuthClientError::InvalidResponse {
+                            return Err(VeronaError::from(OAuthClientError::InvalidResponse {
                                 message: format!("Unsupported HTTP method: {}", method),
                             }));
                         }
@@ -703,15 +703,15 @@ impl MgrApiClient {
 
                     let response = req.send().await.map_err(|e| {
                         if e.is_timeout() {
-                            XionError::from(OAuthClientError::NetworkError {
+                            VeronaError::from(OAuthClientError::NetworkError {
                                 message: format!("Request timed out: {}", e),
                             })
                         } else if e.is_connect() {
-                            XionError::from(OAuthClientError::NetworkError {
+                            VeronaError::from(OAuthClientError::NetworkError {
                                 message: format!("Connection failed: {}", e),
                             })
                         } else {
-                            XionError::from(OAuthClientError::NetworkError {
+                            VeronaError::from(OAuthClientError::NetworkError {
                                 message: format!("Request failed: {}", e),
                             })
                         }
@@ -743,17 +743,17 @@ impl MgrApiClient {
 
                     // Parse successful response
                     response.json::<T>().await.map_err(|e| {
-                        XionError::from(OAuthClientError::InvalidResponse {
+                        VeronaError::from(OAuthClientError::InvalidResponse {
                             message: format!("Failed to parse response: {}", e),
                         })
                     })
                 }
             },
-            |err: &XionError| {
+            |err: &VeronaError| {
                 matches!(
                     err,
-                    XionError::OAuthClient(OAuthClientError::NetworkError { .. })
-                        | XionError::OAuthClient(OAuthClientError::ServerError { .. })
+                    VeronaError::OAuthClient(OAuthClientError::NetworkError { .. })
+                        | VeronaError::OAuthClient(OAuthClientError::ServerError { .. })
                 )
             },
         )
@@ -764,7 +764,7 @@ impl MgrApiClient {
     ///
     /// Parses the backend error code and HTTP status to produce
     /// the appropriate toolkit error variant.
-    pub fn map_error(status: u16, body: &serde_json::Value) -> XionError {
+    pub fn map_error(status: u16, body: &serde_json::Value) -> VeronaError {
         let error_msg = body
             .get("error")
             .and_then(|v| v.as_str())
@@ -779,97 +779,99 @@ impl MgrApiClient {
 
         match (status, backend_code.as_str()) {
             // 400 errors
-            (400, "BAD_REQUEST") => XionError::from(OAuthClientError::BadRequest {
+            (400, "BAD_REQUEST") => VeronaError::from(OAuthClientError::BadRequest {
                 code: backend_code,
                 message: error_msg,
             }),
-            (400, "CLIENT_ID_REQUIRED") => XionError::from(OAuthClientError::BadRequest {
+            (400, "CLIENT_ID_REQUIRED") => VeronaError::from(OAuthClientError::BadRequest {
                 code: backend_code,
                 message: error_msg,
             }),
-            (400, "REDIRECT_URIS_REQUIRED") => XionError::from(OAuthClientError::BadRequest {
+            (400, "REDIRECT_URIS_REQUIRED") => VeronaError::from(OAuthClientError::BadRequest {
                 code: backend_code,
                 message: error_msg,
             }),
-            (400, "BINDED_TREASURY_REQUIRED") => XionError::from(OAuthClientError::BadRequest {
+            (400, "BINDED_TREASURY_REQUIRED") => VeronaError::from(OAuthClientError::BadRequest {
                 code: backend_code,
                 message: error_msg,
             }),
-            (400, "OWNER_REQUIRED") => XionError::from(OAuthClientError::BadRequest {
+            (400, "OWNER_REQUIRED") => VeronaError::from(OAuthClientError::BadRequest {
                 code: backend_code,
                 message: error_msg,
             }),
-            (400, "INVALID_GRANT_TYPE") => XionError::from(OAuthClientError::BadRequest {
+            (400, "INVALID_GRANT_TYPE") => VeronaError::from(OAuthClientError::BadRequest {
                 code: backend_code,
                 message: error_msg,
             }),
-            (400, "MANAGER_USER_ID_REQUIRED") => XionError::from(OAuthClientError::BadRequest {
+            (400, "MANAGER_USER_ID_REQUIRED") => VeronaError::from(OAuthClientError::BadRequest {
                 code: backend_code,
                 message: error_msg,
             }),
 
             // 401 errors
             (401, "AUTHENTICATION_REQUIRED") => {
-                XionError::from(OAuthClientError::AuthenticationRequired { message: error_msg })
+                VeronaError::from(OAuthClientError::AuthenticationRequired { message: error_msg })
             }
             (401, "USER_NOT_FOUND") => {
-                XionError::from(OAuthClientError::UserNotFound { message: error_msg })
+                VeronaError::from(OAuthClientError::UserNotFound { message: error_msg })
             }
 
             // 403 errors
             (403, "INSUFFICIENT_SCOPE") => {
-                XionError::from(OAuthClientError::InsufficientScope { message: error_msg })
+                VeronaError::from(OAuthClientError::InsufficientScope { message: error_msg })
             }
             (403, "ONLY_OWNER_ALLOWED") => {
-                XionError::from(OAuthClientError::OnlyOwnerAllowed { message: error_msg })
+                VeronaError::from(OAuthClientError::OnlyOwnerAllowed { message: error_msg })
             }
 
             // 404 errors
-            (404, "CLIENT_NOT_FOUND") => XionError::from(OAuthClientError::ClientNotFound {
+            (404, "CLIENT_NOT_FOUND") => VeronaError::from(OAuthClientError::ClientNotFound {
                 client_id: error_msg,
             }),
             (404, "CLIENT_EXTENSION_NOT_FOUND") => {
-                XionError::from(OAuthClientError::ClientExtensionNotFound {
+                VeronaError::from(OAuthClientError::ClientExtensionNotFound {
                     client_id: error_msg,
                 })
             }
             (404, "TREASURY_NOT_FOUND") => {
-                XionError::from(OAuthClientError::TreasuryNotFound { address: error_msg })
+                VeronaError::from(OAuthClientError::TreasuryNotFound { address: error_msg })
             }
 
             // 500 errors
-            (500, "INTERNAL_SERVER_ERROR") => XionError::from(OAuthClientError::ServerError {
+            (500, "INTERNAL_SERVER_ERROR") => VeronaError::from(OAuthClientError::ServerError {
                 code: backend_code,
                 message: error_msg,
             }),
-            (500, "TREASURY_FETCH_ERROR") => XionError::from(OAuthClientError::ServerError {
+            (500, "TREASURY_FETCH_ERROR") => VeronaError::from(OAuthClientError::ServerError {
                 code: backend_code,
                 message: error_msg,
             }),
-            (500, "TREASURY_QUERY_ERROR") => XionError::from(OAuthClientError::ServerError {
+            (500, "TREASURY_QUERY_ERROR") => VeronaError::from(OAuthClientError::ServerError {
                 code: backend_code,
                 message: error_msg,
             }),
-            (500, "UNKNOWN_NETWORK") => XionError::from(OAuthClientError::ServerError {
+            (500, "UNKNOWN_NETWORK") => VeronaError::from(OAuthClientError::ServerError {
                 code: backend_code,
                 message: error_msg,
             }),
 
             // Fallback: map by HTTP status class
             (401, _) => {
-                XionError::from(OAuthClientError::AuthenticationRequired { message: error_msg })
+                VeronaError::from(OAuthClientError::AuthenticationRequired { message: error_msg })
             }
-            (403, _) => XionError::from(OAuthClientError::InsufficientScope { message: error_msg }),
-            (404, _) => XionError::from(OAuthClientError::InvalidResponse {
+            (403, _) => {
+                VeronaError::from(OAuthClientError::InsufficientScope { message: error_msg })
+            }
+            (404, _) => VeronaError::from(OAuthClientError::InvalidResponse {
                 message: format!("Resource not found: {}", error_msg),
             }),
             (status, _) if is_retryable_status(status) => {
-                XionError::from(OAuthClientError::ServerError {
+                VeronaError::from(OAuthClientError::ServerError {
                     code: backend_code,
                     message: error_msg,
                 })
             }
-            _ => XionError::from(OAuthClientError::BadRequest {
+            _ => VeronaError::from(OAuthClientError::BadRequest {
                 code: backend_code,
                 message: error_msg,
             }),
@@ -1308,7 +1310,7 @@ mod tests {
         let response: MeResponse = serde_json::from_str(json).unwrap();
         assert!(response.success);
         assert_eq!(response.user_id, "xion1abc123");
-        assert_eq!(response.user.xion_address.as_deref(), Some("xion1abc123"));
+        assert_eq!(response.user.verona_address.as_deref(), Some("xion1abc123"));
         assert_eq!(
             response.user.authenticator_type.as_deref(),
             Some("EthWallet")

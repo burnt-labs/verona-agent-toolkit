@@ -14,7 +14,7 @@ use serde::Serialize;
 use std::str::FromStr;
 
 use crate::shared::error::{
-    AuthError, ErrorResponse, NetworkError, TreasuryError, XionError, XionErrorCode,
+    AuthError, ErrorResponse, NetworkError, TreasuryError, VeronaError, VeronaErrorCode,
 };
 
 /// Output format for CLI responses
@@ -159,13 +159,13 @@ pub fn print_warning(message: &str) {
 }
 
 /// Print a structured error response to stdout (JSON)
-pub fn print_error_response(error: &XionError) -> Result<()> {
+pub fn print_error_response(error: &VeronaError) -> Result<()> {
     let response = error.to_response();
     print_json(&response)
 }
 
 /// Print a structured error response with custom message
-pub fn print_error_response_with_context(code: XionErrorCode, context: &str) -> Result<()> {
+pub fn print_error_response_with_context(code: VeronaErrorCode, context: &str) -> Result<()> {
     let response = ErrorResponse::with_context(code, context);
     print_json(&response)
 }
@@ -189,18 +189,18 @@ pub fn print_success_message(message: &str) -> Result<()> {
 }
 
 /// Print an error for human consumption (to stderr)
-pub fn print_error_human(error: &XionError) {
+pub fn print_error_human(error: &VeronaError) {
     let response = error.to_response();
     eprintln!("{}", response);
 }
 
 /// Print an error for JSON consumption (to stdout)
-pub fn print_error_json(error: &XionError) -> Result<()> {
+pub fn print_error_json(error: &VeronaError) -> Result<()> {
     print_error_response(error)
 }
 
 /// Print error based on output format
-pub fn print_error(error: &XionError, format: OutputFormat) -> Result<()> {
+pub fn print_error(error: &VeronaError, format: OutputFormat) -> Result<()> {
     match format {
         OutputFormat::Json => print_error_json(error),
         OutputFormat::JsonCompact => {
@@ -296,12 +296,12 @@ impl CliOutput {
     }
 
     /// Print an error
-    pub fn error(&self, error: &XionError) -> Result<()> {
+    pub fn error(&self, error: &VeronaError) -> Result<()> {
         print_error(error, self.format)
     }
 
     /// Print an error with custom code and context
-    pub fn error_with_context(&self, code: XionErrorCode, context: &str) -> Result<()> {
+    pub fn error_with_context(&self, code: VeronaErrorCode, context: &str) -> Result<()> {
         match self.format {
             OutputFormat::Json | OutputFormat::JsonCompact | OutputFormat::GitHubActions => {
                 print_error_response_with_context(code, context)
@@ -331,33 +331,33 @@ impl CliOutput {
 }
 
 /// Convert an anyhow error to a Xion error for output
-pub fn anyhow_to_xion_error(err: &anyhow::Error) -> XionError {
+pub fn anyhow_to_verona_error(err: &anyhow::Error) -> VeronaError {
     // Check for common error patterns in the message
     let err_str = err.to_string().to_lowercase();
 
     if err_str.contains("not authenticated") || err_str.contains("no credentials") {
-        return XionError::from(AuthError::NotAuthenticated(err.to_string()));
+        return VeronaError::from(AuthError::NotAuthenticated(err.to_string()));
     }
 
     if err_str.contains("token expired") {
-        return XionError::from(AuthError::TokenExpired(err.to_string()));
+        return VeronaError::from(AuthError::TokenExpired(err.to_string()));
     }
 
     if err_str.contains("timeout") {
-        return XionError::from(NetworkError::Timeout(err.to_string()));
+        return VeronaError::from(NetworkError::Timeout(err.to_string()));
     }
 
     if err_str.contains("connection") {
-        return XionError::from(NetworkError::ConnectionRefused(err.to_string()));
+        return VeronaError::from(NetworkError::ConnectionRefused(err.to_string()));
     }
 
     if err_str.contains("treasury not found") {
-        return XionError::from(TreasuryError::NotFound(err.to_string()));
+        return VeronaError::from(TreasuryError::NotFound(err.to_string()));
     }
 
     // Default to a generic error
-    XionError::Generic {
-        code: XionErrorCode::ECONFIG002,
+    VeronaError::Generic {
+        code: VeronaErrorCode::ECONFIG002,
         message: err.to_string(),
         hint: "Check the error message for details".to_string(),
     }
@@ -415,7 +415,7 @@ mod tests {
 
     #[test]
     fn test_error_response_serialization() {
-        let error = XionError::from(AuthError::NotAuthenticated("test".to_string()));
+        let error = VeronaError::from(AuthError::NotAuthenticated("test".to_string()));
         let response = error.to_response();
         let json = serde_json::to_string(&response).unwrap();
 
@@ -448,25 +448,25 @@ mod tests {
     }
 
     #[test]
-    fn test_anyhow_to_xion_error_auth() {
+    fn test_anyhow_to_verona_error_auth() {
         let err = anyhow::anyhow!("No credentials found for network 'testnet'");
-        let xion_err = anyhow_to_xion_error(&err);
-        assert_eq!(xion_err.code(), XionErrorCode::EAUTH001);
+        let xion_err = anyhow_to_verona_error(&err);
+        assert_eq!(xion_err.code(), VeronaErrorCode::EAUTH001);
     }
 
     #[test]
-    fn test_anyhow_to_xion_error_timeout() {
+    fn test_anyhow_to_verona_error_timeout() {
         let err = anyhow::anyhow!("Connection timeout after 30s");
-        let xion_err = anyhow_to_xion_error(&err);
-        assert_eq!(xion_err.code(), XionErrorCode::ENETWORK001);
+        let xion_err = anyhow_to_verona_error(&err);
+        assert_eq!(xion_err.code(), VeronaErrorCode::ENETWORK001);
         assert!(xion_err.is_retryable());
     }
 
     #[test]
-    fn test_anyhow_to_xion_error_treasury() {
+    fn test_anyhow_to_verona_error_treasury() {
         let err = anyhow::anyhow!("Treasury not found: xion1abc123");
-        let xion_err = anyhow_to_xion_error(&err);
-        assert_eq!(xion_err.code(), XionErrorCode::ETREASURY001);
+        let xion_err = anyhow_to_verona_error(&err);
+        assert_eq!(xion_err.code(), VeronaErrorCode::ETREASURY001);
     }
 
     #[test]

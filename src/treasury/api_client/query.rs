@@ -10,7 +10,7 @@ use chrono::DateTime;
 use serde::Deserialize;
 use tracing::{debug, instrument};
 
-use crate::shared::error::{NetworkError, TreasuryError, XionResult};
+use crate::shared::error::{NetworkError, TreasuryError, VeronaResult};
 use crate::treasury::types::{QueryOptions, TreasuryInfo, TreasuryListItem, TreasuryParams};
 
 use super::helpers::{base64_decode, base64_encode, extract_address_from_token};
@@ -36,7 +36,7 @@ impl super::TreasuryApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::api::TreasuryApiClient;
+    /// use verona_agent_toolkit::api::TreasuryApiClient;
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -51,7 +51,7 @@ impl super::TreasuryApiClient {
     /// # }
     /// ```
     #[instrument(skip(self, access_token))]
-    pub async fn list_treasuries(&self, access_token: &str) -> XionResult<Vec<TreasuryListItem>> {
+    pub async fn list_treasuries(&self, access_token: &str) -> VeronaResult<Vec<TreasuryListItem>> {
         // Extract user address from access token (format: {userId}:{grantId}:{secret})
         let user_address = extract_address_from_token(access_token)?;
 
@@ -155,7 +155,7 @@ impl super::TreasuryApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::treasury::{TreasuryApiClient, QueryOptions};
+    /// use verona_agent_toolkit::treasury::{TreasuryApiClient, QueryOptions};
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -180,7 +180,7 @@ impl super::TreasuryApiClient {
         access_token: &str,
         address: &str,
         _options: QueryOptions,
-    ) -> XionResult<TreasuryInfo> {
+    ) -> VeronaResult<TreasuryInfo> {
         // Use DaoDao Indexer to query treasury info
         // Extract user address from token to build the list URL
         let user_address = extract_address_from_token(access_token)?;
@@ -235,7 +235,7 @@ impl super::TreasuryApiClient {
     fn indexer_item_to_treasury_info(
         &self,
         item: &IndexerTreasuryItem,
-    ) -> XionResult<TreasuryInfo> {
+    ) -> VeronaResult<TreasuryInfo> {
         // Get uxion balance
         let balance = item
             .balances
@@ -293,7 +293,7 @@ impl super::TreasuryApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::treasury::TreasuryApiClient;
+    /// use verona_agent_toolkit::treasury::TreasuryApiClient;
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -313,7 +313,7 @@ impl super::TreasuryApiClient {
         &self,
         contract_address: &str,
         query_msg: &serde_json::Value,
-    ) -> XionResult<serde_json::Value> {
+    ) -> VeronaResult<serde_json::Value> {
         debug!("Querying contract: {}", contract_address);
 
         // Step 1: Serialize query message to JSON string
@@ -403,7 +403,7 @@ impl super::TreasuryApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::treasury::TreasuryApiClient;
+    /// use verona_agent_toolkit::treasury::TreasuryApiClient;
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -418,7 +418,7 @@ impl super::TreasuryApiClient {
     /// # }
     /// ```
     #[instrument(skip(self))]
-    pub async fn get_code_info(&self, code_id: u64) -> XionResult<CodeInfo> {
+    pub async fn get_code_info(&self, code_id: u64) -> VeronaResult<CodeInfo> {
         let url = format!("{}/cosmwasm/wasm/v1/code/{}", self.rest_url, code_id);
         debug!("Fetching code info from: {}", url);
 

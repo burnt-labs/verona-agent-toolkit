@@ -1,19 +1,67 @@
 # Configuration Guide
 
-This document explains the configuration structure and credential management for xion-agent-toolkit.
+This document explains the configuration structure and credential management for verona-agent-toolkit.
 
 ## Configuration Directory
 
 All configuration and credentials are stored in:
 
 ```
-~/.xion-toolkit/
+~/.verona-toolkit/
 ├── config.json              # User configuration
 ├── oauth_endpoints.json     # OAuth2 endpoints (auto-generated)
 └── credentials/
     ├── testnet.enc          # Encrypted credentials for testnet
     └── mainnet.enc          # Encrypted credentials for mainnet
 ```
+
+---
+
+## Migrating from Xion Agent Toolkit
+
+If you previously used **Xion Agent Toolkit** (`xion-toolkit`, `~/.xion-toolkit/`), follow this guide when upgrading to Verona Agent Toolkit.
+
+### Automatic config migration
+
+On first run, if `~/.verona-toolkit/` does not exist and `~/.xion-toolkit/` is present, the CLI **renames** the legacy directory to `~/.verona-toolkit/`. Encrypted credential files (`.enc`) move with the directory; no re-login is required.
+
+```bash
+verona-toolkit --version   # triggers migration on first config access
+ls ~/.verona-toolkit/credentials/
+```
+
+### Manual steps
+
+1. **Reinstall the CLI** — use the latest `verona-agent-toolkit` installer or `cargo install` from this repository.
+2. **Reinstall skills** — global installs must use the new folder names:
+   ```bash
+   npx skills add burnt-labs/verona-agent-toolkit -g -y
+   ```
+3. **Update environment variables** — prefer `VERONA_*` names; legacy `XION_*` vars still work with a deprecation warning (see [Environment Variables](#environment-variables)).
+4. **Update scripts and CI** — replace `xion-toolkit` invocations with `verona-toolkit`; update credential paths to `~/.verona-toolkit/`.
+
+### Edge case: empty Verona directory
+
+If you created an **empty** `~/.verona-toolkit/` before upgrading while credentials remain under `~/.xion-toolkit/`, automatic migration is skipped. Fix manually:
+
+```bash
+# If ~/.verona-toolkit/ is empty and ~/.xion-toolkit/ has credentials:
+mv ~/.xion-toolkit/credentials ~/.verona-toolkit/
+rmdir ~/.xion-toolkit 2>/dev/null || true
+```
+
+Or remove the empty `~/.verona-toolkit/` and run `verona-toolkit auth status` again to trigger rename migration.
+
+### Skill script environment variables
+
+Skill bash scripts accept legacy names during the transition:
+
+| Verona (preferred) | Legacy (deprecated) |
+|--------------------|---------------------|
+| `VERONA_SKIP_CONFIRM` | `XION_SKIP_CONFIRM` |
+| `VERONA_AUDIT_LOG` | `XION_AUDIT_LOG` |
+| `VERONA_AUDIT_LOG_FILE` | `XION_AUDIT_LOG_FILE` |
+| `VERONA_SKILLS_DIR` | `XION_SKILLS_DIR` |
 
 ---
 
@@ -39,14 +87,14 @@ All configuration and credentials are stored in:
 
 ```bash
 # Show current configuration
-xion-toolkit config show
+verona-toolkit config show
 
 # Switch default network
-xion-toolkit config set-network testnet
-xion-toolkit config set-network mainnet
+verona-toolkit config set-network testnet
+verona-toolkit config set-network mainnet
 
 # Override network for single command
-xion-toolkit --network mainnet treasury list
+verona-toolkit --network mainnet treasury list
 ```
 
 ---
@@ -59,7 +107,7 @@ Credentials are **encrypted with AES-256-GCM** before being written to disk.
 
 **Encryption Key Source (in order of priority):**
 
-1. **CI/CD Environment**: `XION_CI_ENCRYPTION_KEY` environment variable
+1. **CI/CD Environment**: `VERONA_CI_ENCRYPTION_KEY` environment variable
 2. **Local Machine**: Machine ID via `machine-uid` crate
 
 ### Credential Schema
@@ -72,9 +120,11 @@ Each network's credentials file (`testnet.enc` or `mainnet.enc`) contains:
   "refresh_token": "xion1...:grantId:refreshSecret",
   "expires_at": "2024-01-15T12:00:00Z",
   "refresh_token_expires_at": "2024-02-15T12:00:00Z",
-  "xion_address": "xion1abc..."
+  "verona_address": "xion1abc..."
 }
 ```
+
+> **Chain identifier:** Addresses use the `xion1` bech32 prefix (unchanged on-chain). Legacy credential files may contain `xion_address`; it deserializes as `verona_address`.
 
 ### Fields
 
@@ -84,7 +134,7 @@ Each network's credentials file (`testnet.enc` or `mainnet.enc`) contains:
 | `refresh_token` | string | OAuth2 refresh token (valid for 30 days) |
 | `expires_at` | string | ISO 8601 timestamp when access token expires |
 | `refresh_token_expires_at` | string | ISO 8601 timestamp when refresh token expires |
-| `xion_address` | string | Xion blockchain address derived from OAuth2 identity |
+| `verona_address` | string | MetaAccount address (`xion1...` chain identifier) from OAuth2 identity |
 
 ### Token Lifecycle
 
@@ -99,14 +149,14 @@ Access Token (1 hour)
   ▼
 Refresh Token (30 days)
   │
-  ├─► Manual refresh: xion-toolkit auth refresh
+  ├─► Manual refresh: verona-toolkit auth refresh
   │
   └─► Expired: Re-login required
 ```
 
 ### Important Notes
 
-- **Do NOT delete** `~/.xion-toolkit/credentials/*.enc` files during testing
+- **Do NOT delete** `~/.verona-toolkit/credentials/*.enc` files during testing
 - Refresh tokens last 30 days; deleting them forces browser re-login
 - Access tokens auto-refresh when expired
 - Only run `auth logout` when explicitly needed
@@ -151,13 +201,13 @@ This file is automatically generated and managed by the CLI.
 
 ```bash
 # Change default network
-xion-toolkit config set-network testnet
+verona-toolkit config set-network testnet
 
 # Override for single command
-xion-toolkit --network mainnet auth status
+verona-toolkit --network mainnet auth status
 
 # Check current network
-xion-toolkit status
+verona-toolkit status
 ```
 
 ---
@@ -167,8 +217,8 @@ xion-toolkit status
 ### 1. Credential Protection
 
 - Credentials are encrypted at rest with AES-256-GCM
-- Never share `~/.xion-toolkit/credentials/` directory
-- Use environment variables in CI/CD (`XION_CI_ENCRYPTION_KEY`)
+- Never share `~/.verona-toolkit/credentials/` directory
+- Use environment variables in CI/CD (`VERONA_CI_ENCRYPTION_KEY`)
 
 ### 2. PKCE (RFC 7636)
 
@@ -195,38 +245,38 @@ xion-toolkit status
 
 ```bash
 # Check if credentials exist
-ls -la ~/.xion-toolkit/credentials/
+ls -la ~/.verona-toolkit/credentials/
 
 # Re-authenticate
-xion-toolkit auth login
+verona-toolkit auth login
 ```
 
 ### Token Expired
 
 ```bash
 # Check status
-xion-toolkit auth status
+verona-toolkit auth status
 
 # Refresh token
-xion-toolkit auth refresh
+verona-toolkit auth refresh
 ```
 
 ### Wrong Network
 
 ```bash
 # Check current network
-xion-toolkit status
+verona-toolkit status
 
 # Switch network
-xion-toolkit config set-network testnet
+verona-toolkit config set-network testnet
 ```
 
 ### Permission Denied
 
 ```bash
 # Fix permissions
-chmod 700 ~/.xion-toolkit
-chmod 600 ~/.xion-toolkit/credentials/*.enc
+chmod 700 ~/.verona-toolkit
+chmod 600 ~/.verona-toolkit/credentials/*.enc
 ```
 
 ---
@@ -235,9 +285,11 @@ chmod 600 ~/.xion-toolkit/credentials/*.enc
 
 | Variable | Description |
 |----------|-------------|
-| `XION_CI_ENCRYPTION_KEY` | Encryption key for CI/CD environments |
-| `XION_NETWORK` | Default network override |
-| `XION_CALLBACK_PORT` | OAuth2 callback server port |
+| `VERONA_CI_ENCRYPTION_KEY` | Encryption key for CI/CD environments |
+| `VERONA_NETWORK_OVERRIDE` | Default network override (`testnet` or `mainnet`) |
+| `VERONA_SKILLS_DIR` | Custom skills directory override |
+
+Legacy `XION_*` names are accepted with a deprecation warning. OAuth2 callback port is set via `verona-toolkit auth login --port <PORT>` (default `54321`).
 
 ---
 

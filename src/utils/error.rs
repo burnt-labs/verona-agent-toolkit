@@ -6,5 +6,5 @@
 // Re-export from shared module for backward compatibility
 pub use crate::shared::error::{
     AssetError, AuthError, BatchError, ConfigError, ErrorDetail, ErrorResponse, NetworkError,
-    TreasuryError, XionError, XionErrorCode, XionResult,
+    TreasuryError, VeronaError, VeronaErrorCode, VeronaResult,
 };

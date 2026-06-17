@@ -29,8 +29,8 @@ const DEV_MODE_SCOPES: &[&str] = &["xion:mgr:read", "xion:mgr:write"];
 ///
 /// # Example
 /// ```no_run
-/// use xion_agent_toolkit::config::NetworkConfig;
-/// use xion_agent_toolkit::oauth::OAuthClient;
+/// use verona_agent_toolkit::config::NetworkConfig;
+/// use verona_agent_toolkit::oauth::OAuthClient;
 ///
 /// # #[tokio::main]
 /// # async fn main() -> anyhow::Result<()> {
@@ -55,7 +55,7 @@ const DEV_MODE_SCOPES: &[&str] = &["xion:mgr:read", "xion:mgr:write"];
 ///
 /// // Login
 /// let credentials = client.login().await?;
-/// println!("Logged in as: {:?}", credentials.xion_address);
+/// println!("Logged in as: {:?}", credentials.verona_address);
 ///
 /// // Get valid token (auto-refresh if needed)
 /// let credentials = client.get_valid_token().await?;
@@ -92,8 +92,8 @@ impl OAuthClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::config::NetworkConfig;
-    /// use xion_agent_toolkit::oauth::OAuthClient;
+    /// use verona_agent_toolkit::config::NetworkConfig;
+    /// use verona_agent_toolkit::oauth::OAuthClient;
     ///
     /// # let config = NetworkConfig {
     /// #     network_name: "testnet".to_string(),
@@ -215,8 +215,8 @@ impl OAuthClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use xion_agent_toolkit::oauth::OAuthClient;
-    /// # use xion_agent_toolkit::config::NetworkConfig;
+    /// # use verona_agent_toolkit::oauth::OAuthClient;
+    /// # use verona_agent_toolkit::config::NetworkConfig;
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
     /// # let config = NetworkConfig {
@@ -239,7 +239,7 @@ impl OAuthClient {
     /// let client = OAuthClient::new(config)?;
     /// let credentials = client.login().await?;
     /// println!("Logged in successfully!");
-    /// println!("Xion address: {:?}", credentials.xion_address);
+    /// println!("Xion address: {:?}", credentials.verona_address);
     /// # Ok(())
     /// # }
     /// ```
@@ -345,7 +345,7 @@ impl OAuthClient {
             refresh_token: token_response.refresh_token,
             expires_at,
             refresh_token_expires_at,
-            xion_address: Some(user_info.id),
+            verona_address: Some(user_info.id),
             scope: token_response.scope,
         };
 
@@ -369,8 +369,8 @@ impl OAuthClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use xion_agent_toolkit::oauth::OAuthClient;
-    /// # use xion_agent_toolkit::config::NetworkConfig;
+    /// # use verona_agent_toolkit::oauth::OAuthClient;
+    /// # use verona_agent_toolkit::config::NetworkConfig;
     /// # fn main() -> anyhow::Result<()> {
     /// # let config = NetworkConfig {
     /// #     network_name: "testnet".to_string(),
@@ -417,8 +417,8 @@ impl OAuthClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use xion_agent_toolkit::oauth::OAuthClient;
-    /// # use xion_agent_toolkit::config::NetworkConfig;
+    /// # use verona_agent_toolkit::oauth::OAuthClient;
+    /// # use verona_agent_toolkit::config::NetworkConfig;
     /// # fn main() -> anyhow::Result<()> {
     /// # let config = NetworkConfig {
     /// #     network_name: "testnet".to_string(),
@@ -466,8 +466,8 @@ impl OAuthClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use xion_agent_toolkit::oauth::OAuthClient;
-    /// # use xion_agent_toolkit::config::NetworkConfig;
+    /// # use verona_agent_toolkit::oauth::OAuthClient;
+    /// # use verona_agent_toolkit::config::NetworkConfig;
     /// # fn main() -> anyhow::Result<()> {
     /// # let config = NetworkConfig {
     /// #     network_name: "testnet".to_string(),
@@ -488,7 +488,7 @@ impl OAuthClient {
     /// # };
     /// let client = OAuthClient::new(config)?;
     /// if let Some(creds) = client.get_credentials()? {
-    ///     println!("Xion address: {:?}", creds.xion_address);
+    ///     println!("Xion address: {:?}", creds.verona_address);
     /// }
     /// # Ok(())
     /// # }
@@ -517,8 +517,8 @@ impl OAuthClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use xion_agent_toolkit::oauth::OAuthClient;
-    /// # use xion_agent_toolkit::config::NetworkConfig;
+    /// # use verona_agent_toolkit::oauth::OAuthClient;
+    /// # use verona_agent_toolkit::config::NetworkConfig;
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
     /// # let config = NetworkConfig {
@@ -568,8 +568,8 @@ impl OAuthClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use xion_agent_toolkit::oauth::OAuthClient;
-    /// # use xion_agent_toolkit::config::NetworkConfig;
+    /// # use verona_agent_toolkit::oauth::OAuthClient;
+    /// # use verona_agent_toolkit::config::NetworkConfig;
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
     /// # let config = NetworkConfig {

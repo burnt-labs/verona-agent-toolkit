@@ -1,39 +1,39 @@
 //! Encrypted file-based credential storage.
 //!
 //! This module provides secure credential storage using AES-256-GCM encryption.
-//! All credentials are stored in encrypted JSON files under `~/.xion-toolkit/credentials/`.
+//! All credentials are stored in encrypted JSON files under `~/.verona-toolkit/credentials/`.
 //!
 //! # Key Derivation
 //!
 //! The encryption key is derived from (in order of priority):
-//! 1. `XION_CI_ENCRYPTION_KEY` environment variable (for CI/CD only)
+//! 1. `VERONA_CI_ENCRYPTION_KEY` environment variable (for CI/CD only)
 //! 2. Machine ID via `machine-uid` crate (for local development, default)
 //!
-//! **Note**: Local development does NOT need `XION_CI_ENCRYPTION_KEY`.
+//! **Note**: Local development does NOT need `VERONA_CI_ENCRYPTION_KEY`.
 //! It is only needed in CI/CD environments where machine ID may be unstable.
 //!
 //! # File Format
 //!
 //! Credentials are stored as base64-encoded encrypted JSON:
 //! ```text
-//! ~/.xion-toolkit/credentials/{network}.enc
+//! ~/.verona-toolkit/credentials/{network}.enc
 //! ```
 //!
 //! # CI/CD Setup
 //!
 //! For automated testing in CI environments, set a fixed encryption key:
 //! ```bash
-//! export XION_CI_ENCRYPTION_KEY=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+//! export VERONA_CI_ENCRYPTION_KEY=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
 //! ```
 //!
 //! This enables headless testing without OS keychain interaction.
 
 use anyhow::{Context, Result};
-use std::env;
 use std::fs;
 use std::path::PathBuf;
 
 use super::encryption::{decrypt, encrypt};
+use super::paths::config_dir;
 use super::schema::UserCredentials;
 
 #[derive(Debug, Clone)]
@@ -53,12 +53,7 @@ impl CredentialsManager {
     ///
     /// A new `CredentialsManager` instance
     pub fn new(network: &str) -> Result<Self> {
-        // Use unified ~/.xion-toolkit/ directory for all platforms
-        let home_dir = env::var("HOME")
-            .or_else(|_| env::var("USERPROFILE"))
-            .context("Failed to determine home directory")?;
-
-        let config_dir = PathBuf::from(home_dir).join(".xion-toolkit");
+        let config_dir = config_dir()?;
 
         // Ensure credentials directory exists
         let creds_dir = config_dir.join("credentials");
@@ -132,7 +127,7 @@ impl CredentialsManager {
         // Check if file exists
         if !path.exists() {
             return Err(anyhow::anyhow!(
-                "No credentials found for network '{}'. Run 'xion auth login' first.",
+                "No credentials found for network '{}'. Run 'verona-toolkit auth login' first.",
                 self.network
             ));
         }
@@ -203,6 +198,7 @@ mod tests {
     use crate::config::encryption;
     use base64::Engine;
     use serial_test::serial;
+    use std::env;
     use tempfile::tempdir;
 
     /// Helper to set up test environment with isolated directory and encryption key
@@ -249,7 +245,7 @@ mod tests {
             refresh_token: "test_refresh_token".to_string(),
             expires_at: "2024-12-31T23:59:59Z".to_string(),
             refresh_token_expires_at: Some("2025-01-31T23:59:59Z".to_string()),
-            xion_address: Some("xion1test".to_string()),
+            verona_address: Some("xion1test".to_string()),
             scope: None,
         };
 
@@ -264,7 +260,7 @@ mod tests {
         assert_eq!(credentials.access_token, loaded.access_token);
         assert_eq!(credentials.refresh_token, loaded.refresh_token);
         assert_eq!(credentials.expires_at, loaded.expires_at);
-        assert_eq!(credentials.xion_address, loaded.xion_address);
+        assert_eq!(credentials.verona_address, loaded.verona_address);
 
         restore_key(original_key);
     }
@@ -288,7 +284,7 @@ mod tests {
             refresh_token: "refresh".to_string(),
             expires_at: "2024-12-31T23:59:59Z".to_string(),
             refresh_token_expires_at: None,
-            xion_address: None,
+            verona_address: None,
             scope: None,
         };
         manager
@@ -317,7 +313,7 @@ mod tests {
             refresh_token: "refresh".to_string(),
             expires_at: "2024-12-31T23:59:59Z".to_string(),
             refresh_token_expires_at: None,
-            xion_address: None,
+            verona_address: None,
             scope: None,
         };
         manager
@@ -348,7 +344,7 @@ mod tests {
             refresh_token: "refresh".to_string(),
             expires_at: "2024-01-01T00:00:00Z".to_string(),
             refresh_token_expires_at: Some("2025-01-01T00:00:00Z".to_string()),
-            xion_address: Some("xion1test".to_string()),
+            verona_address: Some("xion1test".to_string()),
             scope: None,
         };
         manager
@@ -365,7 +361,7 @@ mod tests {
         assert_eq!(loaded.access_token, "new_token");
         assert_eq!(loaded.expires_at, "2024-12-31T23:59:59Z");
         assert_eq!(loaded.refresh_token, "refresh"); // Unchanged
-        assert_eq!(loaded.xion_address, Some("xion1test".to_string())); // Unchanged
+        assert_eq!(loaded.verona_address, Some("xion1test".to_string())); // Unchanged
 
         restore_key(original_key);
     }
@@ -389,7 +385,7 @@ mod tests {
             refresh_token: "testnet_refresh".to_string(),
             expires_at: "2024-01-01T00:00:00Z".to_string(),
             refresh_token_expires_at: Some("2025-01-01T00:00:00Z".to_string()),
-            xion_address: Some("xion1testnet".to_string()),
+            verona_address: Some("xion1testnet".to_string()),
             scope: None,
         };
 
@@ -398,7 +394,7 @@ mod tests {
             refresh_token: "mainnet_refresh".to_string(),
             expires_at: "2024-01-01T00:00:00Z".to_string(),
             refresh_token_expires_at: Some("2025-01-01T00:00:00Z".to_string()),
-            xion_address: Some("xion1mainnet".to_string()),
+            verona_address: Some("xion1mainnet".to_string()),
             scope: None,
         };
 
@@ -458,7 +454,7 @@ mod tests {
             refresh_token: "secret_refresh_67890".to_string(),
             expires_at: "2024-12-31T23:59:59Z".to_string(),
             refresh_token_expires_at: Some("2025-01-31T23:59:59Z".to_string()),
-            xion_address: Some("xion1secret".to_string()),
+            verona_address: Some("xion1secret".to_string()),
             scope: None,
         };
 

@@ -1,6 +1,6 @@
-# Xion Agent Toolkit - Example Files
+# Verona Agent Toolkit - Example Files
 
-This directory contains practical, well-documented JSON example files for the `xion-toolkit` CLI commands.
+This directory contains practical, well-documented JSON example files for the `verona-toolkit` CLI commands.
 
 ## Quick Reference
 
@@ -27,7 +27,7 @@ Complete configuration for creating a new Treasury contract.
 
 **Command:**
 ```bash
-xion-toolkit treasury create --config examples/treasury-create-config.json
+verona-toolkit treasury create --config examples/treasury-create-config.json
 ```
 
 **Schema:**
@@ -56,7 +56,7 @@ Example output from the `treasury export` command. Use this for backup, migratio
 
 **Command:**
 ```bash
-xion-toolkit treasury export xion1abc123... --output treasury-backup.json
+verona-toolkit treasury export xion1abc123... --output treasury-backup.json
 ```
 
 **Output fields:**
@@ -80,20 +80,20 @@ Update treasury parameters including `redirect_url`, `icon_url`, `name`, and `is
 
 ```bash
 # Update individual parameters
-xion-toolkit treasury params update xion1treasury... \
+verona-toolkit treasury params update xion1treasury... \
   --redirect-url "https://newapp.com/callback" \
   --icon-url "https://newapp.com/icon.png"
 
 # Update name
-xion-toolkit treasury params update xion1treasury... \
+verona-toolkit treasury params update xion1treasury... \
   --name "My Updated Treasury"
 
 # Mark as OAuth2 application
-xion-toolkit treasury params update xion1treasury... \
+verona-toolkit treasury params update xion1treasury... \
   --is-oauth2-app
 
 # Update with additional metadata
-xion-toolkit treasury params update xion1treasury... \
+verona-toolkit treasury params update xion1treasury... \
   --metadata @examples/treasury-params-update.json
 ```
 
@@ -122,7 +122,7 @@ Authorization for `MsgSend` - allows the treasury to send funds on your behalf.
 
 **Command:**
 ```bash
-xion-toolkit treasury grant-config add xion1treasury... --grant-config examples/grant-config-send.json
+verona-toolkit treasury grant-config add xion1treasury... --grant-config examples/grant-config-send.json
 ```
 
 **Authorization schema:**
@@ -136,7 +136,7 @@ Authorization for `MsgExecuteContract` - allows the treasury to execute smart co
 
 **Command:**
 ```bash
-xion-toolkit treasury grant-config add xion1treasury... --grant-config examples/grant-config-contract-exec.json
+verona-toolkit treasury grant-config add xion1treasury... --grant-config examples/grant-config-contract-exec.json
 ```
 
 **Authorization schema:**
@@ -158,7 +158,7 @@ Basic fee allowance - a one-time spend limit for gasless transactions.
 
 **Command:**
 ```bash
-xion-toolkit treasury fee-config set xion1treasury... --fee-config examples/fee-config-basic.json
+verona-toolkit treasury fee-config set xion1treasury... --fee-config examples/fee-config-basic.json
 ```
 
 **Schema:**
@@ -172,7 +172,7 @@ Periodic fee allowance - spend limit that resets after each period.
 
 **Command:**
 ```bash
-xion-toolkit treasury fee-config set xion1treasury... --fee-config examples/fee-config-periodic.json
+verona-toolkit treasury fee-config set xion1treasury... --fee-config examples/fee-config-periodic.json
 ```
 
 **Schema:**
@@ -192,7 +192,7 @@ Instantiate message for deploying a new smart contract. The schema depends on th
 
 **Command:**
 ```bash
-xion-toolkit contract instantiate \
+verona-toolkit contract instantiate \
   --code-id 1260 \
   --label "my-contract" \
   --msg examples/contract-instantiate-msg.json
@@ -204,7 +204,7 @@ Query message for reading contract state. No authentication required.
 
 **Command:**
 ```bash
-xion-toolkit contract query \
+verona-toolkit contract query \
   --contract xion1contract... \
   --msg examples/contract-query-msg.json
 ```
@@ -215,7 +215,7 @@ Execute message for mutating contract state. Requires authentication.
 
 **Command:**
 ```bash
-xion-toolkit contract execute \
+verona-toolkit contract execute \
   --contract xion1contract... \
   --msg examples/contract-execute-msg.json
 ```
@@ -228,37 +228,37 @@ xion-toolkit contract execute \
 
 ```bash
 # 1. Create treasury with config
-xion-toolkit treasury create --config examples/treasury-create-config.json
+verona-toolkit treasury create --config examples/treasury-create-config.json
 
 # 2. Fund the treasury
-xion-toolkit treasury fund xion1treasury... --amount 10000000uxion
+verona-toolkit treasury fund xion1treasury... --amount 10000000uxion
 
 # 3. Add additional grant
-xion-toolkit treasury grant-config add xion1treasury... --grant-config examples/grant-config-contract-exec.json
+verona-toolkit treasury grant-config add xion1treasury... --grant-config examples/grant-config-contract-exec.json
 
 # 4. Set fee config
-xion-toolkit treasury fee-config set xion1treasury... --fee-config examples/fee-config-basic.json
+verona-toolkit treasury fee-config set xion1treasury... --fee-config examples/fee-config-basic.json
 
 # 5. Export for backup
-xion-toolkit treasury export xion1treasury... --output backup.json
+verona-toolkit treasury export xion1treasury... --output backup.json
 ```
 
 ### Contract Deployment
 
 ```bash
 # 1. Instantiate contract
-xion-toolkit contract instantiate \
+verona-toolkit contract instantiate \
   --code-id 1260 \
   --label "my-contract-001" \
   --msg examples/contract-instantiate-msg.json
 
 # 2. Query contract state
-xion-toolkit contract query \
+verona-toolkit contract query \
   --contract xion1contract... \
   --msg examples/contract-query-msg.json
 
 # 3. Execute contract message
-xion-toolkit contract execute \
+verona-toolkit contract execute \
   --contract xion1contract... \
   --msg examples/contract-execute-msg.json \
   --funds "1000000uxion"

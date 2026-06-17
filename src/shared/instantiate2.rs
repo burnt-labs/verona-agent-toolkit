@@ -15,7 +15,7 @@
 //! ## Usage
 //!
 //! ```rust,ignore
-//! use xion_agent_toolkit::shared::instantiate2::{compute_address, validate_salt, SaltEncoding};
+//! use verona_agent_toolkit::shared::instantiate2::{compute_address, validate_salt, SaltEncoding};
 //!
 //! // Validate and parse salt
 //! let salt_bytes = validate_salt("my-treasury-v1", SaltEncoding::Utf8)?;

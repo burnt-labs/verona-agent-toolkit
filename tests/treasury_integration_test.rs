@@ -3,11 +3,11 @@
 //! Integration tests for Treasury operations using mocked API responses.
 //! These tests verify the behavior of fund and withdraw operations.
 
+use verona_agent_toolkit::config::NetworkConfig;
+use verona_agent_toolkit::oauth::OAuthClient;
+use verona_agent_toolkit::treasury::{TreasuryApiClient, TreasuryManager};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
-use xion_agent_toolkit::config::NetworkConfig;
-use xion_agent_toolkit::oauth::OAuthClient;
-use xion_agent_toolkit::treasury::{TreasuryApiClient, TreasuryManager};
 
 /// TestTreasuryApiClient creates a TreasuryApiClient for testing
 fn create_test_api_client(base_url: &str) -> TreasuryApiClient {

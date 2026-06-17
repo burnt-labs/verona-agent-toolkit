@@ -31,10 +31,10 @@ Do not store dynamic plan progress in root `AGENTS.md` or `CLAUDE.md`.
 
 ## Status and roadmap
 
-- Read and update `{HARNESS_DIR}/status.json` for active plans, archived index, knowledge index, and phase summary.
-- Active roadmap: `status.json` → `active_roadmap` (under `{KNOWLEDGE_DIR}/`).
+- Read and update `{HARNESS_DIR}/status.json` for active `plans[]` and open `residual_findings`.
+- Index pointers: `status.json` → `metadata.active_roadmap`, `metadata.knowledge_index`, `metadata.archived_plans_index`.
 - Per-plan assignment templates: colocate with the plan; archive alongside it when the plan is `Done` (see `{PLAN_DIR}/archived/`).
-- Register new knowledge in `{KNOWLEDGE_DIR}/README.md` and `status.json` `knowledge[]`.
+- Register new knowledge in `{KNOWLEDGE_DIR}/README.md`.
 
 ## Working on harness artifacts
 

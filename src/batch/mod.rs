@@ -13,10 +13,10 @@
 //! ## Example
 //!
 //! ```no_run
-//! use xion_agent_toolkit::batch::{BatchRequest, BatchExecutor};
-//! use xion_agent_toolkit::batch::types::BatchMessage;
-//! use xion_agent_toolkit::config::NetworkConfig;
-//! use xion_agent_toolkit::oauth::OAuthClient;
+//! use verona_agent_toolkit::batch::{BatchRequest, BatchExecutor};
+//! use verona_agent_toolkit::batch::types::BatchMessage;
+//! use verona_agent_toolkit::config::NetworkConfig;
+//! use verona_agent_toolkit::oauth::OAuthClient;
 //!
 //! # #[tokio::main]
 //! # async fn main() -> anyhow::Result<()> {

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Xion Agent Toolkit - Authentication and Treasury Test Script
+# Verona Agent Toolkit - Authentication and Treasury Test Script
 # This script tests the OAuth2 authentication and basic treasury operations
 
 set -e
 
 echo "================================"
-echo "Xion Agent Toolkit Test Script"
+echo "Verona Agent Toolkit Test Script"
 echo "================================"
 echo ""
 
@@ -15,6 +15,8 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
+
+TOOLKIT="./target/release/verona-toolkit"
 
 # Function to print status
 print_status() {
@@ -27,7 +29,7 @@ print_status() {
 
 # 1. Check if CLI binary exists
 echo "1. Checking CLI binary..."
-if [ -f "./target/release/xion" ]; then
+if [ -f "$TOOLKIT" ]; then
     echo -e "${GREEN}✓ CLI binary found${NC}"
 else
     echo -e "${RED}✗ CLI binary not found. Please run: cargo build --release${NC}"
@@ -37,32 +39,32 @@ echo ""
 
 # 2. Check authentication status
 echo "2. Checking authentication status..."
-AUTH_STATUS=$(./target/release/xion auth status --output json 2>&1 | grep -v "^\[2m" | grep -A 100 "^{")
+AUTH_STATUS=$("$TOOLKIT" auth status --output json 2>&1 | grep -v "^\[2m" | grep -A 100 "^{")
 if echo "$AUTH_STATUS" | grep -q '"authenticated": true'; then
     echo -e "${GREEN}✓ User is authenticated${NC}"
     echo ""
     echo "Authentication Details:"
     echo "$AUTH_STATUS" | jq '.'
     
-    # Check if xion_address is present
-    XION_ADDRESS=$(echo "$AUTH_STATUS" | jq -r '.xion_address // empty')
-    if [ -n "$XION_ADDRESS" ]; then
-        echo -e "${GREEN}✓ xion_address found: $XION_ADDRESS${NC}"
+    # Chain address field (legacy JSON key xion_address retained for compat)
+    VERONA_ADDRESS=$(echo "$AUTH_STATUS" | jq -r '.verona_address // .xion_address // empty')
+    if [ -n "$VERONA_ADDRESS" ]; then
+        echo -e "${GREEN}✓ verona_address found: $VERONA_ADDRESS${NC}"
     else
-        echo -e "${RED}✗ xion_address is missing or null${NC}"
-        echo -e "${YELLOW}Please login again with: ./target/release/xion auth login${NC}"
+        echo -e "${RED}✗ verona_address is missing or null${NC}"
+        echo -e "${YELLOW}Please login again with: $TOOLKIT auth login${NC}"
         exit 1
     fi
 else
     echo -e "${RED}✗ User is not authenticated${NC}"
-    echo -e "${YELLOW}Please login first with: ./target/release/xion auth login --network testnet${NC}"
+    echo -e "${YELLOW}Please login first with: $TOOLKIT auth login --network testnet${NC}"
     exit 1
 fi
 echo ""
 
 # 3. List treasuries
 echo "3. Listing treasuries..."
-TREASURY_LIST=$(./target/release/xion treasury list --output json 2>&1 | grep -v "^\[2m" | grep -A 100 "^{")
+TREASURY_LIST=$("$TOOLKIT" treasury list --output json 2>&1 | grep -v "^\[2m" | grep -A 100 "^{")
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✓ Treasury list retrieved successfully${NC}"
     echo ""
@@ -84,7 +86,7 @@ if [ "$TREASURY_COUNT" -gt 0 ]; then
     echo "4. Querying first treasury..."
     FIRST_TREASURY=$(echo "$TREASURY_LIST" | jq -r '.treasuries[0].address')
     
-    TREASURY_QUERY=$(./target/release/xion treasury query "$FIRST_TREASURY" --output json 2>&1 | grep -v "^\[2m" | grep -A 100 "^{")
+    TREASURY_QUERY=$("$TOOLKIT" treasury query "$FIRST_TREASURY" --output json 2>&1 | grep -v "^\[2m" | grep -A 100 "^{")
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ Treasury query successful${NC}"
         echo ""
@@ -106,7 +108,7 @@ echo "Test Summary"
 echo "================================"
 echo -e "${GREEN}✓ CLI binary: OK${NC}"
 echo -e "${GREEN}✓ Authentication: OK${NC}"
-echo -e "${GREEN}✓ xion_address: OK${NC}"
+echo -e "${GREEN}✓ verona_address: OK${NC}"
 echo -e "${GREEN}✓ Treasury list: OK${NC}"
 if [ "$TREASURY_COUNT" -gt 0 ]; then
     echo -e "${GREEN}✓ Treasury query: OK${NC}"
@@ -115,5 +117,5 @@ echo ""
 echo -e "${GREEN}All basic tests passed!${NC}"
 echo ""
 echo "Next steps:"
-echo "  - Test fund: ./target/release/xion treasury fund <address> <amount>"
-echo "  - Test withdraw: ./target/release/xion treasury withdraw <address> <amount>"
+echo "  - Test fund: $TOOLKIT treasury fund <address> <amount>"
+echo "  - Test withdraw: $TOOLKIT treasury withdraw <address> <amount>"

@@ -401,7 +401,7 @@ async fn handle_list(ctx: &ExecuteContext) -> Result<()> {
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -446,7 +446,7 @@ async fn handle_query(address: &str, ctx: &ExecuteContext) -> Result<()> {
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -505,7 +505,7 @@ async fn handle_create(args: CreateArgs, ctx: &ExecuteContext) -> Result<()> {
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -576,19 +576,19 @@ async fn handle_predict_address(args: &CreateArgs, ctx: &ExecuteContext) -> Resu
     if !oauth_client.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
     }
 
     // Get user credentials for creator address
-    let credentials = oauth_client
-        .get_credentials()?
-        .ok_or_else(|| anyhow::anyhow!("No credentials found. Please run 'xion auth login'."))?;
+    let credentials = oauth_client.get_credentials()?.ok_or_else(|| {
+        anyhow::anyhow!("No credentials found. Please run 'verona-toolkit auth login'.")
+    })?;
 
     let creator = credentials
-        .xion_address
+        .verona_address
         .ok_or_else(|| anyhow::anyhow!("No Xion address found in credentials."))?;
 
     // Create API client to fetch code info
@@ -800,7 +800,7 @@ async fn handle_fund(address: &str, amount: &str, ctx: &ExecuteContext) -> Resul
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -871,7 +871,7 @@ async fn handle_withdraw(address: &str, amount: &str, ctx: &ExecuteContext) -> R
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -1027,7 +1027,7 @@ async fn handle_grant_config_add(
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -1311,7 +1311,7 @@ async fn handle_grant_config_remove(
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -1360,7 +1360,7 @@ async fn handle_grant_config_list(address: &str, ctx: &ExecuteContext) -> Result
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -1433,7 +1433,7 @@ async fn handle_fee_config_set(
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -1486,7 +1486,7 @@ async fn handle_fee_config_remove(
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -1532,7 +1532,7 @@ async fn handle_fee_config_query(address: &str, ctx: &ExecuteContext) -> Result<
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -1603,7 +1603,7 @@ async fn handle_admin_propose(address: &str, new_admin: &str, ctx: &ExecuteConte
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -1650,7 +1650,7 @@ async fn handle_admin_accept(address: &str, ctx: &ExecuteContext) -> Result<()> 
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -1699,7 +1699,7 @@ async fn handle_admin_cancel(address: &str, ctx: &ExecuteContext) -> Result<()> 
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -1794,7 +1794,7 @@ async fn handle_params_update(
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -1939,7 +1939,7 @@ async fn handle_export(args: ExportArgs, ctx: &ExecuteContext) -> Result<()> {
         if !manager.is_authenticated()? {
             let result = serde_json::json!({
                 "success": false,
-                "error": "Not authenticated. Please run 'xion auth login' first.",
+                "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
                 "code": "NOT_AUTHENTICATED"
             });
             return print_formatted(&result, ctx.output_format());
@@ -1989,7 +1989,7 @@ async fn handle_export(args: ExportArgs, ctx: &ExecuteContext) -> Result<()> {
         if !manager.is_authenticated()? {
             let result = serde_json::json!({
                 "success": false,
-                "error": "Not authenticated. Please run 'xion auth login' first.",
+                "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
                 "code": "NOT_AUTHENTICATED"
             });
             return print_formatted(&result, ctx.output_format());
@@ -2151,7 +2151,7 @@ async fn handle_import(args: ImportArgs, ctx: &ExecuteContext) -> Result<()> {
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -2223,7 +2223,7 @@ async fn handle_batch_fund(config_path: &PathBuf, ctx: &ExecuteContext) -> Resul
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());
@@ -2334,7 +2334,7 @@ async fn handle_batch_grant_config(config_path: &PathBuf, ctx: &ExecuteContext) 
     if !manager.is_authenticated()? {
         let result = serde_json::json!({
             "success": false,
-            "error": "Not authenticated. Please run 'xion auth login' first.",
+            "error": "Not authenticated. Please run 'verona-toolkit auth login' first.",
             "code": "NOT_AUTHENTICATED"
         });
         return print_formatted(&result, ctx.output_format());

@@ -92,7 +92,7 @@ impl AssetBuilderManager {
             .ok_or(AssetBuilderError::NotAuthenticated)?;
 
         let sender = credentials
-            .xion_address
+            .verona_address
             .ok_or(AssetBuilderError::NotAuthenticated)?;
 
         // Get code ID
@@ -199,7 +199,7 @@ impl AssetBuilderManager {
             .ok_or(AssetBuilderError::NotAuthenticated)?;
 
         let sender = credentials
-            .xion_address
+            .verona_address
             .ok_or(AssetBuilderError::NotAuthenticated)?;
 
         // Determine asset type (default to Cw721Base for backward compatibility)
@@ -380,7 +380,7 @@ impl AssetBuilderManager {
             .ok_or(AssetBuilderError::NotAuthenticated)?;
 
         let sender = credentials
-            .xion_address
+            .verona_address
             .ok_or(AssetBuilderError::NotAuthenticated)?;
 
         // Get code ID
@@ -446,7 +446,7 @@ impl AssetBuilderManager {
             .ok_or(AssetBuilderError::NotAuthenticated)?;
 
         let sender = credentials
-            .xion_address
+            .verona_address
             .ok_or(AssetBuilderError::NotAuthenticated)?;
 
         // Build mint messages for each token
@@ -578,7 +578,7 @@ impl AssetBuilderManager {
                 type_url: "/cosmwasm.wasm.v1.MsgInstantiateContract2".to_string(),
                 value: msg_value,
             }],
-            memo: Some("Create NFT collection via Xion Agent Toolkit".to_string()),
+            memo: Some("Create NFT collection via Verona Agent Toolkit".to_string()),
         };
 
         let response = self
@@ -619,7 +619,7 @@ impl AssetBuilderManager {
                 type_url: "/cosmwasm.wasm.v1.MsgExecuteContract".to_string(),
                 value: msg_value,
             }],
-            memo: Some("Mint NFT token via Xion Agent Toolkit".to_string()),
+            memo: Some("Mint NFT token via Verona Agent Toolkit".to_string()),
         };
 
         let response = self
@@ -671,7 +671,7 @@ impl AssetBuilderManager {
 
         let broadcast_request = crate::treasury::types::BroadcastRequest {
             messages,
-            memo: Some("Batch mint NFT tokens via Xion Agent Toolkit".to_string()),
+            memo: Some("Batch mint NFT tokens via Verona Agent Toolkit".to_string()),
         };
 
         let response = self

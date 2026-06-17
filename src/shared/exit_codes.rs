@@ -21,7 +21,7 @@
 //! # Usage in Scripts
 //!
 //! ```bash
-//! xion-toolkit auth login
+//! verona-toolkit auth login
 //! exit_code=$?
 //! if [ $exit_code -eq 0 ]; then
 //!     echo "Success"
@@ -32,7 +32,7 @@
 //! fi
 //! ```
 
-use crate::shared::error::XionErrorCode;
+use crate::shared::error::VeronaErrorCode;
 
 /// Exit codes for CLI operations
 pub mod exit_code {
@@ -215,94 +215,94 @@ pub mod exit_code {
     pub const OAUTH_CLIENT_CONFIRMATION_REQUIRED: i32 = 178;
 }
 
-impl XionErrorCode {
+impl VeronaErrorCode {
     /// Map error code to exit code for CLI
     pub fn exit_code(&self) -> i32 {
         use exit_code::*;
 
         match self {
             // Authentication errors
-            XionErrorCode::EAUTH001 => AUTH_REQUIRED,
-            XionErrorCode::EAUTH002 => TOKEN_EXPIRED,
-            XionErrorCode::EAUTH003 => REFRESH_TOKEN_EXPIRED,
-            XionErrorCode::EAUTH004 => INVALID_CREDENTIALS,
-            XionErrorCode::EAUTH005 => OAUTH_CALLBACK_FAILED,
-            XionErrorCode::EAUTH006 => PKCE_FAILED,
-            XionErrorCode::EAUTH007 => AUTH_TIMEOUT,
+            VeronaErrorCode::EAUTH001 => AUTH_REQUIRED,
+            VeronaErrorCode::EAUTH002 => TOKEN_EXPIRED,
+            VeronaErrorCode::EAUTH003 => REFRESH_TOKEN_EXPIRED,
+            VeronaErrorCode::EAUTH004 => INVALID_CREDENTIALS,
+            VeronaErrorCode::EAUTH005 => OAUTH_CALLBACK_FAILED,
+            VeronaErrorCode::EAUTH006 => PKCE_FAILED,
+            VeronaErrorCode::EAUTH007 => AUTH_TIMEOUT,
 
             // Treasury errors
-            XionErrorCode::ETREASURY001 => TREASURY_NOT_FOUND,
-            XionErrorCode::ETREASURY002 => INSUFFICIENT_BALANCE,
-            XionErrorCode::ETREASURY003 => INVALID_TREASURY_ADDRESS,
-            XionErrorCode::ETREASURY004 => TREASURY_CREATION_FAILED,
-            XionErrorCode::ETREASURY005 => TREASURY_OPERATION_FAILED,
-            XionErrorCode::ETREASURY006 => GRANT_CONFIG_NOT_FOUND,
-            XionErrorCode::ETREASURY007 => FEE_CONFIG_NOT_FOUND,
-            XionErrorCode::ETREASURY008 => NOT_AUTHORIZED,
-            XionErrorCode::ETREASURY009 => TREASURY_ALREADY_EXISTS,
-            XionErrorCode::ETREASURY010 => MISSING_AUTHORIZATION_INPUT,
+            VeronaErrorCode::ETREASURY001 => TREASURY_NOT_FOUND,
+            VeronaErrorCode::ETREASURY002 => INSUFFICIENT_BALANCE,
+            VeronaErrorCode::ETREASURY003 => INVALID_TREASURY_ADDRESS,
+            VeronaErrorCode::ETREASURY004 => TREASURY_CREATION_FAILED,
+            VeronaErrorCode::ETREASURY005 => TREASURY_OPERATION_FAILED,
+            VeronaErrorCode::ETREASURY006 => GRANT_CONFIG_NOT_FOUND,
+            VeronaErrorCode::ETREASURY007 => FEE_CONFIG_NOT_FOUND,
+            VeronaErrorCode::ETREASURY008 => NOT_AUTHORIZED,
+            VeronaErrorCode::ETREASURY009 => TREASURY_ALREADY_EXISTS,
+            VeronaErrorCode::ETREASURY010 => MISSING_AUTHORIZATION_INPUT,
 
             // Asset errors
-            XionErrorCode::EASSET001 => INVALID_METADATA,
-            XionErrorCode::EASSET002 => ASSET_CREATION_FAILED,
-            XionErrorCode::EASSET003 => INVALID_ASSET_CONFIG,
-            XionErrorCode::EASSET004 => CODE_ID_NOT_FOUND,
-            XionErrorCode::EASSET005 => INVALID_SCHEMA,
+            VeronaErrorCode::EASSET001 => INVALID_METADATA,
+            VeronaErrorCode::EASSET002 => ASSET_CREATION_FAILED,
+            VeronaErrorCode::EASSET003 => INVALID_ASSET_CONFIG,
+            VeronaErrorCode::EASSET004 => CODE_ID_NOT_FOUND,
+            VeronaErrorCode::EASSET005 => INVALID_SCHEMA,
 
             // Batch errors
-            XionErrorCode::EBATCH001 => BATCH_TOO_LARGE,
-            XionErrorCode::EBATCH002 => BATCH_EXECUTION_FAILED,
-            XionErrorCode::EBATCH003 => BATCH_PARTIAL_FAILURE,
-            XionErrorCode::EBATCH004 => INVALID_BATCH_ITEM,
+            VeronaErrorCode::EBATCH001 => BATCH_TOO_LARGE,
+            VeronaErrorCode::EBATCH002 => BATCH_EXECUTION_FAILED,
+            VeronaErrorCode::EBATCH003 => BATCH_PARTIAL_FAILURE,
+            VeronaErrorCode::EBATCH004 => INVALID_BATCH_ITEM,
 
             // Configuration errors
-            XionErrorCode::ECONFIG001 => CONFIG_NOT_FOUND,
-            XionErrorCode::ECONFIG002 => INVALID_CONFIG,
-            XionErrorCode::ECONFIG003 => ENCRYPTION_FAILED,
-            XionErrorCode::ECONFIG004 => DECRYPTION_FAILED,
-            XionErrorCode::ECONFIG005 => NETWORK_NOT_FOUND,
+            VeronaErrorCode::ECONFIG001 => CONFIG_NOT_FOUND,
+            VeronaErrorCode::ECONFIG002 => INVALID_CONFIG,
+            VeronaErrorCode::ECONFIG003 => ENCRYPTION_FAILED,
+            VeronaErrorCode::ECONFIG004 => DECRYPTION_FAILED,
+            VeronaErrorCode::ECONFIG005 => NETWORK_NOT_FOUND,
 
             // Network errors
-            XionErrorCode::ENETWORK001 => NETWORK_TIMEOUT,
-            XionErrorCode::ENETWORK002 => RATE_LIMITED,
-            XionErrorCode::ENETWORK003 => SERVICE_UNAVAILABLE,
-            XionErrorCode::ENETWORK004 => INVALID_RESPONSE,
-            XionErrorCode::ENETWORK005 => REQUEST_FAILED,
-            XionErrorCode::ENETWORK006 => CONNECTION_REFUSED,
-            XionErrorCode::ENETWORK007 => DNS_FAILED,
-            XionErrorCode::ENETWORK008 => TLS_ERROR,
+            VeronaErrorCode::ENETWORK001 => NETWORK_TIMEOUT,
+            VeronaErrorCode::ENETWORK002 => RATE_LIMITED,
+            VeronaErrorCode::ENETWORK003 => SERVICE_UNAVAILABLE,
+            VeronaErrorCode::ENETWORK004 => INVALID_RESPONSE,
+            VeronaErrorCode::ENETWORK005 => REQUEST_FAILED,
+            VeronaErrorCode::ENETWORK006 => CONNECTION_REFUSED,
+            VeronaErrorCode::ENETWORK007 => DNS_FAILED,
+            VeronaErrorCode::ENETWORK008 => TLS_ERROR,
 
             // Transaction errors
-            XionErrorCode::ETX001 => TX_QUERY_FAILED,
-            XionErrorCode::ETX002 => TX_WAIT_FAILED,
-            XionErrorCode::ETX003 => TX_TIMEOUT,
+            VeronaErrorCode::ETX001 => TX_QUERY_FAILED,
+            VeronaErrorCode::ETX002 => TX_WAIT_FAILED,
+            VeronaErrorCode::ETX003 => TX_TIMEOUT,
 
             // Faucet errors
-            XionErrorCode::EFAUCET001 => FAUCET_CLAIM_FAILED,
-            XionErrorCode::EFAUCET002 => FAUCET_QUERY_FAILED,
-            XionErrorCode::EFAUCET003 => FAUCET_AUTH_REQUIRED,
-            XionErrorCode::EFAUCET004 => FAUCET_NOT_AVAILABLE,
+            VeronaErrorCode::EFAUCET001 => FAUCET_CLAIM_FAILED,
+            VeronaErrorCode::EFAUCET002 => FAUCET_QUERY_FAILED,
+            VeronaErrorCode::EFAUCET003 => FAUCET_AUTH_REQUIRED,
+            VeronaErrorCode::EFAUCET004 => FAUCET_NOT_AVAILABLE,
 
             // OAuth Client errors
-            XionErrorCode::EOAUTHCLIENT001 => OAUTH_CLIENT_BAD_REQUEST,
-            XionErrorCode::EOAUTHCLIENT002 => OAUTH_CLIENT_ID_REQUIRED,
-            XionErrorCode::EOAUTHCLIENT003 => OAUTH_CLIENT_REDIRECT_URIS_REQUIRED,
-            XionErrorCode::EOAUTHCLIENT004 => OAUTH_CLIENT_TREASURY_REQUIRED,
-            XionErrorCode::EOAUTHCLIENT005 => OAUTH_CLIENT_OWNER_REQUIRED,
-            XionErrorCode::EOAUTHCLIENT006 => OAUTH_CLIENT_INVALID_GRANT_TYPE,
-            XionErrorCode::EOAUTHCLIENT007 => OAUTH_CLIENT_MANAGER_ID_REQUIRED,
-            XionErrorCode::EOAUTHCLIENT008 => OAUTH_CLIENT_AUTH_REQUIRED,
-            XionErrorCode::EOAUTHCLIENT009 => OAUTH_CLIENT_USER_NOT_FOUND,
-            XionErrorCode::EOAUTHCLIENT010 => OAUTH_CLIENT_INSUFFICIENT_SCOPE,
-            XionErrorCode::EOAUTHCLIENT011 => OAUTH_CLIENT_ONLY_OWNER,
-            XionErrorCode::EOAUTHCLIENT012 => OAUTH_CLIENT_NOT_FOUND,
-            XionErrorCode::EOAUTHCLIENT013 => OAUTH_CLIENT_EXTENSION_NOT_FOUND,
-            XionErrorCode::EOAUTHCLIENT014 => OAUTH_CLIENT_TREASURY_NOT_FOUND,
-            XionErrorCode::EOAUTHCLIENT015 => OAUTH_CLIENT_SERVER_ERROR,
-            XionErrorCode::EOAUTHCLIENT016 => OAUTH_CLIENT_TREASURY_FETCH_ERROR,
-            XionErrorCode::EOAUTHCLIENT017 => OAUTH_CLIENT_TREASURY_QUERY_ERROR,
-            XionErrorCode::EOAUTHCLIENT018 => OAUTH_CLIENT_UNKNOWN_NETWORK,
-            XionErrorCode::EOAUTHCLIENT019 => OAUTH_CLIENT_CONFIRMATION_REQUIRED,
+            VeronaErrorCode::EOAUTHCLIENT001 => OAUTH_CLIENT_BAD_REQUEST,
+            VeronaErrorCode::EOAUTHCLIENT002 => OAUTH_CLIENT_ID_REQUIRED,
+            VeronaErrorCode::EOAUTHCLIENT003 => OAUTH_CLIENT_REDIRECT_URIS_REQUIRED,
+            VeronaErrorCode::EOAUTHCLIENT004 => OAUTH_CLIENT_TREASURY_REQUIRED,
+            VeronaErrorCode::EOAUTHCLIENT005 => OAUTH_CLIENT_OWNER_REQUIRED,
+            VeronaErrorCode::EOAUTHCLIENT006 => OAUTH_CLIENT_INVALID_GRANT_TYPE,
+            VeronaErrorCode::EOAUTHCLIENT007 => OAUTH_CLIENT_MANAGER_ID_REQUIRED,
+            VeronaErrorCode::EOAUTHCLIENT008 => OAUTH_CLIENT_AUTH_REQUIRED,
+            VeronaErrorCode::EOAUTHCLIENT009 => OAUTH_CLIENT_USER_NOT_FOUND,
+            VeronaErrorCode::EOAUTHCLIENT010 => OAUTH_CLIENT_INSUFFICIENT_SCOPE,
+            VeronaErrorCode::EOAUTHCLIENT011 => OAUTH_CLIENT_ONLY_OWNER,
+            VeronaErrorCode::EOAUTHCLIENT012 => OAUTH_CLIENT_NOT_FOUND,
+            VeronaErrorCode::EOAUTHCLIENT013 => OAUTH_CLIENT_EXTENSION_NOT_FOUND,
+            VeronaErrorCode::EOAUTHCLIENT014 => OAUTH_CLIENT_TREASURY_NOT_FOUND,
+            VeronaErrorCode::EOAUTHCLIENT015 => OAUTH_CLIENT_SERVER_ERROR,
+            VeronaErrorCode::EOAUTHCLIENT016 => OAUTH_CLIENT_TREASURY_FETCH_ERROR,
+            VeronaErrorCode::EOAUTHCLIENT017 => OAUTH_CLIENT_TREASURY_QUERY_ERROR,
+            VeronaErrorCode::EOAUTHCLIENT018 => OAUTH_CLIENT_UNKNOWN_NETWORK,
+            VeronaErrorCode::EOAUTHCLIENT019 => OAUTH_CLIENT_CONFIRMATION_REQUIRED,
         }
     }
 }
@@ -415,15 +415,15 @@ mod tests {
     #[test]
     fn test_auth_exit_codes() {
         assert_eq!(
-            XionErrorCode::EAUTH001.exit_code(),
+            VeronaErrorCode::EAUTH001.exit_code(),
             exit_code::AUTH_REQUIRED
         );
         assert_eq!(
-            XionErrorCode::EAUTH002.exit_code(),
+            VeronaErrorCode::EAUTH002.exit_code(),
             exit_code::TOKEN_EXPIRED
         );
         assert_eq!(
-            XionErrorCode::EAUTH003.exit_code(),
+            VeronaErrorCode::EAUTH003.exit_code(),
             exit_code::REFRESH_TOKEN_EXPIRED
         );
     }
@@ -431,11 +431,11 @@ mod tests {
     #[test]
     fn test_treasury_exit_codes() {
         assert_eq!(
-            XionErrorCode::ETREASURY001.exit_code(),
+            VeronaErrorCode::ETREASURY001.exit_code(),
             exit_code::TREASURY_NOT_FOUND
         );
         assert_eq!(
-            XionErrorCode::ETREASURY002.exit_code(),
+            VeronaErrorCode::ETREASURY002.exit_code(),
             exit_code::INSUFFICIENT_BALANCE
         );
     }
@@ -443,11 +443,11 @@ mod tests {
     #[test]
     fn test_network_exit_codes() {
         assert_eq!(
-            XionErrorCode::ENETWORK001.exit_code(),
+            VeronaErrorCode::ENETWORK001.exit_code(),
             exit_code::NETWORK_TIMEOUT
         );
         assert_eq!(
-            XionErrorCode::ENETWORK002.exit_code(),
+            VeronaErrorCode::ENETWORK002.exit_code(),
             exit_code::RATE_LIMITED
         );
     }
@@ -455,11 +455,11 @@ mod tests {
     #[test]
     fn test_config_exit_codes() {
         assert_eq!(
-            XionErrorCode::ECONFIG001.exit_code(),
+            VeronaErrorCode::ECONFIG001.exit_code(),
             exit_code::CONFIG_NOT_FOUND
         );
         assert_eq!(
-            XionErrorCode::ECONFIG002.exit_code(),
+            VeronaErrorCode::ECONFIG002.exit_code(),
             exit_code::INVALID_CONFIG
         );
     }
@@ -477,33 +477,33 @@ mod tests {
     #[test]
     fn test_exit_code_ranges() {
         // Authentication: 2-19
-        assert!((2..=19).contains(&XionErrorCode::EAUTH001.exit_code()));
+        assert!((2..=19).contains(&VeronaErrorCode::EAUTH001.exit_code()));
 
         // Configuration: 20-39
-        assert!((20..=39).contains(&XionErrorCode::ECONFIG001.exit_code()));
+        assert!((20..=39).contains(&VeronaErrorCode::ECONFIG001.exit_code()));
 
         // Network: 40-59
-        assert!((40..=59).contains(&XionErrorCode::ENETWORK001.exit_code()));
+        assert!((40..=59).contains(&VeronaErrorCode::ENETWORK001.exit_code()));
 
         // Transaction: 60-79
-        assert!((60..=79).contains(&XionErrorCode::ETX001.exit_code()));
+        assert!((60..=79).contains(&VeronaErrorCode::ETX001.exit_code()));
 
         // Treasury: 80-99
-        assert!((80..=99).contains(&XionErrorCode::ETREASURY001.exit_code()));
+        assert!((80..=99).contains(&VeronaErrorCode::ETREASURY001.exit_code()));
 
         // Asset: 100-119
-        assert!((100..=119).contains(&XionErrorCode::EASSET001.exit_code()));
+        assert!((100..=119).contains(&VeronaErrorCode::EASSET001.exit_code()));
 
         // Batch: 120-139
-        assert!((120..=139).contains(&XionErrorCode::EBATCH001.exit_code()));
+        assert!((120..=139).contains(&VeronaErrorCode::EBATCH001.exit_code()));
 
         // Faucet: 140-159
-        assert!((140..=159).contains(&XionErrorCode::EFAUCET001.exit_code()));
+        assert!((140..=159).contains(&VeronaErrorCode::EFAUCET001.exit_code()));
     }
 
     #[test]
-    fn test_xion_error_exit_code() {
-        let err = XionError::from(AuthError::NotAuthenticated("test".to_string()));
+    fn test_verona_error_exit_code() {
+        let err = VeronaError::from(AuthError::NotAuthenticated("test".to_string()));
         assert_eq!(err.code().exit_code(), exit_code::AUTH_REQUIRED);
     }
 

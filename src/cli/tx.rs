@@ -8,7 +8,7 @@ use tracing::info;
 
 use crate::cli::ExecuteContext;
 use crate::config::ConfigManager;
-use crate::shared::error::{TxError, XionError};
+use crate::shared::error::{TxError, VeronaError};
 use crate::shared::exit_codes::exit_code;
 use crate::tx::TxClient;
 use crate::tx::TxStatus;
@@ -78,8 +78,8 @@ async fn handle_status(hash: String, ctx: &ExecuteContext) -> Result<()> {
         Err(e) => {
             info!("Failed to query transaction: {}", e);
             let tx_error = TxError::QueryFailed(e.to_string());
-            let xion_error: XionError = tx_error.into();
-            Err(xion_error.into())
+            let verona_error: VeronaError = tx_error.into();
+            Err(verona_error.into())
         }
     }
 }
@@ -147,8 +147,8 @@ async fn handle_wait(
         Err(e) => {
             info!("Failed to wait for transaction: {}", e);
             let tx_error = TxError::WaitFailed(e.to_string());
-            let xion_error: XionError = tx_error.into();
-            Err(xion_error.into())
+            let verona_error: VeronaError = tx_error.into();
+            Err(verona_error.into())
         }
     }
 }

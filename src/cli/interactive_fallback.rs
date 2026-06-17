@@ -507,7 +507,7 @@ mod tests {
     #[test]
     fn test_try_interactive_parse_returns_none_with_no_interactive_flag() {
         let args = vec![
-            "xion-toolkit".to_string(),
+            "verona-toolkit".to_string(),
             "--no-interactive".to_string(),
             "treasury".to_string(),
             "create".to_string(),
@@ -559,7 +559,7 @@ mod tests {
         use clap::CommandFactory;
 
         let mut cmd = crate::cli::Cli::command();
-        let result = cmd.try_get_matches_from_mut(["xion-toolkit", "treasury", "fund"]);
+        let result = cmd.try_get_matches_from_mut(["verona-toolkit", "treasury", "fund"]);
         match result {
             Ok(_) => panic!("expected error"),
             Err(err) => {
@@ -595,7 +595,8 @@ mod tests {
         use clap::CommandFactory;
 
         let mut cmd = crate::cli::Cli::command();
-        let result = cmd.try_get_matches_from_mut(["xion-toolkit", "treasury", "admin", "propose"]);
+        let result =
+            cmd.try_get_matches_from_mut(["verona-toolkit", "treasury", "admin", "propose"]);
         match result {
             Ok(_) => panic!("expected error"),
             Err(err) => {
@@ -628,7 +629,7 @@ mod tests {
         use clap::CommandFactory;
 
         let mut cmd = crate::cli::Cli::command();
-        let result = cmd.try_get_matches_from_mut(["xion-toolkit", "oauth2", "client", "get"]);
+        let result = cmd.try_get_matches_from_mut(["verona-toolkit", "oauth2", "client", "get"]);
         match result {
             Ok(_) => panic!("expected error"),
             Err(err) => {

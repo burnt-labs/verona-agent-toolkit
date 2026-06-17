@@ -1,7 +1,7 @@
-//! Xion Agent Toolkit
+//! Verona Agent Toolkit
 //!
-//! CLI-driven, Agent-oriented toolkit for Xion blockchain development.
-//! Built on Xion's MetaAccount system with OAuth2 authentication.
+//! CLI-driven, Agent-oriented toolkit for Verona blockchain development.
+//! Built on Verona's MetaAccount system with OAuth2 authentication.
 
 pub mod account;
 pub mod api;

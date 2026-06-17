@@ -23,7 +23,7 @@ The CLI returns standardized exit codes for CI/CD integration:
   "error": {
     "code": "ETREASURY001",
     "message": "Treasury not found: xion1...",
-    "hint": "Run 'xion-toolkit treasury list' to see available treasuries.",
+    "hint": "Run 'verona-toolkit treasury list' to see available treasuries.",
     "retryable": false
   }
 }
@@ -34,7 +34,7 @@ The CLI returns standardized exit codes for CI/CD integration:
 ```
 Error [ETREASURY001]: Treasury not found: xion1...
 
-Hint: Run 'xion-toolkit treasury list' to see available treasuries.
+Hint: Run 'verona-toolkit treasury list' to see available treasuries.
 ```
 
 ---
@@ -61,9 +61,9 @@ Format: `E{MODULE}{NUMBER}`
 
 | Code | Message | Hint | Retryable |
 |------|---------|------|-----------|
-| EAUTH001 | Not authenticated | Run 'xion-toolkit auth login' first | No |
+| EAUTH001 | Not authenticated | Run 'verona-toolkit auth login' first | No |
 | EAUTH002 | Token expired | Token refreshed automatically, please retry | Yes |
-| EAUTH003 | Refresh token expired | Re-login required: 'xion-toolkit auth login' | No |
+| EAUTH003 | Refresh token expired | Re-login required: 'verona-toolkit auth login' | No |
 | EAUTH004 | Invalid credentials | Check your credentials and try again | No |
 | EAUTH005 | OAuth2 callback failed | Ensure callback URL is accessible and try again | No |
 | EAUTH006 | PKCE verification failed | PKCE verification mismatch, restart login flow | No |
@@ -73,13 +73,13 @@ Format: `E{MODULE}{NUMBER}`
 
 ```bash
 # Check authentication status
-xion-toolkit auth status
+verona-toolkit auth status
 
 # Re-authenticate
-xion-toolkit auth login
+verona-toolkit auth login
 
 # Check current network
-xion-toolkit config show
+verona-toolkit config show
 ```
 
 ---
@@ -88,13 +88,13 @@ xion-toolkit config show
 
 | Code | Message | Hint | Retryable |
 |------|---------|------|-----------|
-| ETREASURY001 | Treasury not found | Run 'xion-toolkit treasury list' to see available treasuries | No |
-| ETREASURY002 | Insufficient balance | Fund treasury with 'xion-toolkit treasury fund' | No |
+| ETREASURY001 | Treasury not found | Run 'verona-toolkit treasury list' to see available treasuries | No |
+| ETREASURY002 | Insufficient balance | Fund treasury with 'verona-toolkit treasury fund' | No |
 | ETREASURY003 | Invalid treasury address | Verify the treasury address is a valid bech32 address | No |
 | ETREASURY004 | Treasury creation failed | Check parameters and try again | No |
 | ETREASURY005 | Treasury operation failed | Check treasury state and try again | No |
-| ETREASURY006 | Grant config not found | Run 'xion-toolkit treasury grant-config list' to see available grants | No |
-| ETREASURY007 | Fee config not found | Run 'xion-toolkit treasury fee-config query' to check fee config | No |
+| ETREASURY006 | Grant config not found | Run 'verona-toolkit treasury grant-config list' to see available grants | No |
+| ETREASURY007 | Fee config not found | Run 'verona-toolkit treasury fee-config query' to check fee config | No |
 | ETREASURY008 | Not authorized for treasury operation | Ensure you are the admin of this treasury | No |
 | ETREASURY009 | Treasury already exists | Use a different salt or address for the new treasury | No |
 
@@ -102,19 +102,19 @@ xion-toolkit config show
 
 ```bash
 # List all treasuries
-xion-toolkit treasury list
+verona-toolkit treasury list
 
 # Query treasury details
-xion-toolkit treasury query <ADDRESS>
+verona-toolkit treasury query <ADDRESS>
 
 # Fund treasury
-xion-toolkit treasury fund <ADDRESS> <AMOUNT>
+verona-toolkit treasury fund <ADDRESS> <AMOUNT>
 
 # Check grant configs
-xion-toolkit treasury grant-config list <ADDRESS>
+verona-toolkit treasury grant-config list <ADDRESS>
 
 # Check fee config
-xion-toolkit treasury fee-config query <ADDRESS>
+verona-toolkit treasury fee-config query <ADDRESS>
 ```
 
 ---
@@ -126,20 +126,20 @@ xion-toolkit treasury fee-config query <ADDRESS>
 | EASSET001 | Invalid metadata | Check JSON structure against schema | No |
 | EASSET002 | Asset creation failed | Check asset configuration and try again | No |
 | EASSET003 | Invalid asset configuration | Verify all required fields are present | No |
-| EASSET004 | Code ID not found | Check available code IDs with 'xion-toolkit asset code-ids' | No |
+| EASSET004 | Code ID not found | Check available code IDs with 'verona-toolkit asset code-ids' | No |
 | EASSET005 | Invalid schema | Validate your schema against the expected format | No |
 
 ### Asset Builder Troubleshooting
 
 ```bash
 # Check available code IDs
-xion-toolkit asset code-ids
+verona-toolkit asset code-ids
 
 # Validate metadata JSON
 cat metadata.json | jq .
 
 # Create asset with debug output
-xion-toolkit asset create --debug
+verona-toolkit asset create --debug
 ```
 
 ---
@@ -163,10 +163,10 @@ cat batch.json | jq .
 jq '.messages | length' batch.json
 
 # Validate before execution
-xion-toolkit batch validate --from-file batch.json
+verona-toolkit batch validate --from-file batch.json
 
 # Execute batch
-xion-toolkit batch execute --from-file batch.json
+verona-toolkit batch execute --from-file batch.json
 ```
 
 ---
@@ -175,7 +175,7 @@ xion-toolkit batch execute --from-file batch.json
 
 | Code | Message | Hint | Retryable |
 |------|---------|------|-----------|
-| ECONFIG001 | Configuration not found | Run 'xion-toolkit config init' to create configuration | No |
+| ECONFIG001 | Configuration not found | Run 'verona-toolkit config init' to create configuration | No |
 | ECONFIG002 | Invalid configuration | Check configuration file format and values | No |
 | ECONFIG003 | Encryption failed | Check encryption key availability | No |
 | ECONFIG004 | Decryption failed | Check encryption key matches the one used for encryption | No |
@@ -185,16 +185,16 @@ xion-toolkit batch execute --from-file batch.json
 
 ```bash
 # Show current configuration
-xion-toolkit config show
+verona-toolkit config show
 
 # Check configuration file
-cat ~/.xion-toolkit/config.json
+cat ~/.verona-toolkit/config.json
 
 # Check credentials exist
-ls ~/.xion-toolkit/credentials/
+ls ~/.verona-toolkit/credentials/
 
 # Re-initialize configuration
-xion-toolkit config init
+verona-toolkit config init
 ```
 
 ---
@@ -236,10 +236,10 @@ Network errors with `retryable: true` are automatically retried with exponential
 
 ```bash
 # Verify transaction exists
-xion-toolkit tx status <tx_hash>
+verona-toolkit tx status <tx_hash>
 
 # Wait with longer timeout
-xion-toolkit tx wait <tx_hash> --timeout 120
+verona-toolkit tx wait <tx_hash> --timeout 120
 
 # Check network status
 curl https://rpc.xion-testnet-2.burnt.com:443/status
@@ -255,7 +255,7 @@ curl -I https://oauth2.testnet.burnt.com/health
 curl https://rpc.xion-testnet-2.burnt.com:443/status
 
 # Test with verbose output
-xion-toolkit --verbose treasury list
+verona-toolkit --verbose treasury list
 ```
 
 ---
@@ -266,23 +266,23 @@ xion-toolkit --verbose treasury list
 |------|---------|------|-----------|
 | EFAUCET001 | Faucet claim failed | Check cooldown status first with `faucet status`. Ensure receiver has less than 1 XION balance. | No |
 | EFAUCET002 | Faucet query failed | Ensure address is valid. Check network connectivity. | No |
-| EFAUCET003 | Not authenticated | Run `xion-toolkit auth login` first to authenticate. | No |
+| EFAUCET003 | Not authenticated | Run `verona-toolkit auth login` first to authenticate. | No |
 | EFAUCET004 | Faucet not available | Faucet is only available on testnet. Use `--network testnet`. | No |
 
 ### Faucet Troubleshooting
 
 ```bash
 # Check faucet status before claiming
-xion-toolkit faucet status
+verona-toolkit faucet status
 
 # Claim tokens
-xion-toolkit faucet claim
+verona-toolkit faucet claim
 
 # Check authentication
-xion-toolkit auth status
+verona-toolkit auth status
 
 # Ensure you're on testnet
-xion-toolkit config show
+verona-toolkit config show
 ```
 
 ---
@@ -298,8 +298,8 @@ xion-toolkit config show
 | EOAUTHCLIENT005 | Owner is required | Provide an owner user ID | No |
 | EOAUTHCLIENT006 | Invalid grant type | Use a valid grant type (authorization_code, etc.) | No |
 | EOAUTHCLIENT007 | Manager user ID is required | Provide a manager user ID | No |
-| EOAUTHCLIENT008 | Authentication required | Run 'xion-toolkit auth login' first | No |
-| EOAUTHCLIENT009 | User not found | Run 'xion-toolkit auth login' first | No |
+| EOAUTHCLIENT008 | Authentication required | Run 'verona-toolkit auth login' first | No |
+| EOAUTHCLIENT009 | User not found | Run 'verona-toolkit auth login' first | No |
 | EOAUTHCLIENT010 | Insufficient scope | Re-authorize with xion:mgr:write scope | No |
 | EOAUTHCLIENT011 | Only owner allowed | Only the client owner can perform this action | No |
 | EOAUTHCLIENT012 | Client not found | Check the client ID and try again | No |
@@ -314,13 +314,13 @@ xion-toolkit config show
 
 ```bash
 # Check authentication status
-xion-toolkit auth status
+verona-toolkit auth status
 
 # List OAuth2 clients
-xion-toolkit oauth2 client list
+verona-toolkit oauth2 client list
 
 # Check network configuration
-xion-toolkit config show
+verona-toolkit config show
 ```
 
 ---
@@ -332,7 +332,7 @@ xion-toolkit config show
 Most errors stem from authentication issues:
 
 ```bash
-xion-toolkit auth status
+verona-toolkit auth status
 ```
 
 ### 2. Verify Network Configuration
@@ -340,8 +340,8 @@ xion-toolkit auth status
 Ensure you're on the correct network:
 
 ```bash
-xion-toolkit config show
-xion-toolkit config set network testnet
+verona-toolkit config show
+verona-toolkit config set network testnet
 ```
 
 ### 3. Validate Addresses
@@ -358,7 +358,7 @@ xion1abc123def456...
 Insufficient balance is a common error:
 
 ```bash
-xion-toolkit treasury query <ADDRESS>
+verona-toolkit treasury query <ADDRESS>
 ```
 
 ### 5. Handle Rate Limiting
@@ -378,18 +378,18 @@ If you encounter rate limiting (ENETWORK002):
 ```bash
 #!/bin/bash
 
-output=$(xion-toolkit treasury list 2>&1)
+output=$(verona-toolkit treasury list 2>&1)
 if echo "$output" | jq -e '.success == false' > /dev/null 2>&1; then
     code=$(echo "$output" | jq -r '.error.code')
     case $code in
         EAUTH001)
             echo "Not authenticated, running login..."
-            xion-toolkit auth login
+            verona-toolkit auth login
             ;;
         ENETWORK001|ENETWORK002|ENETWORK003)
             echo "Network error, will auto-retry..."
             sleep 5
-            xion-toolkit treasury list
+            verona-toolkit treasury list
             ;;
         *)
             echo "Error: $code"
@@ -415,7 +415,7 @@ def run_command(cmd):
             code = error.get('code')
             if code == 'EAUTH001':
                 print("Not authenticated, running login...")
-                subprocess.run(['xion-toolkit', 'auth', 'login'])
+                subprocess.run(['verona-toolkit', 'auth', 'login'])
                 return run_command(cmd)  # Retry
             elif error.get('retryable', False):
                 print(f"Retryable error: {code}, retrying...")
@@ -433,16 +433,16 @@ def run_command(cmd):
 
 | Scenario | Likely Code | Solution |
 |----------|-------------|----------|
-| Not logged in | EAUTH001 | `xion-toolkit auth login` |
+| Not logged in | EAUTH001 | `verona-toolkit auth login` |
 | Token expired | EAUTH002 | Automatic refresh |
 | Session expired | EAUTH003 | Re-login |
-| Treasury missing | ETREASURY001 | `xion-toolkit treasury list` |
+| Treasury missing | ETREASURY001 | `verona-toolkit treasury list` |
 | No balance | ETREASURY002 | Fund treasury |
 | TX not found | ETX001 | Check transaction hash |
 | TX timeout | ETX003 | Increase wait timeout |
 | Network timeout | ENETWORK001 | Auto-retry |
 | Rate limited | ENETWORK002 | Wait and retry |
-| Config missing | ECONFIG001 | `xion-toolkit config init` |
+| Config missing | ECONFIG001 | `verona-toolkit config init` |
 
 ---
 

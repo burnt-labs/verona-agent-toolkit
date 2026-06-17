@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Xion Agent Toolkit - Skills Test Framework Library
+# Verona Agent Toolkit - Skills Test Framework Library
 # Provides mock control, assertions, and test runner utilities
 #
 # Usage: source tests/skills/lib.sh
@@ -113,7 +113,7 @@ mock_cli() {
     fi
 
     # Run actual CLI command
-    local full_cmd="xion-toolkit $command --output json ${extra_args[*]}"
+    local full_cmd="verona-toolkit $command --output json ${extra_args[*]}"
     eval "$full_cmd" 2>&1
 }
 
@@ -536,7 +536,7 @@ run_with_hooks() {
 # Returns: JSON output to stdout, logs to stderr
 #
 run_cli() {
-    local cmd="xion-toolkit $* --output json"
+    local cmd="verona-toolkit $* --output json"
     
     local output
     output=$(eval "$cmd" 2>&1) || {

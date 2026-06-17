@@ -7,7 +7,7 @@ use reqwest::Client;
 use serde::Serialize;
 use tracing::{debug, instrument};
 
-use crate::shared::error::{NetworkError, XionResult};
+use crate::shared::error::{NetworkError, VeronaResult};
 use crate::treasury::types::{BroadcastRequest, BroadcastResponse, Coin};
 
 // Sub-modules for organized code
@@ -22,7 +22,7 @@ pub(crate) mod types;
 // Re-export public types
 pub use types::CodeInfo;
 
-/// Treasury API Client for Xion
+/// Treasury API Client for Verona
 ///
 /// Handles communication with the Treasury API service for:
 /// - Listing user's treasury contracts (via DaoDao Indexer)
@@ -51,7 +51,7 @@ impl TreasuryApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::api::TreasuryApiClient;
+    /// use verona_agent_toolkit::api::TreasuryApiClient;
     ///
     /// let client = TreasuryApiClient::new(
     ///     "https://oauth2.testnet.burnt.com".to_string(),
@@ -95,7 +95,7 @@ impl TreasuryApiClient {
         execute_msg: &T,
         funds: Option<&[Coin]>,
         memo: &str,
-    ) -> XionResult<String> {
+    ) -> VeronaResult<String> {
         // Serialize execute message to JSON, then convert to number array
         // (OAuth2 API's JSON object path uses `fromPartial` which expects
         // bytes fields as array-like objects, not base64 strings)
@@ -170,7 +170,7 @@ impl TreasuryApiClient {
         label: &str,
         admin: Option<&str>,
         memo: &str,
-    ) -> XionResult<String> {
+    ) -> VeronaResult<String> {
         // Serialize instantiate message to JSON, then convert to number array
         let msg_json = serde_json::to_string(instantiate_msg).map_err(|e| {
             crate::shared::error::TreasuryError::OperationFailed(format!(
@@ -239,7 +239,7 @@ impl TreasuryApiClient {
         salt: &[u8],
         admin: Option<&str>,
         memo: &str,
-    ) -> XionResult<String> {
+    ) -> VeronaResult<String> {
         // Serialize instantiate message to JSON, then convert to number array
         let msg_json = serde_json::to_string(instantiate_msg).map_err(|e| {
             crate::shared::error::TreasuryError::OperationFailed(format!(
@@ -303,7 +303,7 @@ impl TreasuryApiClient {
     ///
     /// # Example
     /// ```no_run
-    /// use xion_agent_toolkit::treasury::{TreasuryApiClient, TransactionMessage, BroadcastRequest};
+    /// use verona_agent_toolkit::treasury::{TreasuryApiClient, TransactionMessage, BroadcastRequest};
     ///
     /// # #[tokio::main]
     /// # async fn main() -> anyhow::Result<()> {
@@ -335,7 +335,7 @@ impl TreasuryApiClient {
         &self,
         access_token: &str,
         request: BroadcastRequest,
-    ) -> XionResult<BroadcastResponse> {
+    ) -> VeronaResult<BroadcastResponse> {
         let url = format!("{}/api/v1/transaction", self.base_url);
         debug!("Broadcasting transaction to: {}", url);
 

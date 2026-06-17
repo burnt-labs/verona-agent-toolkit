@@ -1,0 +1,38 @@
+{
+  "command": "logout",
+  "description": "Clear stored credentials for a network",
+  "parameters": [
+    {
+      "name": "network",
+      "type": "enum",
+      "required": false,
+      "enum": ["local", "testnet", "mainnet"],
+      "default": "testnet",
+      "description": "Network to logout from"
+    }
+  ],
+  "notes": [
+    "This removes stored credentials from the keyring",
+    "You will need to re-authenticate after logout"
+  ],
+  "errors": [
+    {"code": "CLI_NOT_FOUND", "description": "verona-toolkit CLI not found", "remediation": "Install verona-toolkit first"},
+    {"code": "NO_CREDENTIALS", "description": "No credentials to logout", "remediation": "Already logged out"}
+  ],
+  "output_includes": [
+    "success: boolean",
+    "message: string"
+  ],
+  "examples": [
+    {
+      "description": "Logout from testnet",
+      "params": {}
+    },
+    {
+      "description": "Logout from mainnet",
+      "params": {
+        "network": "mainnet"
+      }
+    }
+  ]
+}

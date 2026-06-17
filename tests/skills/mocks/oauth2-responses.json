@@ -2,13 +2,13 @@
   "login_success": {
     "success": true,
     "network": "testnet",
-    "xion_address": "xion1test1234567890abcdefghijklmnopqrstuvwxyz12",
+    "verona_address": "xion1test1234567890abcdefghijklmnopqrstuvwxyz12",
     "expires_at": "2026-03-16T01:00:00Z"
   },
   "login_success_mainnet": {
     "success": true,
     "network": "mainnet",
-    "xion_address": "xion1main0987654321zyxwvutsrqponmlkjihgfedcba09",
+    "verona_address": "xion1main0987654321zyxwvutsrqponmlkjihgfedcba09",
     "expires_at": "2026-03-16T01:00:00Z"
   },
   "login_failed": {
@@ -28,7 +28,7 @@
     "chain_id": "xion-testnet-2",
     "oauth_api_url": "https://oauth2.testnet.burnt.com",
     "authenticated": true,
-    "xion_address": "xion1test1234567890abcdefghijklmnopqrstuvwxyz12",
+    "verona_address": "xion1test1234567890abcdefghijklmnopqrstuvwxyz12",
     "expires_at": "2026-03-16T01:00:00Z"
   },
   "status_authenticated_mainnet": {
@@ -36,7 +36,7 @@
     "chain_id": "xion-mainnet-1",
     "oauth_api_url": "https://oauth2.burnt.com",
     "authenticated": true,
-    "xion_address": "xion1main0987654321zyxwvutsrqponmlkjihgfedcba09",
+    "verona_address": "xion1main0987654321zyxwvutsrqponmlkjihgfedcba09",
     "expires_at": "2026-03-16T01:00:00Z"
   },
   "status_not_authenticated": {
@@ -94,7 +94,7 @@
     "success": false,
     "error": {
       "code": "ECONFIG002",
-      "message": "Configuration error: xion-toolkit CLI not found in PATH",
+      "message": "Configuration error: verona-toolkit CLI not found in PATH",
       "hint": "Check configuration file format and values",
       "retryable": false
     }
