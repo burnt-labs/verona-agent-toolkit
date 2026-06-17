@@ -5,6 +5,52 @@ All notable changes to the Verona Agent Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0](https://github.com/burnt-labs/verona-agent-toolkit/compare/0.12.1...0.13.0) (2026-06-17)
+
+
+### Features
+
+* **cli:** rebrand Rust core to verona-toolkit ([3c4c2d9](https://github.com/burnt-labs/verona-agent-toolkit/commit/3c4c2d9b55a7fdf8c92136c55afe7db71ccee676))
+* rebrand Xion Agent Toolkit to Verona ([#81](https://github.com/burnt-labs/verona-agent-toolkit/issues/81)) ([e443266](https://github.com/burnt-labs/verona-agent-toolkit/commit/e4432664819553fede286c2f6e8f6996ef10a851))
+* **skill:** rename bundled skills to verona-* ([01c2b79](https://github.com/burnt-labs/verona-agent-toolkit/commit/01c2b79a14ecf076b88966b384837de6206cdae7))
+
+
+### Bug Fixes
+
+* **ci:** address PR review — OAuth fallback and E2E null handling ([086020e](https://github.com/burnt-labs/verona-agent-toolkit/commit/086020e5a28c17f68a60e0542ace97835d0a9d76))
+* **ci:** sync release.yml with dist build-setup template ([5b9d2d1](https://github.com/burnt-labs/verona-agent-toolkit/commit/5b9d2d1904d60502f8ee7551734bdce181565c1c))
+* **rebrand:** align CI and E2E with VERONA_* post-merge ([5874169](https://github.com/burnt-labs/verona-agent-toolkit/commit/5874169b734eb902b61d95b4c460099ed0191586))
+* **rebrand:** align CI and E2E with VERONA_* post-merge ([603c26c](https://github.com/burnt-labs/verona-agent-toolkit/commit/603c26cc69daf7a4e499cdd65c87a432f96b2b43))
+* **rebrand:** resolve QC residuals R1-R6 ([6bd48fa](https://github.com/burnt-labs/verona-agent-toolkit/commit/6bd48fab04b44ee05ee19913ad57c132caedb6fb))
+
+
+### Documentation
+
+* **harness:** fix stale Xion product refs in feature-roadmap ([995b6d3](https://github.com/burnt-labs/verona-agent-toolkit/commit/995b6d30dfb92a05aaf3b6700aa4f58b60f4c78e))
+* **harness:** mark verona-rebrand InReview at PR-ready gate ([c6d93a8](https://github.com/burnt-labs/verona-agent-toolkit/commit/c6d93a86a8e53624c69c052a00a419bac87ac83f))
+* **harness:** mark verona-rebrand plan Done ([c4fdbf2](https://github.com/burnt-labs/verona-agent-toolkit/commit/c4fdbf23a37a3b8169b2ad3aed3f7206033c4647))
+* **harness:** simplify status.json to standard schema ([8a62521](https://github.com/burnt-labs/verona-agent-toolkit/commit/8a62521f209ca41a8b0b874bcc67973541f0b495))
+* **harness:** skip standing CI grep gate for rebrand audit ([6af80cc](https://github.com/burnt-labs/verona-agent-toolkit/commit/6af80ccb42e8d6da8ddbfc2f3e933cdda0828913))
+* **plan:** register Verona rebrand harness artifacts ([ba13f39](https://github.com/burnt-labs/verona-agent-toolkit/commit/ba13f39bf89ff635c66ac5048c5a2ba2b5c4ad8f))
+* **qa:** verify verona-rebrand on rebranding branch ([cab50cb](https://github.com/burnt-labs/verona-agent-toolkit/commit/cab50cbde79df4b53dc9c0b859385626ab348767))
+* **qc:** complete verona-rebrand tri-review and PM consolidation ([6ff9f55](https://github.com/burnt-labs/verona-agent-toolkit/commit/6ff9f55a788d50810ff408f70229db3fb886a092))
+* **qc:** verona-rebrand qc1 architecture review ([c2c5f90](https://github.com/burnt-labs/verona-agent-toolkit/commit/c2c5f90a7e739bc13749bde5ed399e3f5dacb1cc))
+* **qc:** verona-rebrand qc3 performance and reliability review ([347b7be](https://github.com/burnt-labs/verona-agent-toolkit/commit/347b7be06d78126809d5c2a480e65c89a817e57d))
+* rebrand user-facing documentation to Verona ([623552f](https://github.com/burnt-labs/verona-agent-toolkit/commit/623552fd8f8e1cb0d20a2dc8d33399630eb6d983))
+
+
+### Tests
+
+* update e2e and migration tests for verona rebrand ([be6a641](https://github.com/burnt-labs/verona-agent-toolkit/commit/be6a641dbe994f890c551636d2aa36eb355b9587))
+
+
+### Chores
+
+* **ci:** rebrand workflows and env example to verona-toolkit ([29a3889](https://github.com/burnt-labs/verona-agent-toolkit/commit/29a38899875320417fd11adcd30c43fdc34c53db))
+* **gitnexus:** add code intelligence skills and AGENTS section ([1b3e84b](https://github.com/burnt-labs/verona-agent-toolkit/commit/1b3e84bb54801b70eaee4b4b18124efc02366135))
+* remove empty logs/ and scripts/ .gitkeep placeholders ([24b5f2a](https://github.com/burnt-labs/verona-agent-toolkit/commit/24b5f2af8251bb252549a50f477efd60fb31c84b))
+* remove transitional CI symlink and fix remaining product references ([df625a9](https://github.com/burnt-labs/verona-agent-toolkit/commit/df625a9cf9c9c253bc6f5807f81984ed378f1b4e))
+
 ## [Unreleased]
 
 ### Breaking Changes
