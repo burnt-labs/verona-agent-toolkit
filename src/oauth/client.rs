@@ -318,7 +318,7 @@ impl OAuthClient {
 
         info!("Successfully obtained tokens");
 
-        // Step 8: Get user info to obtain xion_address
+        // Step 8: Get user info to obtain verona_address
         debug!("Fetching user info to get MetaAccount address");
         let user_info = self
             .api_client
@@ -328,7 +328,7 @@ impl OAuthClient {
 
         info!("Retrieved MetaAccount address: {}", user_info.id);
 
-        // Step 9: Save credentials with xion_address
+        // Step 9: Save credentials with verona_address
         let expires_at = match &token_response.expires_at {
             Some(expires_at) => expires_at.clone(),
             None => token_response.calculate_expires_at(),

@@ -480,7 +480,7 @@ impl TreasuryManager {
     ) -> VeronaResult<TreasuryInfo> {
         debug!("Creating treasury");
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -638,7 +638,7 @@ impl TreasuryManager {
     pub async fn fund(&self, address: &str, amount: &str) -> VeronaResult<FundResult> {
         debug!("Funding treasury {} with {}", address, amount);
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -681,7 +681,7 @@ impl TreasuryManager {
     pub async fn withdraw(&self, address: &str, amount: &str) -> VeronaResult<WithdrawResult> {
         debug!("Withdrawing {} from treasury {}", amount, address);
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -737,7 +737,7 @@ impl TreasuryManager {
             code_id, label
         );
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -802,7 +802,7 @@ impl TreasuryManager {
             code_id, label
         );
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -869,7 +869,7 @@ impl TreasuryManager {
     ) -> VeronaResult<ExecuteResult> {
         debug!("Executing message on contract: {}", contract);
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -940,7 +940,7 @@ impl TreasuryManager {
     ) -> VeronaResult<super::types::GrantConfigResult> {
         debug!("Adding grant config to treasury {}", address);
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -988,7 +988,7 @@ impl TreasuryManager {
             type_url, address
         );
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -1051,7 +1051,7 @@ impl TreasuryManager {
     ) -> VeronaResult<super::types::FeeConfigResult> {
         debug!("Setting fee config for treasury {}", address);
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -1155,7 +1155,7 @@ impl TreasuryManager {
     ) -> VeronaResult<super::types::AdminResult> {
         debug!("Proposing new admin {} for treasury {}", new_admin, address);
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -1186,7 +1186,7 @@ impl TreasuryManager {
     pub async fn accept_admin(&self, address: &str) -> VeronaResult<super::types::AdminResult> {
         debug!("Accepting admin role for treasury {}", address);
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -1220,7 +1220,7 @@ impl TreasuryManager {
     ) -> VeronaResult<super::types::AdminResult> {
         debug!("Canceling proposed admin for treasury {}", address);
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -1260,7 +1260,7 @@ impl TreasuryManager {
     ) -> VeronaResult<super::types::ParamsResult> {
         debug!("Updating params for treasury {}", address);
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;
@@ -1305,7 +1305,7 @@ impl TreasuryManager {
             address
         );
 
-        // Get user credentials to obtain xion_address
+        // Get user credentials to obtain verona_address
         let credentials = self.oauth_client.get_credentials()?.ok_or_else(|| {
             AuthError::NotAuthenticated("Not authenticated. Please login first.".to_string())
         })?;

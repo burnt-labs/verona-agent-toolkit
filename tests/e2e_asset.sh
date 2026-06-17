@@ -107,6 +107,20 @@ parse_json() {
     echo "$value"
 }
 
+# Prefer verona_address; fall back to legacy xion_address (jq only — avoids grep null).
+parse_user_address() {
+    local json="$1"
+    local json_only
+    json_only=$(echo "$json" | grep -E '^\{.*\}$' 2>/dev/null | head -1)
+    if [ -z "$json_only" ]; then
+        json_only=$(echo "$json" | tr '}' '\n' | grep -E '^\{.*"' | head -1)
+    fi
+    if [ -z "$json_only" ]; then
+        json_only="$json"
+    fi
+    echo "$json_only" | jq -r '.verona_address // .xion_address // empty' 2>/dev/null
+}
+
 # Check if JSON indicates success
 json_true() {
     local json="$1"
@@ -211,7 +225,7 @@ test_preflight() {
     local auth_output=$(run_cmd "auth status")
     
     if json_true "$auth_output" "authenticated"; then
-        local user_addr=$(parse_json "$auth_output" "xion_address")
+        local user_addr=$(parse_user_address "$auth_output")
         record_result "PASS" "Pre-flight Check" "CLI ready, user: ${user_addr:0:16}..."
         return 0
     else
