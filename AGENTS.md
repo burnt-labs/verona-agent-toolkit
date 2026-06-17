@@ -155,7 +155,7 @@ scripts/          # Build/utility scripts (NOT test scripts).
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **xion-agent-toolkit** (4065 symbols, 7833 relationships, 247 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **verona-agent-toolkit** (4075 symbols, 7843 relationships, 247 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -178,10 +178,10 @@ This project is indexed by GitNexus as **xion-agent-toolkit** (4065 symbols, 783
 
 | Resource | Use for |
 |----------|---------|
-| `gitnexus://repo/xion-agent-toolkit/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/xion-agent-toolkit/clusters` | All functional areas |
-| `gitnexus://repo/xion-agent-toolkit/processes` | All execution flows |
-| `gitnexus://repo/xion-agent-toolkit/process/{name}` | Step-by-step execution trace |
+| `gitnexus://repo/verona-agent-toolkit/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/verona-agent-toolkit/clusters` | All functional areas |
+| `gitnexus://repo/verona-agent-toolkit/processes` | All execution flows |
+| `gitnexus://repo/verona-agent-toolkit/process/{name}` | Step-by-step execution trace |
 
 ## CLI
 

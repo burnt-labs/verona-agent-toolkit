@@ -10,7 +10,7 @@ on:
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
-  # Primary CI encryption key; build/tests also accept legacy XION_CI_ENCRYPTION_KEY fallback.
+  # CI encryption key (GitHub Actions env below). Local builds may still use legacy XION_CI_ENCRYPTION_KEY.
   VERONA_CI_ENCRYPTION_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
 
 jobs:
@@ -199,7 +199,7 @@ jobs:
   # E2E Tests (depends on build)
   # E2E tests require:
   # - vars.ENABLE_E2E_TESTS = 'true' (repo variable)
-  # - secrets.XION_TESTNET_CREDENTIALS (base64 encoded credentials)
+  # - secrets.VERONA_TESTNET_CREDENTIALS (base64 encoded credentials)
   # ===========================================================================
   e2e-tests:
     name: E2E Tests
@@ -228,7 +228,7 @@ jobs:
       - name: Setup credentials
         run: |
           mkdir -p ~/.verona-toolkit/credentials
-          echo "${{ secrets.XION_TESTNET_CREDENTIALS }}" | base64 --decode > ~/.verona-toolkit/credentials/testnet.enc
+          echo "${{ secrets.VERONA_TESTNET_CREDENTIALS }}" | base64 --decode > ~/.verona-toolkit/credentials/testnet.enc
 
       - name: Run E2E Treasury Lifecycle Test
         run: |

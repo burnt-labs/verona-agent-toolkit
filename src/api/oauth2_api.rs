@@ -66,7 +66,7 @@ pub struct TokenResponse {
     pub refresh_token_expires_at: Option<String>,
     /// Token type (usually "Bearer")
     pub token_type: String,
-    /// Xion blockchain address associated with the account (API field: xion_address)
+    /// Chain address associated with the account (API field: xion_address)
     #[serde(default, alias = "xion_address")]
     pub verona_address: Option<String>,
     /// Space-separated OAuth2 scopes granted by the authorization server.

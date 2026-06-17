@@ -211,7 +211,10 @@ test_preflight() {
     local auth_output=$(run_cmd "auth status")
     
     if json_true "$auth_output" "authenticated"; then
-        local user_addr=$(parse_json "$auth_output" "xion_address")
+        local user_addr=$(parse_json "$auth_output" "verona_address")
+        if [ -z "$user_addr" ]; then
+            user_addr=$(parse_json "$auth_output" "xion_address")
+        fi
         record_result "PASS" "Pre-flight Check" "CLI ready, user: ${user_addr:0:16}..."
         return 0
     else
