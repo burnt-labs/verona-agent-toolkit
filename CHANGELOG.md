@@ -5,6 +5,14 @@ All notable changes to the Verona Agent Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.1](https://github.com/burnt-labs/verona-agent-toolkit/compare/0.13.0...0.13.1) (2026-06-18)
+
+
+### Bug Fixes
+
+* **ci:** place OAuth step shell after run for cargo-dist sync ([#86](https://github.com/burnt-labs/verona-agent-toolkit/issues/86)) ([1299428](https://github.com/burnt-labs/verona-agent-toolkit/commit/1299428541eb9bd0915add4d65e66cf9b3c1ea26))
+* **ci:** run OAuth env export on bash for Windows release builds ([#84](https://github.com/burnt-labs/verona-agent-toolkit/issues/84)) ([a33516a](https://github.com/burnt-labs/verona-agent-toolkit/commit/a33516a80d96bcf85e44e604071b21b051824e00))
+
 ## [0.13.0](https://github.com/burnt-labs/verona-agent-toolkit/compare/0.12.1...0.13.0) (2026-06-17)
 
 
