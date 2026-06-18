@@ -1,6 +1,6 @@
 [package]
 name = "verona-agent-toolkit"
-version = "0.13.0"
+version = "0.13.1"
 edition = "2021"
 authors = ["Verona Developer Team"]
 description = "CLI-driven, Agent-oriented toolkit for Verona blockchain development"
