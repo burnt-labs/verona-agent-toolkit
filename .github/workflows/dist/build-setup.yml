@@ -4,6 +4,7 @@
 # and is injected before `dist build` runs.
 
 - name: Export OAuth client IDs for build.rs
+  shell: bash
   run: |
     # Prefer VERONA_* GitHub vars; fall back to legacy XION_* during transition.
     # build.rs reads env at compile time — vars must be exported to GITHUB_ENV.
