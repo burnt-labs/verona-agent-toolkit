@@ -92,10 +92,25 @@ Complete setup workflow for a new treasury:
    verona-toolkit treasury grant-config add <address> --preset send --spend-limit "1000000uxion"
    ```
 
-4. **Set fee allowance** (optional)
+4. **Register OAuth client** (see `verona-oauth2-client`) bound to this treasury
+
+### Change OAuth Redirect or Branding
+
+When an OAuth client is bound to this treasury, **redirect and branding are SSOT on-chain** (API 0.1.0):
+
+1. **Update treasury params**
    ```bash
-   verona-toolkit treasury fee-config set <address> --fee-allowance-type basic --fee-spend-limit "100000uxion"
+   verona-toolkit treasury update-params xion1treasury... \
+     --redirect-url "https://myapp.com/new-callback" \
+     --icon-url "https://myapp.com/icon.png"
    ```
+
+2. **Sync the OAuth client** (required — mgr-api does not read treasury automatically on update)
+   ```bash
+   verona-toolkit oauth2 client sync-from-treasury client_abc123
+   ```
+
+> **Do not** use `oauth2 client update --redirect-uris` or `--logo-uri` — those flags are deprecated and ignored (stderr `[WARNING]`).
 
 ### Emergency: Revoke All Grants
 
@@ -288,6 +303,7 @@ verona-toolkit treasury list --no-cache
 
 - **verona-dev** - Unified entry point for Xion development
 - **verona-oauth2** - Authentication (use before this skill)
+- **verona-oauth2-client** - OAuth client lifecycle; after treasury redirect/branding changes run `oauth2 client sync-from-treasury`
 - **verona-toolkit-init** - CLI installation (use if CLI not found)
 - **xiond-usage** (xion-skills) - Chain-level queries
 
@@ -380,7 +396,7 @@ See `schemas/` directory for detailed parameter definitions:
 |-----------|----------|-------------|
 | `name` | Yes* | Treasury name |
 | `config` | Yes* | JSON config file |
-| `redirect-url` | No | OAuth redirect URL |
+| `redirect-url` | No | OAuth redirect URL (SSOT for bound OAuth clients — sync via verona-oauth2-client) |
 | `fee-allowance-type` | No | Fee allowance type |
 | `network` | No | Network (default: testnet) |
 

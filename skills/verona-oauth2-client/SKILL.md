@@ -3,7 +3,7 @@ name: verona-oauth2-client
 description: "OAuth2 client lifecycle on Verona/Xion via Manager API (create, list, update, delete, managers, transfer). Use when registering OAuth apps or managing OAuth2 clients. Requires verona-oauth2 (dev-mode for Manager scopes)."
 metadata:
   author: burnt-labs
-  version: "1.0.0"
+  version: "1.1.0"
   requires:
     - verona-toolkit-init
     - verona-oauth2
@@ -16,7 +16,7 @@ OAuth2 client management skill for Xion blockchain. Enables dApp registration an
 
 ## Triggers
 
-OAuth2 client, OAuth client, client management, create OAuth app, register client, MGR API, client ID, redirect URIs, oauth2 client list/create/get/update/delete, managers, transfer-ownership, OAuth2 客户端, 客户端管理, 创建 OAuth 应用.
+OAuth2 client, OAuth client, client management, create OAuth app, register client, MGR API, client ID, sync-from-treasury, treasury SSOT, oauth2 client list/create/get/update/delete, managers, transfer-ownership, OAuth2 客户端, 客户端管理, 创建 OAuth 应用.
 
 ## Overview
 
@@ -24,9 +24,20 @@ OAuth2 clients are the bridge between dApps and Xion's MetaAccount system. Each 
 
 **Key concepts:**
 - **Client** — OAuth2 application registered with Xion
-- **Treasury binding** — Every client must be bound to an existing Treasury
+- **Treasury binding** — Every client must be bound to an existing Treasury; **treasury on-chain params are SSOT** for redirect and branding (API 0.1.0)
+- **sync-from-treasury** — Refreshes mgr-api client view after treasury `redirect_url` / `icon_url` / `display_url` changes
 - **Managers** — Team members who can manage the client (but not delete it)
 - **Owner** — The sole user who can delete or transfer the client
+
+## Treasury SSOT (API 0.1.0)
+
+Redirect URIs, logo, and client homepage are **not** set via `oauth2 client create` or `update`:
+
+1. Set `redirect_url`, `icon_url`, `display_url` on the treasury (`verona-treasury` → `update-params` or at `create`).
+2. Create the OAuth client with `--treasury` only.
+3. After any treasury param change, run `oauth2 client sync-from-treasury <client_id>`.
+
+**Warning UX:** If legacy flags (`--redirect-uris`, `--logo-uri`, etc.) or deprecated JSON keys are passed, the CLI prints `[WARNING]` on **stderr** and **discards** those fields before the API call. Exit code stays `0` when otherwise valid. **Stdout success JSON is unchanged** — agents must read stderr; redirect did **not** change via CLI flags.
 
 ## Relationship to Treasuries
 
@@ -52,37 +63,38 @@ OAuth clients are tightly coupled with Treasuries:
 # 1. Authenticate (required!)
 verona-toolkit auth login
 
-# 2. List your OAuth clients
-verona-toolkit oauth2 client list
+# 2. Set redirect on treasury (SSOT) — see verona-treasury
+verona-toolkit treasury update-params xion1abc... \
+  --redirect-url "https://myapp.com/callback"
 
-# 3. Create a new OAuth client (bind to a treasury)
+# 3. Create OAuth client (treasury binding only — no --redirect-uris required)
 verona-toolkit oauth2 client create \
-  --redirect-uris "https://myapp.com/callback" \
   --treasury "xion1abc..." \
   --client-name "My DApp"
 
-# 4. Get client details
-verona-toolkit oauth2 client get client_abc123
+# 4. After treasury param changes, sync client view from chain
+verona-toolkit oauth2 client sync-from-treasury client_abc123
 
-# 5. Update client metadata
-verona-toolkit oauth2 client update client_abc123 --client-name "Updated Name"
+# 5. Get client details
+verona-toolkit oauth2 client get client_abc123
 ```
 
 ## Multi-Step Workflows
 
 ### Register a New DApp
 
-Complete workflow for registering a new dApp with OAuth2:
+Complete workflow for registering a new dApp with OAuth2 (treasury-first):
 
-1. **Create a Treasury** (if you don't have one)
+1. **Create a Treasury** (if you don't have one) with redirect URL on-chain
    ```bash
-   verona-toolkit treasury create --name "My DApp Treasury"
+   verona-toolkit treasury create \
+     --name "My DApp Treasury" \
+     --redirect-url "https://myapp.com/callback"
    ```
 
-2. **Register the OAuth client**
+2. **Register the OAuth client** (treasury binding only)
    ```bash
    verona-toolkit oauth2 client create \
-     --redirect-uris "https://myapp.com/callback" \
      --treasury "xion1treasury..." \
      --client-name "My DApp" \
      --contacts "admin@myapp.com"
@@ -90,7 +102,14 @@ Complete workflow for registering a new dApp with OAuth2:
 
 3. **Store the client secret securely** (shown once at creation)
 
-4. **Add managers** (optional)
+4. **After changing treasury redirect/branding**, sync the client
+   ```bash
+   verona-toolkit treasury update-params xion1treasury... \
+     --redirect-url "https://myapp.com/new-callback"
+   verona-toolkit oauth2 client sync-from-treasury client_abc123
+   ```
+
+5. **Add managers** (optional)
    ```bash
    verona-toolkit oauth2 client managers add client_abc123 --manager-id user_456
    ```
@@ -168,22 +187,22 @@ verona-toolkit oauth2 client list --limit 10 --cursor "next_page_cursor"
 ### Create OAuth Client
 
 ```bash
-# Minimal creation
+# Recommended: treasury already has redirect_url set
 verona-toolkit oauth2 client create \
-  --redirect-uris "https://example.com/callback" \
-  --treasury "xion1abc..."
+  --treasury "xion1abc..." \
+  --client-name "My App"
 
-# Full creation with all options
+# Non-chain-mapped metadata still supported
 verona-toolkit oauth2 client create \
-  --redirect-uris "https://a.com/cb,https://b.com/cb" \
   --treasury "xion1treasury..." \
   --client-name "My App" \
   --managers "user_456,user_789" \
   --auth-method client_secret_basic \
   --contacts "admin@example.com" \
-  --client-uri "https://myapp.com" \
-  --logo-uri "https://myapp.com/logo.png"
+  --policy-uri "https://myapp.com/privacy"
 ```
+
+> **Do not** teach `--redirect-uris`, `--logo-uri`, or `--client-uri` as SSOT. If passed, stderr shows `[WARNING]` and fields are discarded.
 
 Output:
 ```json
@@ -192,16 +211,26 @@ Output:
   "client": {
     "clientId": "client_abc123",
     "clientName": "My App",
-    "redirectUris": ["https://example.com/callback"]
+    "redirectUris": ["https://myapp.com/callback"]
   },
   "clientSecret": "********"
 }
 ```
 
-Using JSON input:
+Using JSON input (`bindedTreasury` required; deprecated keys stripped with stderr warning):
 ```bash
 verona-toolkit oauth2 client create --json-input request.json
 ```
+
+### Sync from Treasury
+
+Refresh client redirect/branding from the bound on-chain treasury:
+
+```bash
+verona-toolkit oauth2 client sync-from-treasury client_abc123
+```
+
+Run after `treasury update-params` changes `redirect_url`, `icon_url`, or `display_url`.
 
 ### Get OAuth Client
 
@@ -211,11 +240,15 @@ verona-toolkit oauth2 client get client_abc123
 
 ### Update OAuth Client
 
+Update **non-chain-mapped** metadata only (`clientName`, `policyUri`, `tosUri`, `jwksUri`, `contacts`):
+
 ```bash
 verona-toolkit oauth2 client update client_abc123 \
   --client-name "Updated Name" \
   --policy-uri "https://example.com/privacy"
 ```
+
+To change redirect or branding: update treasury on-chain, then `sync-from-treasury` — not `--redirect-uris` / `--logo-uri` on update.
 
 ### Delete OAuth Client
 
@@ -301,9 +334,10 @@ All commands return JSON with a `success` field:
 | Code | Description | Remediation |
 |------|-------------|-------------|
 | `EOAUTHCLIENT008` | Not authenticated | Run `verona-toolkit auth login` first |
-| `EOAUTHCLIENT010` | Insufficient scope | Re-authorize with `xion:mgr:read/write` scope |
+| `EOAUTHCLIENT010` | Insufficient scope | Re-authorize with `xion:mgr:read/write` scope (`--dev-mode` or full OAuth) |
 | `EOAUTHCLIENT011` | Only owner allowed | Only the client owner can perform this action |
-| `EOAUTHCLIENT012` | Client not found | Check the client ID and try again |
+| `EOAUTHCLIENT020` | Client access denied (GET 403) | Client may not exist or you lack access — **not** proof the ID is wrong; re-auth with `xion:mgr:read` |
+| `EOAUTHCLIENT012` | Client not found (404) | Actual 404 responses only — distinct from `EOAUTHCLIENT020` on GET |
 | `EOAUTHCLIENT014` | Treasury not found | Verify the treasury address is correct |
 | `EOAUTHCLIENT015` | Internal server error | Retry later or contact support |
 
@@ -313,7 +347,7 @@ All commands return JSON with a `success` field:
 |------|-------------|
 | `EOAUTHCLIENT001` | Bad request — invalid parameters |
 | `EOAUTHCLIENT002` | Client ID is required |
-| `EOAUTHCLIENT003` | Redirect URIs are required |
+| `EOAUTHCLIENT003` | Redirect URIs required (legacy API; toolkit no longer requires on create) |
 | `EOAUTHCLIENT004` | Binded treasury is required |
 | `EOAUTHCLIENT005` | Owner is required |
 | `EOAUTHCLIENT006` | Invalid grant type |
@@ -341,10 +375,11 @@ Collect ALL missing required parameters in a SINGLE interaction:
 
 > Example for create:
 > "I need the following to create the OAuth client:
-> - Redirect URIs (at least one, HTTPS recommended)
-> - Treasury address (must already exist)
+> - Treasury address (must already exist with redirect_url set on-chain)
 > - Client name (optional but recommended)
-> - Auth method (optional, defaults to 'none')"
+> - Auth method (optional, defaults to 'none')
+>
+> Do **not** collect `--redirect-uris` as required — treasury + sync is SSOT."
 
 ### Step 4: Confirm Before Execution
 
@@ -352,7 +387,6 @@ Present the parameters in a tree format and ask for confirmation:
 
 ```
 Will execute: oauth2 client create
-├─ Redirect URIs: https://example.com/callback
 ├─ Treasury: xion1abc...
 ├─ Client Name: My DApp
 └─ Auth Method: none (default)
@@ -366,7 +400,8 @@ See `schemas/` directory for detailed parameter definitions:
 | Schema File | Command | Description |
 |-------------|---------|-------------|
 | `list.json` | `oauth2 client list` | List OAuth clients with pagination |
-| `create.json` | `oauth2 client create` | Create new OAuth client |
+| `create.json` | `oauth2 client create` | Create new OAuth client (treasury SSOT) |
+| `sync-from-treasury.json` | `oauth2 client sync-from-treasury` | Sync redirect/branding from treasury |
 | `get.json` | `oauth2 client get` | Get client by ID |
 | `update.json` | `oauth2 client update` | Update client metadata |
 | `delete.json` | `oauth2 client delete` | Delete a client |
@@ -378,6 +413,15 @@ See `schemas/` directory for detailed parameter definitions:
 | `rotate-secret.json` | `oauth2 client rotate-secret` | Rotate client secret |
 
 ## Troubleshooting
+
+| Symptom | Likely cause | Action |
+|---------|--------------|--------|
+| stderr `[WARNING]` about ignored redirect/logo flags | Legacy flags still passed | Update treasury + `sync-from-treasury`; remove deprecated flags from automation |
+| Authorize fails redirect mismatch | `redirect_uri` ≠ treasury `redirect_url` | Align treasury param and sync client |
+| GET client 403 / `EOAUTHCLIENT020` | Missing client or no access | Verify ownership; re-auth with `xion:mgr:read`; do not assume wrong client id |
+| GET client 403 / `EOAUTHCLIENT010` | Token lacks mgr scope | Re-auth with `--dev-mode` or full OAuth including mgr scopes |
+| Create succeeds but wrong callback | Redirect never set on treasury | Fix treasury `redirect_url`, then sync |
+| Agent assumes redirect updated from CLI flags | Ignored fields after warn + discard | Read stderr; follow treasury → sync path |
 
 ### Not Authenticated
 ```bash
@@ -420,5 +464,5 @@ You cannot change a client's treasury after creation. Ensure the treasury exists
 
 ## Version
 
-- Skill Version: 1.0.0
-- Compatible CLI Version: >=0.9.0
+- Skill Version: 1.1.0
+- Compatible CLI Version: >=0.13.0 (oauth2-api 0.1.0 client SSOT)

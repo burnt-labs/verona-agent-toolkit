@@ -1,6 +1,6 @@
 {
   "command": "oauth2 client update",
-  "description": "Update an existing OAuth2 client",
+  "description": "Update non-chain-mapped OAuth2 client metadata (redirect/branding via treasury + sync-from-treasury)",
   "parameters": [
     {
       "name": "client-id",
@@ -12,8 +12,9 @@
       "name": "redirect-uris",
       "type": "array",
       "required": false,
-      "description": "OAuth redirect URIs (comma-separated or JSON array in --json-input)",
-      "notes": "Set to empty string to clear a URI"
+      "deprecated": true,
+      "description": "DEPRECATED — ignored if provided. Update redirect_url on treasury and run oauth2 client sync-from-treasury. CLI prints [WARNING] on stderr.",
+      "notes": "Cannot change redirect via client update (API 0.1.0)"
     },
     {
       "name": "client-name",
@@ -31,15 +32,17 @@
       "name": "client-uri",
       "type": "string",
       "required": false,
+      "deprecated": true,
       "format": "url",
-      "description": "Client homepage URL"
+      "description": "DEPRECATED — ignored if provided. Set display_url on treasury and run sync-from-treasury."
     },
     {
       "name": "logo-uri",
       "type": "string",
       "required": false,
+      "deprecated": true,
       "format": "url",
-      "description": "Client logo URL"
+      "description": "DEPRECATED — ignored if provided. Set icon_url on treasury and run sync-from-treasury."
     },
     {
       "name": "policy-uri",
@@ -66,37 +69,40 @@
       "name": "json-input",
       "type": "file",
       "required": false,
-      "description": "JSON file with full request body",
+      "description": "JSON file with full request body. Chain-mapped keys redirectUris, logoUri, clientUri are deprecated — stripped with [WARNING] on stderr.",
       "conflicts_with": ["redirect-uris", "client-name", "contacts", "client-uri", "logo-uri", "policy-uri", "tos-uri", "jwks-uri"]
     }
   ],
   "validation_rules": [
     "Only the client owner can update",
     "bindedTreasury cannot be modified after creation",
+    "Redirect/logo/client homepage must be changed on treasury, then sync-from-treasury — not via update",
+    "Deprecated chain-mapped flags/JSON keys are warn + discard before HTTP",
     "If --json-input is provided, all other flags are ignored"
   ],
   "errors": [
     { "code": "EOAUTHCLIENT008", "description": "Not authenticated", "remediation": "Run 'verona-toolkit auth login' first" },
     { "code": "EOAUTHCLIENT010", "description": "Insufficient scope for MGR API", "remediation": "Re-authorize with xion:mgr:write scope" },
     { "code": "EOAUTHCLIENT011", "description": "Not the client owner", "remediation": "Only the client owner can update" },
-    { "code": "EOAUTHCLIENT012", "description": "Client not found", "remediation": "Check the client ID and try again" }
+    { "code": "EOAUTHCLIENT012", "description": "Client not found (404)", "remediation": "Check the client ID — distinct from GET 403 access denial (EOAUTHCLIENT020)" },
+    { "code": "EOAUTHCLIENT020", "description": "Client access denied (403 PERMISSION_DENIED_VIEW_CLIENT)", "remediation": "Client may not exist or you lack access; re-auth with xion:mgr:read; do not assume wrong client ID from not-found wording" }
   ],
   "examples": [
     {
-      "description": "Update client name",
+      "description": "Update client name and policy (non-chain-mapped fields)",
       "params": {
         "client-id": "client_abc123",
-        "client-name": "Updated DApp Name"
+        "client-name": "Updated DApp Name",
+        "policy-uri": "https://example.com/privacy"
       }
     },
     {
-      "description": "Update multiple fields",
-      "params": {
-        "client-id": "client_abc123",
-        "client-name": "Updated DApp",
-        "policy-uri": "https://example.com/privacy",
-        "tos-uri": "https://example.com/terms"
-      }
+      "description": "Change redirect/branding (treasury + sync workflow)",
+      "workflow": [
+        "verona-toolkit treasury update-params xion1treasury... --redirect-url https://example.com/new-callback",
+        "verona-toolkit oauth2 client sync-from-treasury client_abc123"
+      ],
+      "note": "Do NOT use --redirect-uris or --logo-uri on update"
     }
   ]
 }

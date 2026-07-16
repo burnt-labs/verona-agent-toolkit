@@ -12,7 +12,8 @@
   "errors": [
     { "code": "EOAUTHCLIENT008", "description": "Not authenticated", "remediation": "Run 'verona-toolkit auth login' first" },
     { "code": "EOAUTHCLIENT010", "description": "Insufficient scope for MGR API", "remediation": "Re-authorize with xion:mgr:read scope" },
-    { "code": "EOAUTHCLIENT012", "description": "Client not found", "remediation": "Check the client ID and try again" }
+    { "code": "EOAUTHCLIENT020", "description": "Client access denied (403 PERMISSION_DENIED_VIEW_CLIENT)", "remediation": "Client may not exist or you lack access; re-auth with xion:mgr:read; do not assume wrong client ID" },
+    { "code": "EOAUTHCLIENT012", "description": "Client not found (404)", "remediation": "Reserved for actual 404 responses — not the 0.1.0 GET enumeration case" }
   ],
   "examples": [
     {

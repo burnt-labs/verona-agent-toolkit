@@ -39,11 +39,16 @@
     }
   ],
   "validation_rules": [
-    "At least one parameter to update is required (--redirect-url, --icon-url, or --metadata)"
+    "At least one parameter to update is required (--redirect-url, --icon-url, or --metadata)",
+    "After changing redirect_url, icon_url, or display_url, run: verona-toolkit oauth2 client sync-from-treasury <client_id> (verona-oauth2-client)"
   ],
   "examples": [
     {
-      "description": "Update redirect URL",
+      "description": "Update redirect URL (then sync OAuth client)",
+      "workflow": [
+        "verona-toolkit treasury update-params xion1abc... --redirect-url https://example.com/callback",
+        "verona-toolkit oauth2 client sync-from-treasury client_abc123"
+      ],
       "params": {
         "address": "xion1abc...",
         "redirect-url": "https://example.com/callback"
