@@ -155,3 +155,6 @@ vite.config.ts.timestamp-*
 Thumbs.db
 
 .gitnexus
+
+# GitNexus Claude skills (local install; not part of the toolkit)
+.claude/skills/gitnexus/
