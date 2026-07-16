@@ -82,11 +82,11 @@ impl MgrApiClient {
 
 **Steps:**
 
-- [ ] **Step 1:** Add failing unit tests for: strip helpers + create/update JSON omitting discarded fields; sync path/method/body; `PERMISSION_DENIED_VIEW_CLIENT` vs `INSUFFICIENT_SCOPE` vs `CLIENT_NOT_FOUND` mapping per spec AD-4.
-- [ ] **Step 2:** Run targeted tests — expect FAIL.
-- [ ] **Step 3:** Implement `strip_chain_mapped_*`, `sync_from_treasury`, `ClientAccessDenied` + mapper arm; ensure create/update only serialize post-strip structs from callers.
-- [ ] **Step 4:** Run targeted tests — expect PASS.
-- [ ] **Step 5:** Commit `feat(api): add sync-from-treasury and harden client SSOT requests`
+- [x] **Step 1:** Add failing unit tests for: strip helpers + create/update JSON omitting discarded fields; sync path/method/body; `PERMISSION_DENIED_VIEW_CLIENT` vs `INSUFFICIENT_SCOPE` vs `CLIENT_NOT_FOUND` mapping per spec AD-4.
+- [x] **Step 2:** Run targeted tests — expect FAIL.
+- [x] **Step 3:** Implement `strip_chain_mapped_*`, `sync_from_treasury`, `ClientAccessDenied` + mapper arm; ensure create/update only serialize post-strip structs from callers.
+- [x] **Step 4:** Run targeted tests — expect PASS.
+- [x] **Step 5:** Commit `feat(api): add sync-from-treasury and harden client SSOT requests`
 
 ---
 
@@ -125,11 +125,11 @@ pub enum OAuth2ClientCommands {
 
 **Steps:**
 
-- [ ] **Step 1:** Failing tests for: create without redirect-uris; stderr warning when deprecated flags/JSON keys present; success stdout JSON unchanged; json_input strip; sync subcommand wiring.
-- [ ] **Step 2:** Run — expect FAIL.
-- [ ] **Step 3:** Implement warn + discard in handlers (call `strip_chain_mapped_*` + `print_warning`); update clap args (`redirect_uris` optional, visible, help text); wire `SyncFromTreasury`; remove `bail!("--redirect-uris is required")`.
-- [ ] **Step 4:** Run — expect PASS.
-- [ ] **Step 5:** Commit `feat(cli): treasury SSOT for oauth2 client create/update + sync`
+- [x] **Step 1:** Failing tests for: create without redirect-uris; stderr warning when deprecated flags/JSON keys present; success stdout JSON unchanged; json_input strip; sync subcommand wiring.
+- [x] **Step 2:** Run — expect FAIL.
+- [x] **Step 3:** Implement warn + discard in handlers (call `strip_chain_mapped_*` + `print_warning`); update clap args (`redirect_uris` optional, visible, help text); wire `SyncFromTreasury`; remove `bail!("--redirect-uris is required")`.
+- [x] **Step 4:** Run — expect PASS.
+- [x] **Step 5:** Commit `feat(cli): treasury SSOT for oauth2 client create/update + sync`
 
 ---
 
@@ -154,11 +154,11 @@ pub enum OAuth2ClientCommands {
 
 **Steps:**
 
-- [ ] **Step 1:** Update schemas per R6; add sync-from-treasury schema/script entry if skill pattern requires it.
-- [ ] **Step 2:** Rewrite SKILL examples to treasury-first + sync; add troubleshooting table aligned with migration guide.
-- [ ] **Step 3:** Add treasury cross-link section for redirect/branding param changes.
-- [ ] **Step 4:** Run skill-related tests / dry-run schema checks.
-- [ ] **Step 5:** Commit `docs(skill): align oauth2 client + treasury with API 0.1.0 SSOT`
+- [x] **Step 1:** Update schemas per R6; add sync-from-treasury schema/script entry if skill pattern requires it.
+- [x] **Step 2:** Rewrite SKILL examples to treasury-first + sync; add troubleshooting table aligned with migration guide.
+- [x] **Step 3:** Add treasury cross-link section for redirect/branding param changes.
+- [x] **Step 4:** Run skill-related tests / dry-run schema checks.
+- [x] **Step 5:** Commit `docs(skill): align oauth2 client + treasury with API 0.1.0 SSOT`
 
 ---
 
@@ -178,10 +178,10 @@ pub enum OAuth2ClientCommands {
 
 **Steps:**
 
-- [ ] **Step 1:** Update cli-reference create/update/sync sections (include Warning UX).
-- [ ] **Step 2:** Repo grep for stale patterns; fix remaining in-scope hits (K1).
-- [ ] **Step 3:** `cargo fmt` + `clippy -D warnings` + `cargo test --all-features`.
-- [ ] **Step 4:** Commit `docs(cli): document oauth2 client treasury SSOT and sync`
+- [x] **Step 1:** Update cli-reference create/update/sync sections (include Warning UX).
+- [x] **Step 2:** Repo grep for stale patterns; fix remaining in-scope hits (K1).
+- [x] **Step 3:** `cargo fmt` + `clippy -D warnings` + `cargo test --all-features`.
+- [x] **Step 4:** Commit `docs(cli): document oauth2 client treasury SSOT and sync`
 
 ---
 
@@ -206,6 +206,9 @@ pub enum OAuth2ClientCommands {
 When using `mstar-sdd`, artifacts live under `{SDD_DIR}` (`.mstar/sdd/eng-1880-oauth2-010-adapt/`). Do not duplicate briefs/reports in this file.
 
 ## Review gate summary
+
+- **QA:** Accept with residuals (005f30bc)
+
 
 - **QC (tri):** Approve with residuals after fix `36c2de6` (qc1/qc2/qc3 Approve)
 - **Residuals:** R1 accepted_risk (CLI-only strip), R2 deferred (sync script polish) — SSOT `status.json` `residual_findings[eng-1880-oauth2-010-adapt]`

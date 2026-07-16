@@ -33,7 +33,7 @@ Locked spec points:
 
 | plan_id | Name | Status | Notes |
 |---------|------|--------|-------|
-| eng-1880-oauth2-010-adapt | OAuth2 0.1.0 client SSOT adapt (CLI + skills) | Todo | Single plan; SDD multi-task |
+| eng-1880-oauth2-010-adapt | OAuth2 0.1.0 client SSOT adapt (CLI + skills) | Done | Single plan; SDD multi-task |
 
 Status values: `Todo` | `InProgress` | `InReview` | `Done` | `Blocked`
 

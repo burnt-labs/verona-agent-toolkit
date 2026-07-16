@@ -28,9 +28,9 @@
       "id": "eng-1880-oauth2-010-adapt",
       "title": "OAuth2 0.1.0 client SSOT adapt (CLI + skills)",
       "file": ".mstar/plans/eng-1880-oauth2-010-adapt.md",
-      "status": "InReview",
+      "status": "Done",
       "owner": "@project-manager",
-      "progress": 95,
+      "progress": 100,
       "created_at": "2026-07-16",
       "updated_at": "2026-07-16",
       "metadata": {
@@ -42,7 +42,7 @@
         "iteration_refs": [
           ".mstar/iterations/eng-1880-oauth2-010-adapt/"
         ],
-        "phase": "locked",
+        "phase": "done",
         "description": "ENG-1880: align toolkit + skills with oauth2-api-service 0.1.0 treasury SSOT",
         "linear": "ENG-1880",
         "prepare_gates": {
@@ -70,7 +70,7 @@
         ],
         "gates": {
           "qc": "Approve with residuals",
-          "qa": "pending"
+          "qa": "Accept with residuals"
         },
         "review_range": "1167507..36c2de6"
       }
