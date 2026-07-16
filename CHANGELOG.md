@@ -5,6 +5,42 @@ All notable changes to the Verona Agent Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0](https://github.com/burnt-labs/verona-agent-toolkit/compare/0.13.1...0.14.0) (2026-07-16)
+
+
+### Features
+
+* **api:** add sync-from-treasury and harden client SSOT requests ([30b4ad4](https://github.com/burnt-labs/verona-agent-toolkit/commit/30b4ad4f56a479891ee60495ee9ab0fa81aa255d))
+* **cli:** treasury SSOT for oauth2 client create/update + sync ([2c14dc0](https://github.com/burnt-labs/verona-agent-toolkit/commit/2c14dc00d1f7d70cf1946f8e0adc0fb0e767ddee))
+* **oauth2:** adapt toolkit to API 0.1.0 client treasury SSOT (ENG-1880) ([27938f3](https://github.com/burnt-labs/verona-agent-toolkit/commit/27938f390a85ebe7c25e3a4d5967c46626c3dcbd))
+
+
+### Bug Fixes
+
+* **deps:** bump crossbeam-epoch and quinn-proto for cargo audit ([3a39098](https://github.com/burnt-labs/verona-agent-toolkit/commit/3a390987274dcba818e21524e1cbdbb9371fdfa1))
+* **harness:** move SPECS_DIR to .mstar/specs/ ([#90](https://github.com/burnt-labs/verona-agent-toolkit/issues/90)) ([036df5b](https://github.com/burnt-labs/verona-agent-toolkit/commit/036df5b0abab47eb5fa412ced8ad09a93be22a08))
+* **oauth2:** address Copilot review on exit codes and sync script ([615c915](https://github.com/burnt-labs/verona-agent-toolkit/commit/615c91516d661751d4b16bebe6e47951aede8eac))
+* **oauth2:** address QC warnings for SSOT docs and error hints ([36c2de6](https://github.com/burnt-labs/verona-agent-toolkit/commit/36c2de62f0f87477d2e00fca6bbbc34fccff7ba4))
+
+
+### Documentation
+
+* **cli:** document oauth2 client treasury SSOT and sync ([7d78344](https://github.com/burnt-labs/verona-agent-toolkit/commit/7d78344da4c8329f5708a19cf9186f9972f4b2fb))
+* **iteration:** lock eng-1880 oauth2 0.1.0 client SSOT adapt ([1167507](https://github.com/burnt-labs/verona-agent-toolkit/commit/11675070dd4a414a67f81afae163e6545cd397d1))
+* **skill:** align oauth2 client + treasury with API 0.1.0 SSOT ([a20a23d](https://github.com/burnt-labs/verona-agent-toolkit/commit/a20a23df4643da55a2a3970131b4c1aa7dd794bc))
+
+
+### Tests
+
+* **cli:** cover oauth2 client warn+discard stderr and flag strip ([e0f976a](https://github.com/burnt-labs/verona-agent-toolkit/commit/e0f976a28a96e994f59da8a4df1d21ae9f8cee39))
+
+
+### Chores
+
+* **iteration:** close eng-1880-oauth2-010-adapt — compound round, roadmap update ([fc2f087](https://github.com/burnt-labs/verona-agent-toolkit/commit/fc2f087207fe17e1359a10a75e8ed85271cbcbab))
+* **mstar:** mark eng-1880-oauth2-010-adapt plan Done after QA Accept ([d0479e5](https://github.com/burnt-labs/verona-agent-toolkit/commit/d0479e5356269a2186ed8756875274eb3b424d12))
+* **mstar:** register QC residuals for eng-1880 oauth2 adapt ([1e39b8d](https://github.com/burnt-labs/verona-agent-toolkit/commit/1e39b8d6f13ae693f91e34bd10f72987c73fb941))
+
 ## [0.13.1](https://github.com/burnt-labs/verona-agent-toolkit/compare/0.13.0...0.13.1) (2026-06-18)
 
 
