@@ -14,7 +14,7 @@
 
 **Prepare gates:** specify ✅ · clarify ✅ (grill-me A/R′/P1/K1/V1 + branch + Warning UX) · plan ✅ (this file)
 
-**Primary spec:** `specs/oauth2-api-010-client-ssot.md` (`locked`)  
+**Primary spec:** `.mstar/specs/oauth2-api-010-client-ssot.md` (`locked`)  
 **Iteration compass:** `.mstar/iterations/eng-1880-oauth2-010-adapt/delivery-compass.md`  
 **Migration guide:** `.mstar/iterations/eng-1880-oauth2-010-adapt/guides/eng-1880-impact-and-migration.md`  
 **Linear:** ENG-1880
@@ -195,7 +195,7 @@ pub enum OAuth2ClientCommands {
 ## Plan self-review (PM + architect + writing)
 
 1. **Spec coverage:** R1–R6 + Warning UX + AD-1–AD-5 → Tasks 1–4 ✅
-2. **Spec status:** `specs/oauth2-api-010-client-ssot.md` locked ✅
+2. **Spec status:** `.mstar/specs/oauth2-api-010-client-ssot.md` locked ✅
 3. **Placeholder scan:** no TBD in task steps ✅
 4. **Type consistency:** `sync-from-treasury` naming aligned CLI/API/skills ✅
 5. **403 mapping:** `PERMISSION_DENIED_VIEW_CLIENT` distinct from `INSUFFICIENT_SCOPE` ✅

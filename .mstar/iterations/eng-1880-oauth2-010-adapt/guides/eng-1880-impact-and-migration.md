@@ -4,7 +4,7 @@ Promoted to: `.mstar/knowledge/conventions/oauth2-api-010-client-ssot.md` (itera
 
 **Upstream:** [ENG-1880](https://linear.app/burnt/issue/ENG-1880) / oauth2-api-service **0.1.0** (PR #49).  
 **Reference tree:** `~/workspace/burnt-labs/oauth2-api-service`  
-**Toolkit contract:** `specs/oauth2-api-010-client-ssot.md` (`locked`)
+**Toolkit contract:** `.mstar/specs/oauth2-api-010-client-ssot.md` (`locked`)
 
 ## Root cause (upstream)
 

@@ -2,6 +2,8 @@
 
 Implementation notes and design SSOT for agent handoff. Active plans live in `.mstar/status.json` (`plans[]`); this README is the knowledge index.
 
+**Specs vs knowledge:** Locked normative contracts live under [`.mstar/specs/`](../specs/). Entries below are **compound** (and legacy) crystallization — durable how-we-work notes that may link to a locked spec.
+
 | Document | Source plan | Description | Status |
 |----------|-------------|-------------|--------|
 | [feature-roadmap.md](./feature-roadmap.md) | — | Product feature roadmap (`status.json` → `metadata.active_roadmap`). | Active |
@@ -13,4 +15,4 @@ Implementation notes and design SSOT for agent handoff. Active plans live in `.m
 | [expiration-research.md](./expiration-research.md) | phase4 | Treasury expiration field research. | Active |
 | [xion-skills-update-plan.md](./xion-skills-update-plan.md) | skills | Xion skills update planning notes. | Active |
 | [verona-rebrand-contract.md](./verona-rebrand-contract.md) | verona-rebrand | Rename matrix SSOT for Verona Agent Toolkit rebrand. | Active |
-| [conventions/oauth2-api-010-client-ssot.md](./conventions/oauth2-api-010-client-ssot.md) | eng-1880-oauth2-010-adapt | Mgr client treasury SSOT + warn/discard + sync-from-treasury (API 0.1.0 / ENG-1880). | Active |
+| [conventions/oauth2-api-010-client-ssot.md](./conventions/oauth2-api-010-client-ssot.md) | eng-1880-oauth2-010-adapt | Compound: mgr client treasury SSOT + warn/discard + sync (links `.mstar/specs/…`). | Active |

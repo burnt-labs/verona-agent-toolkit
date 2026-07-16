@@ -6,9 +6,13 @@ created_at: 2026-07-16
 updated_at: 2026-07-16
 source: iteration:eng-1880-oauth2-010-adapt/guides/eng-1880-impact-and-migration.md
 linear: ENG-1880
+promoted_from: .mstar/iterations/eng-1880-oauth2-010-adapt/guides/eng-1880-impact-and-migration.md
+normative_spec: .mstar/specs/oauth2-api-010-client-ssot.md
 ---
 
 # Convention: OAuth2 mgr client — treasury SSOT (0.1.0)
+
+> **Compound crystallization** (iteration-close). Normative locked contract: [`.mstar/specs/oauth2-api-010-client-ssot.md`](../../specs/oauth2-api-010-client-ssot.md). This file is the how-we-work summary for agents; change behavior only via the locked spec + code.
 
 ## Problem
 
@@ -30,7 +34,7 @@ oauth2-api-service **0.1.0** (ENG-1880) closed free-form `redirectUris` writes o
 
 ## Implementation anchors
 
-- Spec: `specs/oauth2-api-010-client-ssot.md`
+- Locked spec: `.mstar/specs/oauth2-api-010-client-ssot.md`
 - Strip helpers: `strip_chain_mapped_*` in `src/api/mgr_api.rs`
 - CLI pipeline: `prepare_*_request` in `src/cli/oauth2_client.rs`
 - Skills: `skills/verona-oauth2-client/`, treasury cross-link in `skills/verona-treasury/`

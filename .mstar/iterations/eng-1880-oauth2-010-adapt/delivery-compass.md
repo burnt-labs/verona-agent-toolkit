@@ -133,7 +133,7 @@ All items are **agent-testable** (automated test, CLI invocation, or repo grep u
 | Path | Purpose |
 |------|---------|
 | `guides/` | ENG-1880 impact notes, migration checklist |
-| `specs/` | Iteration-scoped drafts (if any beyond repo `specs/`) |
+| `specs/` | Iteration-scoped drafts (if any beyond `{SPECS_DIR}` = `.mstar/specs/`) |
 | `README.md` | Package index |
 
 ## Quality Gate Summary
@@ -145,7 +145,7 @@ All items are **agent-testable** (automated test, CLI invocation, or repo grep u
 ## Compound round summary
 
 - Documents crystallized: 1 (`.mstar/knowledge/conventions/oauth2-api-010-client-ssot.md`)
-- Package triage: **Promote** `guides/eng-1880-impact-and-migration.md` → conventions knowledge; **Keep** compass/README as iteration history; **Skip** empty `specs/` dir
+- Package triage: **Promote** `guides/eng-1880-impact-and-migration.md` → conventions knowledge; **Keep** compass/README as iteration history; **Skip** empty iteration `specs/` dir; locked contract lives in `.mstar/specs/`
 - New `CONCEPTS.md` entries: none (file not present; no new domain terms beyond existing OAuth/treasury vocabulary)
 - `compound-refresh` triggered: no
 
