@@ -380,6 +380,11 @@ fn emit_chain_mapped_warnings(discarded: &[&'static str]) {
     }
 }
 
+/// Full stderr line for a discarded chain-mapped field (matches `print_warning` output).
+fn chain_mapped_warning_line(label: &str) -> String {
+    format!("[WARNING] {}", chain_mapped_field_warning(label))
+}
+
 fn prepare_create_request(mut request: CreateClientRequest) -> CreateClientRequest {
     let discarded = strip_chain_mapped_create(&mut request);
     emit_chain_mapped_warnings(&discarded);
@@ -1108,6 +1113,149 @@ mod tests {
         assert!(chain_mapped_field_warning("logo_uri").contains("--logo-uri is ignored"));
         assert!(chain_mapped_field_warning("client_uri").contains("--client-uri is ignored"));
         assert!(chain_mapped_field_warning("owner").contains("--owner is ignored"));
+    }
+
+    #[test]
+    fn test_chain_mapped_warning_lines_match_print_warning_format() {
+        for label in ["redirect_uris", "logo_uri", "client_uri", "owner"] {
+            let line = chain_mapped_warning_line(label);
+            assert!(
+                line.starts_with("[WARNING] "),
+                "expected [WARNING] prefix, got: {line}"
+            );
+            assert!(
+                line.contains("ignored"),
+                "expected ignored guidance, got: {line}"
+            );
+        }
+    }
+
+    #[test]
+    fn test_emit_chain_mapped_warnings_stderr_content_for_json_discards() {
+        let json = r#"{
+            "redirectUris": ["https://example.com/callback"],
+            "logoUri": "https://example.com/logo.png",
+            "bindedTreasury": "xion1treasury",
+            "clientName": "JSON App"
+        }"#;
+        let request: CreateClientRequest = serde_json::from_str(json).unwrap();
+        let mut stripped = request;
+        let discarded = strip_chain_mapped_create(&mut stripped);
+        let stderr_lines: Vec<String> = discarded
+            .iter()
+            .map(|label| chain_mapped_warning_line(label))
+            .collect();
+
+        assert!(
+            stderr_lines.iter().all(|line| line.contains("[WARNING]")),
+            "every discarded field should produce a [WARNING] line: {stderr_lines:?}"
+        );
+        assert!(
+            stderr_lines
+                .iter()
+                .any(|line| line.contains("--redirect-uris is ignored")),
+            "redirect discard should warn: {stderr_lines:?}"
+        );
+        assert!(
+            stderr_lines
+                .iter()
+                .any(|line| line.contains("--logo-uri is ignored")),
+            "logo discard should warn: {stderr_lines:?}"
+        );
+
+        // Success path: prepare still returns a valid stripped request (no error).
+        let request: CreateClientRequest = serde_json::from_str(json).unwrap();
+        let prepared = prepare_create_request(request);
+        let value = serde_json::to_value(&prepared).unwrap();
+        assert!(value.get("redirectUris").is_none());
+        assert!(value.get("logoUri").is_none());
+        assert_eq!(value["bindedTreasury"], "xion1treasury");
+    }
+
+    #[test]
+    fn test_create_flags_strip_chain_mapped_and_warn_before_api() {
+        let cmd = parse_oauth2_client(&[
+            "create",
+            "--treasury",
+            "xion1treasury",
+            "--redirect-uris",
+            "https://example.com/callback",
+            "--logo-uri",
+            "https://example.com/logo.png",
+            "--client-name",
+            "Flag App",
+        ]);
+        match cmd {
+            OAuth2ClientCommands::Create(args) => {
+                let request = build_create_request_from_args(&args).unwrap();
+                let mut for_discard = request.clone();
+                let discarded = strip_chain_mapped_create(&mut for_discard);
+                let stderr_lines: Vec<String> = discarded
+                    .iter()
+                    .map(|label| chain_mapped_warning_line(label))
+                    .collect();
+                assert!(
+                    stderr_lines.iter().all(|line| line.contains("[WARNING]")),
+                    "flag path should emit [WARNING] lines: {stderr_lines:?}"
+                );
+                assert!(stderr_lines
+                    .iter()
+                    .any(|line| line.contains("--redirect-uris is ignored")));
+                assert!(stderr_lines
+                    .iter()
+                    .any(|line| line.contains("--logo-uri is ignored")));
+
+                let prepared = prepare_create_request(request);
+                let value = serde_json::to_value(&prepared).unwrap();
+                assert!(value.get("redirectUris").is_none());
+                assert!(value.get("logoUri").is_none());
+                assert_eq!(value["bindedTreasury"], "xion1treasury");
+                assert_eq!(value["clientName"], "Flag App");
+            }
+            _ => panic!("Expected Create command"),
+        }
+    }
+
+    #[test]
+    fn test_update_flags_strip_chain_mapped_and_warn_before_api() {
+        let cmd = parse_oauth2_client(&[
+            "update",
+            "client_abc123",
+            "--redirect-uris",
+            "https://example.com/callback",
+            "--logo-uri",
+            "https://example.com/logo.png",
+            "--client-name",
+            "Updated App",
+        ]);
+        match cmd {
+            OAuth2ClientCommands::Update(args) => {
+                let request = build_update_request(&args).unwrap();
+                let mut for_discard = request.clone();
+                let discarded = strip_chain_mapped_update(&mut for_discard);
+                let stderr_lines: Vec<String> = discarded
+                    .iter()
+                    .map(|label| chain_mapped_warning_line(label))
+                    .collect();
+                assert!(
+                    stderr_lines.iter().all(|line| line.contains("[WARNING]")),
+                    "flag path should emit [WARNING] lines: {stderr_lines:?}"
+                );
+                assert!(stderr_lines
+                    .iter()
+                    .any(|line| line.contains("--redirect-uris is ignored")));
+                assert!(stderr_lines
+                    .iter()
+                    .any(|line| line.contains("--logo-uri is ignored")));
+
+                let prepared = prepare_update_request(request);
+                let value = serde_json::to_value(&prepared).unwrap();
+                assert!(value.get("redirectUris").is_none());
+                assert!(value.get("logoUri").is_none());
+                assert_eq!(value["clientName"], "Updated App");
+            }
+            _ => panic!("Expected Update command"),
+        }
     }
 
     #[test]
