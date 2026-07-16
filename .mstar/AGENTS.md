@@ -10,9 +10,11 @@ Rules for the harness subtree only. Rust CLI build, test, and security rules liv
 | `{PLAN_DIR}` | `.mstar/plans/` |
 | `{KNOWLEDGE_DIR}` | `.mstar/knowledge/` |
 | `{ITERATION_DIR}` | `.mstar/iterations/` |
-| `{SPECS_DIR}` | `specs/` if present, else `designs/` if present |
+| `{SPECS_DIR}` | `.mstar/specs/` |
 
-Human-facing product docs stay in `docs/`. Harness state, plans, knowledge, and QC reports stay under `{HARNESS_DIR}`.
+> **Project override:** This repo keeps frozen specs/ADRs under `.mstar/specs/`, not a repository-root `specs/` or `designs/` directory. Do not create root-level `specs/`.
+
+Human-facing product docs stay in `docs/`. Harness state, plans, knowledge, specs, and QC reports stay under `{HARNESS_DIR}`.
 
 ## Layout
 
@@ -24,8 +26,16 @@ Human-facing product docs stay in `docs/`. Harness state, plans, knowledge, and 
 | `{PLAN_DIR}/archived/` | Completed plans (`archived/README.md` index) |
 | `{PLAN_DIR}/reports/<plan-id>/` | QC / review reports (not `docs/`) |
 | `{PLAN_DIR}/residuals/<plan-id>/` | Optional long-form open residual notes |
-| `{KNOWLEDGE_DIR}/` | Durable design notes (`README.md` index) |
-| `{ITERATION_DIR}/` | Iteration compasses (`README.md` index) |
+| `{SPECS_DIR}/` | Locked normative specs / ADRs (`primary_spec` / `spec_refs`) |
+| `{KNOWLEDGE_DIR}/` | Durable implementation notes from **compound** (`README.md` index) |
+| `{ITERATION_DIR}/` | Iteration packages (`README.md` index); per-iteration `specs/` = drafts only |
+
+### Specs vs knowledge
+
+| Tree | Who writes | Contents |
+|------|------------|----------|
+| `{SPECS_DIR}/` | Prepare / Review & Edit (product, architect) | Locked contracts agents implement against |
+| `{KNOWLEDGE_DIR}/` | **`mstar-compound`** @ iteration-close | Crystallized conventions, how-we-work notes (may *link* to a locked spec) |
 
 Do not store dynamic plan progress in root `AGENTS.md` or `CLAUDE.md`.
 
