@@ -2143,7 +2143,7 @@ Output:
 
 Manage OAuth2 clients via the Verona Manager API. Authentication is required for all commands.
 
-**Treasury SSOT (oauth2-api 0.1.0):** Redirect URI, logo, and client homepage are authoritative on the **bound treasury** (`redirect_url`, `icon_url`, `display_url` on-chain)—not from free-form `create`/`update` flags. Set treasury params first (`treasury update-params`), create with `--treasury`, then run `sync-from-treasury` after any treasury param change.
+**Treasury SSOT (oauth2-api 0.1.0):** Redirect URI and logo are authoritative on the **bound treasury** (`redirect_url`, `icon_url` on-chain)—not from free-form `create`/`update` flags. Set `redirect_url` / `icon_url` via `treasury create` or `treasury update-params` (`--redirect-url`, `--icon-url` only; there is no `--display-url` on update-params). Client homepage (`display_url`) is an on-chain param but not exposed on the update-params CLI—set at treasury create via `--config` JSON if needed. Create OAuth client with `--treasury`, then run `sync-from-treasury` after treasury param changes.
 
 **Warning UX:** Deprecated chain-mapped flags (`--redirect-uris`, `--logo-uri`, `--client-uri`, create `--owner`) and matching JSON keys (`redirectUris`, `logoUri`, `clientUri`, `owner`) are **stripped before HTTP**. The CLI prints `[WARNING]` on **stderr** for each discarded field; exit code stays `0` when otherwise valid. **Stdout success JSON is unchanged**—agents must read stderr; redirect did not change via CLI flags.
 
@@ -2178,15 +2178,20 @@ Output (success):
 ```json
 {
   "success": true,
-  "clients": [
+  "items": [
     {
-      "clientId": "client_abc123...",
+      "clientId": "client_abc123",
       "clientName": "My App",
       "redirectUris": ["https://example.com/callback"],
-      "bindedTreasury": "xion1treasury...",
-      "owner": "user_123"
+      "role": "owner",
+      "extension": {
+        "bindedTreasury": "xion1treasury...",
+        "owner": "user_123",
+        "managers": []
+      }
     }
   ],
+  "cursor": null,
   "count": 1
 }
 ```
@@ -2210,7 +2215,7 @@ verona-toolkit oauth2 client create [options]
 - `--managers <IDS>` - Manager user IDs (comma-separated)
 - `--auth-method <METHOD>` - Token endpoint auth method (none, client_secret_basic, client_secret_post)
 - `--contacts <EMAILS>` - Contact email addresses (comma-separated)
-- `--client-uri <URL>` - **Deprecated** — ignored; set `display_url` on treasury + sync
+- `--client-uri <URL>` - **Deprecated** — ignored; `display_url` is not set via update-params (treasury create `--config` or on-chain)
 - `--logo-uri <URL>` - **Deprecated** — ignored; set `icon_url` on treasury + sync
 - `--policy-uri <URL>` - Privacy policy URL
 - `--tos-uri <URL>` - Terms of service URL
@@ -2297,12 +2302,17 @@ Output (success):
 ```json
 {
   "success": true,
-  "clientId": "client_abc123",
-  "clientName": "My App",
-  "redirectUris": ["https://example.com/callback"],
-  "bindedTreasury": "xion1treasury...",
-  "owner": "user_123",
-  "tokenEndpointAuthMethod": "client_secret_basic"
+  "client": {
+    "clientId": "client_abc123",
+    "clientName": "My App",
+    "redirectUris": ["https://example.com/callback"],
+    "tokenEndpointAuthMethod": "client_secret_basic",
+    "extension": {
+      "bindedTreasury": "xion1treasury...",
+      "owner": "user_123",
+      "managers": []
+    }
+  }
 }
 ```
 
@@ -2347,7 +2357,7 @@ verona-toolkit oauth2 client update <CLIENT_ID> [options]
 **Options:**
 - `--redirect-uris <URIS>` - **Deprecated** — ignored; stderr `[WARNING]`; use treasury + sync
 - `--client-name <NAME>` - Human-readable client name
-- `--client-uri <URL>` - **Deprecated** — ignored; use treasury `display_url` + sync
+- `--client-uri <URL>` - **Deprecated** — ignored; client homepage comes from treasury `display_url` (not update-params CLI)
 - `--logo-uri <URL>` - **Deprecated** — ignored; use treasury `icon_url` + sync
 - `--policy-uri <URL>` - Privacy policy URL
 - `--tos-uri <URL>` - Terms of service URL
@@ -2386,7 +2396,7 @@ Output (success):
 
 ### `oauth2 client sync-from-treasury`
 
-Refreshes OAuth client redirect/branding metadata from the bound on-chain treasury (`POST /mgr-api/clients/{id}/sync-from-treasury`, no request body). Run after `treasury update-params` changes `redirect_url`, `icon_url`, or `display_url`.
+Refreshes OAuth client redirect/branding metadata from the bound on-chain treasury (`POST /mgr-api/clients/{id}/sync-from-treasury`, no request body). Run after `treasury update-params` changes `redirect_url` or `icon_url`.
 
 **Usage:**
 ```bash

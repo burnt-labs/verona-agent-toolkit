@@ -149,7 +149,7 @@ pub struct CreateClientArgs {
     /// Contact email addresses (comma-separated)
     #[arg(long, value_delimiter = ',')]
     pub contacts: Option<Vec<String>>,
-    /// Client homepage URL (ignored; set display_url on treasury and run sync-from-treasury)
+    /// Client homepage URL (ignored; set display_url at treasury create or on-chain, then sync-from-treasury)
     #[arg(long)]
     pub client_uri: Option<String>,
     /// Client logo URL (ignored; set icon_url on treasury and run sync-from-treasury)
@@ -202,7 +202,7 @@ pub struct UpdateClientArgs {
     /// Human-readable client name
     #[arg(long)]
     pub client_name: Option<String>,
-    /// Client homepage URL (ignored; set display_url on treasury and run sync-from-treasury)
+    /// Client homepage URL (ignored; set display_url at treasury create or on-chain, then sync-from-treasury)
     #[arg(long)]
     pub client_uri: Option<String>,
     /// Client logo URL (ignored; set icon_url on treasury and run sync-from-treasury)
@@ -367,7 +367,7 @@ fn chain_mapped_field_warning(label: &str) -> &'static str {
             "--logo-uri is ignored; set icon_url on treasury and run sync-from-treasury."
         }
         "client_uri" => {
-            "--client-uri is ignored; set display_url on treasury and run sync-from-treasury."
+            "--client-uri is ignored; set display_url on treasury at create (--config) or on-chain, then sync-from-treasury."
         }
         "owner" => "--owner is ignored on create; the authenticated user becomes owner.",
         _ => "A deprecated chain-mapped field was ignored; update treasury and run sync-from-treasury.",
@@ -376,11 +376,11 @@ fn chain_mapped_field_warning(label: &str) -> &'static str {
 
 fn emit_chain_mapped_warnings(discarded: &[&'static str]) {
     for label in discarded {
-        eprintln!("{}", chain_mapped_warning_line(label));
+        print_warning(chain_mapped_field_warning(label));
     }
 }
 
-/// Full stderr line for a discarded chain-mapped field (matches `print_warning` output).
+#[cfg(test)]
 fn chain_mapped_warning_line(label: &str) -> String {
     format!("[WARNING] {}", chain_mapped_field_warning(label))
 }

@@ -25,7 +25,7 @@ OAuth2 clients are the bridge between dApps and Xion's MetaAccount system. Each 
 **Key concepts:**
 - **Client** — OAuth2 application registered with Xion
 - **Treasury binding** — Every client must be bound to an existing Treasury; **treasury on-chain params are SSOT** for redirect and branding (API 0.1.0)
-- **sync-from-treasury** — Refreshes mgr-api client view after treasury `redirect_url` / `icon_url` / `display_url` changes
+- **sync-from-treasury** — Refreshes mgr-api client view after treasury `redirect_url` / `icon_url` changes (and `display_url` read from chain at sync time)
 - **Managers** — Team members who can manage the client (but not delete it)
 - **Owner** — The sole user who can delete or transfer the client
 
@@ -33,9 +33,9 @@ OAuth2 clients are the bridge between dApps and Xion's MetaAccount system. Each 
 
 Redirect URIs, logo, and client homepage are **not** set via `oauth2 client create` or `update`:
 
-1. Set `redirect_url`, `icon_url`, `display_url` on the treasury (`verona-treasury` → `update-params` or at `create`).
+1. Set `redirect_url` and `icon_url` via `verona-treasury` → `update-params` (`--redirect-url`, `--icon-url`). Set `display_url` at treasury **create** (`--config` JSON) if needed — update-params has no `--display-url` flag.
 2. Create the OAuth client with `--treasury` only.
-3. After any treasury param change, run `oauth2 client sync-from-treasury <client_id>`.
+3. After treasury `redirect_url` or `icon_url` changes, run `oauth2 client sync-from-treasury <client_id>`.
 
 **Warning UX:** If legacy flags (`--redirect-uris`, `--logo-uri`, etc.) or deprecated JSON keys are passed, the CLI prints `[WARNING]` on **stderr** and **discards** those fields before the API call. Exit code stays `0` when otherwise valid. **Stdout success JSON is unchanged** — agents must read stderr; redirect did **not** change via CLI flags.
 
@@ -230,7 +230,7 @@ Refresh client redirect/branding from the bound on-chain treasury:
 verona-toolkit oauth2 client sync-from-treasury client_abc123
 ```
 
-Run after `treasury update-params` changes `redirect_url`, `icon_url`, or `display_url`.
+Run after `treasury update-params` changes `redirect_url` or `icon_url`.
 
 ### Get OAuth Client
 
@@ -334,10 +334,10 @@ All commands return JSON with a `success` field:
 | Code | Description | Remediation |
 |------|-------------|-------------|
 | `EOAUTHCLIENT008` | Not authenticated | Run `verona-toolkit auth login` first |
-| `EOAUTHCLIENT010` | Insufficient scope | Re-authorize with `xion:mgr:read/write` scope (`--dev-mode` or full OAuth) |
+| `EOAUTHCLIENT010` | Insufficient scope (403 `INSUFFICIENT_SCOPE`) | Token lacks mgr scopes — re-auth with `xion:mgr:read` / `xion:mgr:write`; **not** the same as access denial |
 | `EOAUTHCLIENT011` | Only owner allowed | Only the client owner can perform this action |
-| `EOAUTHCLIENT020` | Client access denied (GET 403) | Client may not exist or you lack access — **not** proof the ID is wrong; re-auth with `xion:mgr:read` |
-| `EOAUTHCLIENT012` | Client not found (404) | Actual 404 responses only — distinct from `EOAUTHCLIENT020` on GET |
+| `EOAUTHCLIENT020` | Client access denied (GET 403 `PERMISSION_DENIED_VIEW_CLIENT`) | Client may not exist **or** you lack access — **not** proof the ID is wrong; re-auth with `xion:mgr:read` |
+| `EOAUTHCLIENT012` | Client not found (404 `CLIENT_NOT_FOUND`) | API confirms the client ID does not exist — distinct from `EOAUTHCLIENT020` enumeration-safe 403 on GET |
 | `EOAUTHCLIENT014` | Treasury not found | Verify the treasury address is correct |
 | `EOAUTHCLIENT015` | Internal server error | Retry later or contact support |
 
@@ -347,7 +347,7 @@ All commands return JSON with a `success` field:
 |------|-------------|
 | `EOAUTHCLIENT001` | Bad request — invalid parameters |
 | `EOAUTHCLIENT002` | Client ID is required |
-| `EOAUTHCLIENT003` | Redirect URIs required (legacy API; toolkit no longer requires on create) |
+| `EOAUTHCLIENT003` | Redirect URIs required (upstream API only) | Set `redirect_url` on treasury before create; toolkit create does not require `--redirect-uris` |
 | `EOAUTHCLIENT004` | Binded treasury is required |
 | `EOAUTHCLIENT005` | Owner is required |
 | `EOAUTHCLIENT006` | Invalid grant type |
@@ -449,6 +449,14 @@ export VERONA_TESTNET_OAUTH_API_URL=http://localhost:8787
 cargo build
 verona-toolkit auth login
 ```
+
+### GET 403 vs 404: EOAUTHCLIENT020 vs EOAUTHCLIENT012 vs EOAUTHCLIENT010
+
+| Code | When | Action |
+|------|------|--------|
+| `EOAUTHCLIENT010` | 403 `INSUFFICIENT_SCOPE` | Re-auth with mgr read/write scopes — token problem, not client ID |
+| `EOAUTHCLIENT020` | 403 `PERMISSION_DENIED_VIEW_CLIENT` on GET | Client may not exist or you lack access — list clients; re-auth with `xion:mgr:read`; **do not** assume wrong ID |
+| `EOAUTHCLIENT012` | 404 `CLIENT_NOT_FOUND` | Client ID confirmed absent — verify spelling via `oauth2 client list` |
 
 ### Treasury Binding Error
 

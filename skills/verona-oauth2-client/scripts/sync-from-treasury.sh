@@ -3,7 +3,7 @@
 # verona-oauth2-client/sync-from-treasury.sh - Sync OAuth client from treasury
 #
 # Refreshes OAuth client redirect/branding from the bound on-chain treasury.
-# Run after treasury update-params changes redirect_url, icon_url, or display_url.
+# Run after treasury update-params changes redirect_url or icon_url.
 #
 # Usage:
 #   ./sync-from-treasury.sh --client-id <CLIENT_ID>

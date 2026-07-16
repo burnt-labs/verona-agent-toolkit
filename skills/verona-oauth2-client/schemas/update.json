@@ -34,7 +34,7 @@
       "required": false,
       "deprecated": true,
       "format": "url",
-      "description": "DEPRECATED — ignored if provided. Set display_url on treasury and run sync-from-treasury."
+      "description": "DEPRECATED — ignored if provided. Set display_url at treasury create (--config) or on-chain, then sync-from-treasury."
     },
     {
       "name": "logo-uri",

@@ -262,7 +262,7 @@ impl VeronaErrorCode {
             // OAuth Client Management
             VeronaErrorCode::EOAUTHCLIENT001 => "Bad request",
             VeronaErrorCode::EOAUTHCLIENT002 => "Client ID is required",
-            VeronaErrorCode::EOAUTHCLIENT003 => "Redirect URIs are required",
+            VeronaErrorCode::EOAUTHCLIENT003 => "Redirect URIs required (upstream API)",
             VeronaErrorCode::EOAUTHCLIENT004 => "Binded treasury is required",
             VeronaErrorCode::EOAUTHCLIENT005 => "Owner is required",
             VeronaErrorCode::EOAUTHCLIENT006 => "Invalid grant type",
@@ -363,7 +363,9 @@ impl VeronaErrorCode {
             // OAuth Client Management
             VeronaErrorCode::EOAUTHCLIENT001 => "Check request parameters and try again",
             VeronaErrorCode::EOAUTHCLIENT002 => "Provide a client ID",
-            VeronaErrorCode::EOAUTHCLIENT003 => "Provide at least one redirect URI",
+            VeronaErrorCode::EOAUTHCLIENT003 => {
+                "Set redirect_url on treasury before create (verona-treasury). Toolkit create does not require --redirect-uris."
+            }
             VeronaErrorCode::EOAUTHCLIENT004 => "Provide a treasury address with --treasury",
             VeronaErrorCode::EOAUTHCLIENT005 => "Provide an owner user ID",
             VeronaErrorCode::EOAUTHCLIENT006 => "Use a valid grant type (authorization_code, etc.)",

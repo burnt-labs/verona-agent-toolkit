@@ -57,7 +57,7 @@
       "required": false,
       "deprecated": true,
       "format": "url",
-      "description": "DEPRECATED — ignored if provided. Set display_url on treasury and run sync-from-treasury. CLI prints [WARNING] if provided."
+      "description": "DEPRECATED — ignored if provided. Set display_url at treasury create (--config) or on-chain, then sync-from-treasury. CLI prints [WARNING] if provided."
     },
     {
       "name": "logo-uri",
@@ -104,7 +104,7 @@
     }
   ],
   "validation_rules": [
-    "treasury (bindedTreasury) is required — set redirect_url, icon_url, display_url on treasury before create (verona-treasury)",
+    "treasury (bindedTreasury) is required — set redirect_url and icon_url on treasury before create (verona-treasury update-params or create); display_url at create if needed",
     "redirect-uris is NOT required and must NOT be taught as SSOT",
     "Deprecated chain-mapped flags/JSON keys are warn + discard before HTTP; success JSON on stdout is unchanged",
     "contacts must be valid email addresses when provided",

@@ -11,8 +11,8 @@
   ],
   "validation_rules": [
     "Requires xion:mgr:write scope (same as other mutating mgr routes)",
-    "No request body — reads redirect_url, icon_url, display_url from on-chain treasury",
-    "Run after treasury update-params changes redirect or branding",
+    "No request body — reads redirect_url, icon_url, and display_url from on-chain treasury",
+    "Run after treasury update-params changes redirect_url or icon_url",
     "Authorize redirect_uri in login flow must match treasury redirect_url"
   ],
   "errors": [
