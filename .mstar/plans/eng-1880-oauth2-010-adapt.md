@@ -204,3 +204,11 @@ pub enum OAuth2ClientCommands {
 ## SDD runtime (ephemeral)
 
 When using `mstar-sdd`, artifacts live under `{SDD_DIR}` (`.mstar/sdd/eng-1880-oauth2-010-adapt/`). Do not duplicate briefs/reports in this file.
+
+## Review gate summary
+
+- **QC (tri):** Approve with residuals after fix `36c2de6` (qc1/qc2/qc3 Approve)
+- **Residuals:** R1 accepted_risk (CLI-only strip), R2 deferred (sync script polish) — SSOT `status.json` `residual_findings[eng-1880-oauth2-010-adapt]`
+- **Review range:** `1167507..36c2de6`
+- **Bundle:** `.mstar/sdd/eng-1880-oauth2-010-adapt/review/` (ephemeral)
+

@@ -28,9 +28,9 @@
       "id": "eng-1880-oauth2-010-adapt",
       "title": "OAuth2 0.1.0 client SSOT adapt (CLI + skills)",
       "file": ".mstar/plans/eng-1880-oauth2-010-adapt.md",
-      "status": "Todo",
+      "status": "InReview",
       "owner": "@project-manager",
-      "progress": 0,
+      "progress": 95,
       "created_at": "2026-07-16",
       "updated_at": "2026-07-16",
       "metadata": {
@@ -49,11 +49,53 @@
           "specify": "done",
           "clarify": "done",
           "plan": "done"
-        }
+        },
+        "task_commits": [
+          {
+            "task": 1,
+            "sha": "30b4ad4"
+          },
+          {
+            "task": 2,
+            "sha": "e0f976a"
+          },
+          {
+            "task": 3,
+            "sha": "a20a23d"
+          },
+          {
+            "task": 4,
+            "sha": "7d78344"
+          }
+        ],
+        "gates": {
+          "qc": "Approve with residuals",
+          "qa": "pending"
+        },
+        "review_range": "1167507..36c2de6"
       }
     }
   ],
-  "residual_findings": {},
+  "residual_findings": {
+    "eng-1880-oauth2-010-adapt": [
+      {
+        "id": "R1",
+        "severity": "low",
+        "disposition": "accepted_risk",
+        "summary": "Strip chain-mapped fields at CLI prepare_* only; MgrApiClient serializes as-is",
+        "source": "qc1 W2 / R-cand-1",
+        "status": "open"
+      },
+      {
+        "id": "R2",
+        "severity": "info",
+        "disposition": "deferred",
+        "summary": "sync-from-treasury.sh discoverability / stderr capture polish",
+        "source": "qc3 suggestions",
+        "status": "open"
+      }
+    ]
+  },
   "metadata": {
     "active_roadmap": ".mstar/knowledge/feature-roadmap.md",
     "knowledge_index": ".mstar/knowledge/README.md",
