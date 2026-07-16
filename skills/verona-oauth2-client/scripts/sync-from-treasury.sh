@@ -64,20 +64,35 @@ fi
 
 log_info "Syncing OAuth client from treasury: $CLIENT_ID"
 
-RESULT=$(verona-toolkit --no-interactive oauth2 client sync-from-treasury "$CLIENT_ID" --output json 2>&1)
+STDERR_FILE=$(mktemp)
+trap 'rm -f "$STDERR_FILE"' EXIT
+
+set +e
+RESULT=$(verona-toolkit --no-interactive oauth2 client sync-from-treasury "$CLIENT_ID" --output json 2>"$STDERR_FILE")
 EXIT_CODE=$?
+set -e
+
+STDERR_CONTENT=""
+if [[ -s "$STDERR_FILE" ]]; then
+    STDERR_CONTENT=$(cat "$STDERR_FILE")
+    echo "$STDERR_CONTENT" >&2
+fi
 
 if [ $EXIT_CODE -eq 0 ]; then
     output_json "$RESULT"
 else
-    log_error "Failed to sync client from treasury: $RESULT"
-    if echo "$RESULT" | grep -qi "not authenticated"; then
+    ERROR_MSG="$RESULT"
+    if [[ -z "$ERROR_MSG" ]]; then
+        ERROR_MSG="$STDERR_CONTENT"
+    fi
+    log_error "Failed to sync client from treasury: $ERROR_MSG"
+    if echo "$ERROR_MSG" | grep -qi "not authenticated"; then
         handle_error "Not authenticated. Run 'verona-toolkit auth login' first." "EOAUTHCLIENT008"
-    elif echo "$RESULT" | grep -qi "insufficient scope"; then
+    elif echo "$ERROR_MSG" | grep -qi "insufficient scope"; then
         handle_error "Insufficient scope. Re-login with mgr scopes." "EOAUTHCLIENT010"
-    elif echo "$RESULT" | grep -qi "PERMISSION_DENIED_VIEW_CLIENT\|access denied"; then
+    elif echo "$ERROR_MSG" | grep -qi "PERMISSION_DENIED_VIEW_CLIENT\|access denied"; then
         handle_error "Client access denied. Verify client ID and mgr scopes." "EOAUTHCLIENT020"
     else
-        handle_error "Failed to sync client: $RESULT" "SYNC_FROM_TREASURY_FAILED"
+        handle_error "Failed to sync client: $ERROR_MSG" "SYNC_FROM_TREASURY_FAILED"
     fi
 fi
