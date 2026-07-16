@@ -213,6 +213,8 @@ pub mod exit_code {
     pub const OAUTH_CLIENT_UNKNOWN_NETWORK: i32 = 177;
     /// Confirmation required (--force)
     pub const OAUTH_CLIENT_CONFIRMATION_REQUIRED: i32 = 178;
+    /// Client access denied (missing or inaccessible)
+    pub const OAUTH_CLIENT_ACCESS_DENIED: i32 = 179;
 }
 
 impl VeronaErrorCode {
@@ -303,6 +305,7 @@ impl VeronaErrorCode {
             VeronaErrorCode::EOAUTHCLIENT017 => OAUTH_CLIENT_TREASURY_QUERY_ERROR,
             VeronaErrorCode::EOAUTHCLIENT018 => OAUTH_CLIENT_UNKNOWN_NETWORK,
             VeronaErrorCode::EOAUTHCLIENT019 => OAUTH_CLIENT_CONFIRMATION_REQUIRED,
+            VeronaErrorCode::EOAUTHCLIENT020 => OAUTH_CLIENT_ACCESS_DENIED,
         }
     }
 }
@@ -397,6 +400,7 @@ pub fn exit_code_name(code: i32) -> &'static str {
         OAUTH_CLIENT_TREASURY_QUERY_ERROR => "OAUTH_CLIENT_TREASURY_QUERY_ERROR",
         OAUTH_CLIENT_UNKNOWN_NETWORK => "OAUTH_CLIENT_UNKNOWN_NETWORK",
         OAUTH_CLIENT_CONFIRMATION_REQUIRED => "OAUTH_CLIENT_CONFIRMATION_REQUIRED",
+        OAUTH_CLIENT_ACCESS_DENIED => "OAUTH_CLIENT_ACCESS_DENIED",
 
         _ => "UNKNOWN",
     }
