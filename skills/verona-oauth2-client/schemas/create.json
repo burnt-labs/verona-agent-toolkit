@@ -1,20 +1,21 @@
 {
   "command": "oauth2 client create",
-  "description": "Create a new OAuth2 client bound to a treasury",
+  "description": "Create a new OAuth2 client bound to a treasury (treasury SSOT for redirect/branding per API 0.1.0)",
   "parameters": [
-    {
-      "name": "redirect-uris",
-      "type": "array",
-      "required": true,
-      "description": "OAuth redirect URIs (comma-separated or JSON array in --json-input)",
-      "notes": "Must be valid HTTPS URLs"
-    },
     {
       "name": "treasury",
       "type": "string",
       "required": true,
       "format": "verona-address",
-      "description": "Treasury contract address to bind this client to"
+      "description": "Treasury contract address to bind this client to (bindedTreasury). Redirect and branding come from on-chain treasury params."
+    },
+    {
+      "name": "redirect-uris",
+      "type": "array",
+      "required": false,
+      "deprecated": true,
+      "description": "DEPRECATED — ignored if provided. Set redirect_url on treasury (verona-treasury) before create. CLI prints [WARNING] on stderr; exit 0 if otherwise valid.",
+      "notes": "Do not teach agents to rely on this field. Use treasury update-params + sync-from-treasury instead."
     },
     {
       "name": "client-name",
@@ -26,7 +27,8 @@
       "name": "owner",
       "type": "string",
       "required": false,
-      "description": "Client owner user ID (defaults to authenticated user)"
+      "deprecated": true,
+      "description": "DEPRECATED — ignored on create; authenticated user becomes owner. CLI prints [WARNING] if provided."
     },
     {
       "name": "managers",
@@ -53,15 +55,17 @@
       "name": "client-uri",
       "type": "string",
       "required": false,
+      "deprecated": true,
       "format": "url",
-      "description": "Client homepage URL"
+      "description": "DEPRECATED — ignored if provided. Set display_url at treasury create (--config) or on-chain, then sync-from-treasury. CLI prints [WARNING] if provided."
     },
     {
       "name": "logo-uri",
       "type": "string",
       "required": false,
+      "deprecated": true,
       "format": "url",
-      "description": "Client logo URL"
+      "description": "DEPRECATED — ignored if provided. Set icon_url on treasury and run sync-from-treasury. CLI prints [WARNING] if provided."
     },
     {
       "name": "policy-uri",
@@ -88,7 +92,7 @@
       "name": "json-input",
       "type": "file",
       "required": false,
-      "description": "JSON file with full request body",
+      "description": "JSON file with full request body (bindedTreasury required). Chain-mapped keys redirectUris, logoUri, clientUri, owner are deprecated — stripped with [WARNING] on stderr.",
       "conflicts_with": ["redirect-uris", "treasury", "client-name", "owner", "managers", "auth-method", "contacts", "client-uri", "logo-uri", "policy-uri", "tos-uri", "jwks-uri"]
     },
     {
@@ -100,36 +104,38 @@
     }
   ],
   "validation_rules": [
-    "redirect-uris must contain at least one valid HTTPS URL",
-    "treasury must be a valid Xion address",
-    "contacts must be valid email addresses",
-    "If --json-input is provided, all other flags are ignored",
-    "IMPORTANT: Schema validation cannot enforce array minimum length - AI agents must ensure redirect-uris has at least 1 entry"
+    "treasury (bindedTreasury) is required — set redirect_url and icon_url on treasury before create (verona-treasury update-params or create); display_url at create if needed",
+    "redirect-uris is NOT required and must NOT be taught as SSOT",
+    "Deprecated chain-mapped flags/JSON keys are warn + discard before HTTP; success JSON on stdout is unchanged",
+    "contacts must be valid email addresses when provided",
+    "If --json-input is provided, all other flags are ignored"
   ],
   "errors": [
     { "code": "EOAUTHCLIENT008", "description": "Not authenticated", "remediation": "Run 'verona-toolkit auth login' first" },
-    { "code": "EOAUTHCLIENT010", "description": "Insufficient scope for MGR API", "remediation": "Re-authorize with xion:mgr:write scope" },
+    { "code": "EOAUTHCLIENT010", "description": "Insufficient scope for MGR API", "remediation": "Re-authorize with xion:mgr:write scope (--dev-mode or full OAuth)" },
     { "code": "EOAUTHCLIENT004", "description": "Treasury address required", "remediation": "Provide --treasury with a valid Xion address" },
     { "code": "EOAUTHCLIENT011", "description": "Not the treasury admin", "remediation": "Only the treasury admin can create clients" }
   ],
   "examples": [
     {
-      "description": "Create client with minimum params",
+      "description": "Treasury-first create (recommended)",
+      "workflow": [
+        "verona-toolkit treasury update-params xion1abc... --redirect-url https://example.com/callback",
+        "verona-toolkit oauth2 client create --treasury xion1abc... --client-name My DApp"
+      ],
       "params": {
-        "redirect-uris": "https://example.com/callback",
-        "treasury": "xion1abc123..."
+        "treasury": "xion1abc123...",
+        "client-name": "My DApp"
       }
     },
     {
-      "description": "Create client with all options",
+      "description": "Legacy flags still accepted but ignored (stderr [WARNING])",
       "params": {
-        "redirect-uris": "https://example.com/callback",
         "treasury": "xion1abc123...",
-        "client-name": "My DApp",
-        "auth-method": "none",
-        "managers": "user_456,user_789",
-        "show-secret": true
-      }
+        "redirect-uris": "https://example.com/callback",
+        "client-name": "My DApp"
+      },
+      "note": "Redirect did NOT change via CLI — update treasury on-chain and run sync-from-treasury"
     }
   ]
 }

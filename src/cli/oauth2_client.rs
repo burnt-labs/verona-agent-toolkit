@@ -15,7 +15,8 @@ use tracing::debug;
 const MGR_REQUIRED_SCOPES: &[&str] = &["xion:mgr:read", "xion:mgr:write"];
 
 use crate::api::mgr_api::{
-    CreateClientRequest, MgrApiClient, UpdateClientRequest, UpdateExtensionRequest,
+    strip_chain_mapped_create, strip_chain_mapped_update, CreateClientRequest, MgrApiClient,
+    UpdateClientRequest, UpdateExtensionRequest,
 };
 use crate::cli::ExecuteContext;
 use crate::utils::output::{print_formatted, print_warning};
@@ -64,6 +65,9 @@ pub enum OAuth2ClientCommands {
 
     /// Rotate the client secret (confidential clients only)
     RotateSecret(RotateSecretArgs),
+
+    /// Sync OAuth client metadata from the bound on-chain treasury
+    SyncFromTreasury(SyncFromTreasuryArgs),
 }
 
 /// Arguments for listing OAuth clients
@@ -114,10 +118,17 @@ pub struct RotateSecretArgs {
     pub client_id: String,
 }
 
+/// Arguments for syncing client metadata from treasury
+#[derive(Args, Debug)]
+pub struct SyncFromTreasuryArgs {
+    /// Client ID to sync from treasury
+    pub client_id: String,
+}
+
 /// Arguments for creating an OAuth client
 #[derive(Args, Debug)]
 pub struct CreateClientArgs {
-    /// OAuth redirect URIs (required, comma-separated)
+    /// OAuth redirect URIs (ignored; set redirect_url on treasury and run sync-from-treasury)
     #[arg(long, value_delimiter = ',')]
     pub redirect_uris: Vec<String>,
     /// Treasury contract address to bind (required unless --json-input is provided)
@@ -126,7 +137,7 @@ pub struct CreateClientArgs {
     /// Human-readable client name
     #[arg(long)]
     pub client_name: Option<String>,
-    /// Client owner user ID (defaults to authenticated user)
+    /// Client owner user ID (ignored on create; authenticated user becomes owner)
     #[arg(long)]
     pub owner: Option<String>,
     /// Manager user IDs (comma-separated)
@@ -138,10 +149,10 @@ pub struct CreateClientArgs {
     /// Contact email addresses (comma-separated)
     #[arg(long, value_delimiter = ',')]
     pub contacts: Option<Vec<String>>,
-    /// Client homepage URL
+    /// Client homepage URL (ignored; set display_url at treasury create or on-chain, then sync-from-treasury)
     #[arg(long)]
     pub client_uri: Option<String>,
-    /// Client logo URL
+    /// Client logo URL (ignored; set icon_url on treasury and run sync-from-treasury)
     #[arg(long)]
     pub logo_uri: Option<String>,
     /// Privacy policy URL
@@ -185,16 +196,16 @@ pub enum ExtensionCommands {
 pub struct UpdateClientArgs {
     /// Client ID to update
     pub client_id: String,
-    /// OAuth redirect URIs (comma-separated)
+    /// OAuth redirect URIs (ignored; set redirect_url on treasury and run sync-from-treasury)
     #[arg(long, value_delimiter = ',')]
     pub redirect_uris: Option<Vec<String>>,
     /// Human-readable client name
     #[arg(long)]
     pub client_name: Option<String>,
-    /// Client homepage URL
+    /// Client homepage URL (ignored; set display_url at treasury create or on-chain, then sync-from-treasury)
     #[arg(long)]
     pub client_uri: Option<String>,
-    /// Client logo URL
+    /// Client logo URL (ignored; set icon_url on treasury and run sync-from-treasury)
     #[arg(long)]
     pub logo_uri: Option<String>,
     /// Privacy policy URL
@@ -262,6 +273,9 @@ async fn handle_client_command(cmd: OAuth2ClientCommands, ctx: &ExecuteContext) 
         }
         OAuth2ClientCommands::RotateSecret(args) => {
             handle_rotate_secret(&args.client_id, ctx).await
+        }
+        OAuth2ClientCommands::SyncFromTreasury(args) => {
+            handle_sync_from_treasury(&args.client_id, ctx).await
         }
     }
 }
@@ -340,6 +354,103 @@ impl CliErrorResponse {
 }
 
 // ============================================================================
+// Chain-mapped field warn + discard (oauth2-api 0.1.0 SSOT)
+// ============================================================================
+
+/// Human-readable stderr warning for a discarded chain-mapped field label.
+fn chain_mapped_field_warning(label: &str) -> &'static str {
+    match label {
+        "redirect_uris" => {
+            "--redirect-uris is ignored; set redirect_url on treasury and run sync-from-treasury."
+        }
+        "logo_uri" => {
+            "--logo-uri is ignored; set icon_url on treasury and run sync-from-treasury."
+        }
+        "client_uri" => {
+            "--client-uri is ignored; set display_url on treasury at create (--config) or on-chain, then sync-from-treasury."
+        }
+        "owner" => "--owner is ignored on create; the authenticated user becomes owner.",
+        _ => "A deprecated chain-mapped field was ignored; update treasury and run sync-from-treasury.",
+    }
+}
+
+fn emit_chain_mapped_warnings(discarded: &[&'static str]) {
+    for label in discarded {
+        print_warning(chain_mapped_field_warning(label));
+    }
+}
+
+#[cfg(test)]
+fn chain_mapped_warning_line(label: &str) -> String {
+    format!("[WARNING] {}", chain_mapped_field_warning(label))
+}
+
+fn prepare_create_request(mut request: CreateClientRequest) -> CreateClientRequest {
+    let discarded = strip_chain_mapped_create(&mut request);
+    emit_chain_mapped_warnings(&discarded);
+    request
+}
+
+fn prepare_update_request(mut request: UpdateClientRequest) -> UpdateClientRequest {
+    let discarded = strip_chain_mapped_update(&mut request);
+    emit_chain_mapped_warnings(&discarded);
+    request
+}
+
+fn build_create_request_from_args(args: &CreateClientArgs) -> Result<CreateClientRequest> {
+    let treasury = args
+        .treasury
+        .as_ref()
+        .ok_or_else(|| anyhow::anyhow!("--treasury is required when not using --json-input"))?;
+
+    Ok(CreateClientRequest {
+        redirect_uris: args.redirect_uris.clone(),
+        client_name: args.client_name.clone(),
+        client_uri: args.client_uri.clone(),
+        logo_uri: args.logo_uri.clone(),
+        policy_uri: args.policy_uri.clone(),
+        tos_uri: args.tos_uri.clone(),
+        jwks_uri: args.jwks_uri.clone(),
+        contacts: args.contacts.clone(),
+        token_endpoint_auth_method: args.auth_method.clone(),
+        binded_treasury: treasury.clone(),
+        owner: args.owner.clone(),
+        managers: args.managers.clone(),
+    })
+}
+
+fn build_create_request(args: &CreateClientArgs) -> Result<CreateClientRequest> {
+    if let Some(json_path) = &args.json_input {
+        let content = fs::read_to_string(json_path)
+            .with_context(|| format!("Failed to read JSON input file: {}", json_path.display()))?;
+        serde_json::from_str::<CreateClientRequest>(&content)
+            .with_context(|| format!("Failed to parse JSON input file: {}", json_path.display()))
+    } else {
+        build_create_request_from_args(args)
+    }
+}
+
+fn build_update_request(args: &UpdateClientArgs) -> Result<UpdateClientRequest> {
+    if let Some(json_path) = &args.json_input {
+        let content = fs::read_to_string(json_path)
+            .with_context(|| format!("Failed to read JSON input file: {}", json_path.display()))?;
+        serde_json::from_str::<UpdateClientRequest>(&content)
+            .with_context(|| format!("Failed to parse JSON input file: {}", json_path.display()))
+    } else {
+        Ok(UpdateClientRequest {
+            redirect_uris: args.redirect_uris.clone(),
+            client_name: args.client_name.clone(),
+            client_uri: args.client_uri.clone(),
+            logo_uri: args.logo_uri.clone(),
+            policy_uri: args.policy_uri.clone(),
+            tos_uri: args.tos_uri.clone(),
+            jwks_uri: args.jwks_uri.clone(),
+            contacts: args.contacts.clone(),
+        })
+    }
+}
+
+// ============================================================================
 // Command Handlers
 // ============================================================================
 
@@ -362,35 +473,8 @@ async fn handle_list(args: ListArgs, ctx: &ExecuteContext) -> Result<()> {
 async fn handle_create(args: CreateClientArgs, ctx: &ExecuteContext) -> Result<()> {
     let (access_token, mgr_client) = prepare_api_client(ctx).await?;
 
-    // Build request from flags or JSON input file
-    let request = if let Some(json_path) = &args.json_input {
-        let content = fs::read_to_string(json_path)
-            .with_context(|| format!("Failed to read JSON input file: {}", json_path.display()))?;
-        serde_json::from_str::<CreateClientRequest>(&content)
-            .with_context(|| format!("Failed to parse JSON input file: {}", json_path.display()))?
-    } else {
-        if args.redirect_uris.is_empty() {
-            anyhow::bail!("--redirect-uris is required (at least one URI)");
-        }
-        let treasury = args
-            .treasury
-            .ok_or_else(|| anyhow::anyhow!("--treasury is required when not using --json-input"))?;
-
-        CreateClientRequest {
-            redirect_uris: args.redirect_uris,
-            client_name: args.client_name,
-            client_uri: args.client_uri,
-            logo_uri: args.logo_uri,
-            policy_uri: args.policy_uri,
-            tos_uri: args.tos_uri,
-            jwks_uri: args.jwks_uri,
-            contacts: args.contacts,
-            token_endpoint_auth_method: args.auth_method,
-            binded_treasury: treasury,
-            owner: args.owner,
-            managers: args.managers,
-        }
-    };
+    let request = build_create_request(&args)?;
+    let request = prepare_create_request(request);
 
     let result = mgr_client
         .create_client(&access_token, request)
@@ -436,26 +520,26 @@ async fn handle_get(client_id: &str, ctx: &ExecuteContext) -> Result<()> {
 async fn handle_update(args: UpdateClientArgs, ctx: &ExecuteContext) -> Result<()> {
     let (access_token, mgr_client) = prepare_api_client(ctx).await?;
 
-    let request = if let Some(json_path) = &args.json_input {
-        let content = fs::read_to_string(json_path)
-            .with_context(|| format!("Failed to read JSON input file: {}", json_path.display()))?;
-        serde_json::from_str::<UpdateClientRequest>(&content)
-            .with_context(|| format!("Failed to parse JSON input file: {}", json_path.display()))?
-    } else {
-        UpdateClientRequest {
-            redirect_uris: args.redirect_uris,
-            client_name: args.client_name,
-            client_uri: args.client_uri,
-            logo_uri: args.logo_uri,
-            policy_uri: args.policy_uri,
-            tos_uri: args.tos_uri,
-            jwks_uri: args.jwks_uri,
-            contacts: args.contacts,
-        }
-    };
+    let request = build_update_request(&args)?;
+    let request = prepare_update_request(request);
 
     let result = mgr_client
         .update_client(&access_token, &args.client_id, request)
+        .await
+        .map_err(|e| {
+            let resp = CliErrorResponse::from_verona_error(&e);
+            anyhow::anyhow!(serde_json::to_string(&resp).unwrap_or_else(|_| e.to_string()))
+        })?;
+
+    print_formatted(&result, ctx.output_format())
+}
+
+/// Handle `oauth2 client sync-from-treasury`
+async fn handle_sync_from_treasury(client_id: &str, ctx: &ExecuteContext) -> Result<()> {
+    let (access_token, mgr_client) = prepare_api_client(ctx).await?;
+
+    let result = mgr_client
+        .sync_from_treasury(&access_token, client_id)
         .await
         .map_err(|e| {
             let resp = CliErrorResponse::from_verona_error(&e);
@@ -689,6 +773,27 @@ mod tests {
                 assert_eq!(args.cursor.as_deref(), Some("abc"));
             }
             _ => panic!("Expected List command"),
+        }
+    }
+
+    #[test]
+    fn test_create_treasury_only_without_redirect_uris() {
+        let cmd = parse_oauth2_client(&[
+            "create",
+            "--treasury",
+            "xion1abc123",
+            "--client-name",
+            "My App",
+        ]);
+        match cmd {
+            OAuth2ClientCommands::Create(args) => {
+                assert!(args.redirect_uris.is_empty());
+                let request = build_create_request_from_args(&args).unwrap();
+                assert_eq!(request.binded_treasury, "xion1abc123");
+                assert_eq!(request.client_name.as_deref(), Some("My App"));
+                assert!(request.redirect_uris.is_empty());
+            }
+            _ => panic!("Expected Create command"),
         }
     }
 
@@ -1000,6 +1105,208 @@ mod tests {
         };
         let xion_err: crate::shared::error::VeronaError = err.into();
         assert_eq!(xion_err.code().exit_code(), 178);
+    }
+
+    #[test]
+    fn test_chain_mapped_field_warning_messages() {
+        assert!(chain_mapped_field_warning("redirect_uris").contains("--redirect-uris is ignored"));
+        assert!(chain_mapped_field_warning("logo_uri").contains("--logo-uri is ignored"));
+        assert!(chain_mapped_field_warning("client_uri").contains("--client-uri is ignored"));
+        assert!(chain_mapped_field_warning("owner").contains("--owner is ignored"));
+    }
+
+    #[test]
+    fn test_chain_mapped_warning_lines_match_print_warning_format() {
+        for label in ["redirect_uris", "logo_uri", "client_uri", "owner"] {
+            let line = chain_mapped_warning_line(label);
+            assert!(
+                line.starts_with("[WARNING] "),
+                "expected [WARNING] prefix, got: {line}"
+            );
+            assert!(
+                line.contains("ignored"),
+                "expected ignored guidance, got: {line}"
+            );
+        }
+    }
+
+    #[test]
+    fn test_emit_chain_mapped_warnings_stderr_content_for_json_discards() {
+        let json = r#"{
+            "redirectUris": ["https://example.com/callback"],
+            "logoUri": "https://example.com/logo.png",
+            "bindedTreasury": "xion1treasury",
+            "clientName": "JSON App"
+        }"#;
+        let request: CreateClientRequest = serde_json::from_str(json).unwrap();
+        let mut stripped = request;
+        let discarded = strip_chain_mapped_create(&mut stripped);
+        let stderr_lines: Vec<String> = discarded
+            .iter()
+            .map(|label| chain_mapped_warning_line(label))
+            .collect();
+
+        assert!(
+            stderr_lines.iter().all(|line| line.contains("[WARNING]")),
+            "every discarded field should produce a [WARNING] line: {stderr_lines:?}"
+        );
+        assert!(
+            stderr_lines
+                .iter()
+                .any(|line| line.contains("--redirect-uris is ignored")),
+            "redirect discard should warn: {stderr_lines:?}"
+        );
+        assert!(
+            stderr_lines
+                .iter()
+                .any(|line| line.contains("--logo-uri is ignored")),
+            "logo discard should warn: {stderr_lines:?}"
+        );
+
+        // Success path: prepare still returns a valid stripped request (no error).
+        let request: CreateClientRequest = serde_json::from_str(json).unwrap();
+        let prepared = prepare_create_request(request);
+        let value = serde_json::to_value(&prepared).unwrap();
+        assert!(value.get("redirectUris").is_none());
+        assert!(value.get("logoUri").is_none());
+        assert_eq!(value["bindedTreasury"], "xion1treasury");
+    }
+
+    #[test]
+    fn test_create_flags_strip_chain_mapped_and_warn_before_api() {
+        let cmd = parse_oauth2_client(&[
+            "create",
+            "--treasury",
+            "xion1treasury",
+            "--redirect-uris",
+            "https://example.com/callback",
+            "--logo-uri",
+            "https://example.com/logo.png",
+            "--client-name",
+            "Flag App",
+        ]);
+        match cmd {
+            OAuth2ClientCommands::Create(args) => {
+                let request = build_create_request_from_args(&args).unwrap();
+                let mut for_discard = request.clone();
+                let discarded = strip_chain_mapped_create(&mut for_discard);
+                let stderr_lines: Vec<String> = discarded
+                    .iter()
+                    .map(|label| chain_mapped_warning_line(label))
+                    .collect();
+                assert!(
+                    stderr_lines.iter().all(|line| line.contains("[WARNING]")),
+                    "flag path should emit [WARNING] lines: {stderr_lines:?}"
+                );
+                assert!(stderr_lines
+                    .iter()
+                    .any(|line| line.contains("--redirect-uris is ignored")));
+                assert!(stderr_lines
+                    .iter()
+                    .any(|line| line.contains("--logo-uri is ignored")));
+
+                let prepared = prepare_create_request(request);
+                let value = serde_json::to_value(&prepared).unwrap();
+                assert!(value.get("redirectUris").is_none());
+                assert!(value.get("logoUri").is_none());
+                assert_eq!(value["bindedTreasury"], "xion1treasury");
+                assert_eq!(value["clientName"], "Flag App");
+            }
+            _ => panic!("Expected Create command"),
+        }
+    }
+
+    #[test]
+    fn test_update_flags_strip_chain_mapped_and_warn_before_api() {
+        let cmd = parse_oauth2_client(&[
+            "update",
+            "client_abc123",
+            "--redirect-uris",
+            "https://example.com/callback",
+            "--logo-uri",
+            "https://example.com/logo.png",
+            "--client-name",
+            "Updated App",
+        ]);
+        match cmd {
+            OAuth2ClientCommands::Update(args) => {
+                let request = build_update_request(&args).unwrap();
+                let mut for_discard = request.clone();
+                let discarded = strip_chain_mapped_update(&mut for_discard);
+                let stderr_lines: Vec<String> = discarded
+                    .iter()
+                    .map(|label| chain_mapped_warning_line(label))
+                    .collect();
+                assert!(
+                    stderr_lines.iter().all(|line| line.contains("[WARNING]")),
+                    "flag path should emit [WARNING] lines: {stderr_lines:?}"
+                );
+                assert!(stderr_lines
+                    .iter()
+                    .any(|line| line.contains("--redirect-uris is ignored")));
+                assert!(stderr_lines
+                    .iter()
+                    .any(|line| line.contains("--logo-uri is ignored")));
+
+                let prepared = prepare_update_request(request);
+                let value = serde_json::to_value(&prepared).unwrap();
+                assert!(value.get("redirectUris").is_none());
+                assert!(value.get("logoUri").is_none());
+                assert_eq!(value["clientName"], "Updated App");
+            }
+            _ => panic!("Expected Update command"),
+        }
+    }
+
+    #[test]
+    fn test_create_json_input_strips_chain_mapped_before_api() {
+        let json = r#"{
+            "redirectUris": ["https://example.com/callback"],
+            "logoUri": "https://example.com/logo.png",
+            "clientUri": "https://example.com",
+            "owner": "user_owner",
+            "bindedTreasury": "xion1treasury",
+            "clientName": "JSON App"
+        }"#;
+        let request: CreateClientRequest = serde_json::from_str(json).unwrap();
+        let prepared = prepare_create_request(request);
+        let value = serde_json::to_value(&prepared).unwrap();
+        assert!(value.get("redirectUris").is_none());
+        assert!(value.get("logoUri").is_none());
+        assert!(value.get("clientUri").is_none());
+        assert!(value.get("owner").is_none());
+        assert_eq!(value["bindedTreasury"], "xion1treasury");
+        assert_eq!(value["clientName"], "JSON App");
+    }
+
+    #[test]
+    fn test_update_json_input_strips_chain_mapped_before_api() {
+        let json = r#"{
+            "redirectUris": ["https://example.com/callback"],
+            "logoUri": "https://example.com/logo.png",
+            "clientUri": "https://example.com",
+            "clientName": "Updated App",
+            "policyUri": "https://example.com/policy"
+        }"#;
+        let request: UpdateClientRequest = serde_json::from_str(json).unwrap();
+        let prepared = prepare_update_request(request);
+        let value = serde_json::to_value(&prepared).unwrap();
+        assert!(value.get("redirectUris").is_none());
+        assert!(value.get("logoUri").is_none());
+        assert!(value.get("clientUri").is_none());
+        assert_eq!(value["clientName"], "Updated App");
+        assert_eq!(value["policyUri"], "https://example.com/policy");
+    }
+
+    #[test]
+    fn test_sync_from_treasury_parsing() {
+        let cmd = parse_oauth2_client(&["sync-from-treasury", "client_abc123"]);
+        match cmd {
+            OAuth2ClientCommands::SyncFromTreasury(args) => {
+                assert_eq!(args.client_id, "client_abc123");
+            }
+            _ => panic!("Expected SyncFromTreasury command"),
+        }
     }
 
     #[test]

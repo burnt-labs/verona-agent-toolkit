@@ -1,0 +1,46 @@
+{
+  "command": "oauth2 client sync-from-treasury",
+  "description": "Refresh OAuth client redirect/branding metadata from the bound on-chain treasury (POST /mgr-api/clients/{id}/sync-from-treasury)",
+  "parameters": [
+    {
+      "name": "client-id",
+      "type": "string",
+      "required": true,
+      "description": "OAuth2 client ID to sync from its bound treasury"
+    }
+  ],
+  "validation_rules": [
+    "Requires xion:mgr:write scope (same as other mutating mgr routes)",
+    "No request body — reads redirect_url, icon_url, and display_url from on-chain treasury",
+    "Run after treasury update-params changes redirect_url or icon_url",
+    "Authorize redirect_uri in login flow must match treasury redirect_url"
+  ],
+  "errors": [
+    { "code": "EOAUTHCLIENT008", "description": "Not authenticated", "remediation": "Run 'verona-toolkit auth login' first" },
+    { "code": "EOAUTHCLIENT010", "description": "Insufficient scope for MGR API", "remediation": "Re-authorize with xion:mgr:write scope" },
+    { "code": "EOAUTHCLIENT011", "description": "Not the client owner", "remediation": "Only the client owner can sync" },
+    { "code": "EOAUTHCLIENT020", "description": "Client access denied", "remediation": "Verify client ID, ownership, and mgr read/write scopes" }
+  ],
+  "examples": [
+    {
+      "description": "Sync after treasury redirect change",
+      "workflow": [
+        "verona-toolkit treasury update-params xion1treasury... --redirect-url https://app.com/callback",
+        "verona-toolkit oauth2 client sync-from-treasury client_abc123"
+      ],
+      "params": {
+        "client-id": "client_abc123"
+      }
+    }
+  ],
+  "output": {
+    "success": {
+      "success": true,
+      "client": {
+        "clientId": "client_abc123",
+        "redirectUris": ["https://app.com/callback"],
+        "clientName": "My App"
+      }
+    }
+  }
+}

@@ -19,7 +19,8 @@ use crate::shared::retry::{is_retryable_status, with_retry, RetryConfig};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateClientRequest {
-    /// OAuth redirect URIs (required, min 1)
+    /// OAuth redirect URIs (chain-mapped; stripped before send in 0.1.0)
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub redirect_uris: Vec<String>,
     /// Human-readable client name
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -83,6 +84,54 @@ pub struct UpdateClientRequest {
     /// Contact email addresses
     #[serde(skip_serializing_if = "Option::is_none")]
     pub contacts: Option<Vec<String>>,
+}
+
+/// Remove chain-mapped create fields before HTTP serialization (oauth2-api 0.1.0 SSOT).
+///
+/// Returns labels for fields that had values and were cleared.
+pub fn strip_chain_mapped_create(req: &mut CreateClientRequest) -> Vec<&'static str> {
+    let mut discarded = Vec::new();
+
+    if !req.redirect_uris.is_empty() {
+        discarded.push("redirect_uris");
+        req.redirect_uris.clear();
+    }
+    if req.logo_uri.is_some() {
+        discarded.push("logo_uri");
+        req.logo_uri = None;
+    }
+    if req.client_uri.is_some() {
+        discarded.push("client_uri");
+        req.client_uri = None;
+    }
+    if req.owner.is_some() {
+        discarded.push("owner");
+        req.owner = None;
+    }
+
+    discarded
+}
+
+/// Remove chain-mapped update fields before HTTP serialization (oauth2-api 0.1.0 SSOT).
+///
+/// Returns labels for fields that had values and were cleared.
+pub fn strip_chain_mapped_update(req: &mut UpdateClientRequest) -> Vec<&'static str> {
+    let mut discarded = Vec::new();
+
+    if req.redirect_uris.is_some() {
+        discarded.push("redirect_uris");
+        req.redirect_uris = None;
+    }
+    if req.logo_uri.is_some() {
+        discarded.push("logo_uri");
+        req.logo_uri = None;
+    }
+    if req.client_uri.is_some() {
+        discarded.push("client_uri");
+        req.client_uri = None;
+    }
+
+    discarded
 }
 
 /// Request body for updating a client extension
@@ -458,6 +507,19 @@ impl MgrApiClient {
         self.request("PUT", &path, access_token, Some(&body)).await
     }
 
+    /// Sync OAuth client metadata from the bound on-chain treasury
+    #[instrument(skip(self, access_token))]
+    pub async fn sync_from_treasury(
+        &self,
+        access_token: &str,
+        client_id: &str,
+    ) -> VeronaResult<ClientResponse> {
+        debug!("Syncing OAuth client from treasury: {}", client_id);
+
+        let path = format!("/mgr-api/clients/{}/sync-from-treasury", client_id);
+        self.request("POST", &path, access_token, None).await
+    }
+
     /// Delete an OAuth client
     #[instrument(skip(self, access_token))]
     pub async fn delete_client(
@@ -823,6 +885,9 @@ impl MgrApiClient {
             (403, "ONLY_OWNER_ALLOWED") => {
                 VeronaError::from(OAuthClientError::OnlyOwnerAllowed { message: error_msg })
             }
+            (403, "PERMISSION_DENIED_VIEW_CLIENT") => {
+                VeronaError::from(OAuthClientError::ClientAccessDenied { message: error_msg })
+            }
 
             // 404 errors
             (404, "CLIENT_NOT_FOUND") => VeronaError::from(OAuthClientError::ClientNotFound {
@@ -1009,6 +1074,50 @@ mod tests {
         let err = MgrApiClient::map_error(403, &body);
         let msg = format!("{}", err);
         assert!(msg.contains("Insufficient scope"), "got: {}", msg);
+    }
+
+    #[test]
+    fn test_map_error_permission_denied_view_client() {
+        let body = serde_json::json!({
+            "error": "Permission denied to view client",
+            "code": "PERMISSION_DENIED_VIEW_CLIENT",
+            "statusCode": 403
+        });
+        let err = MgrApiClient::map_error(403, &body);
+        match &err {
+            VeronaError::OAuthClient(OAuthClientError::ClientAccessDenied { message }) => {
+                assert!(message.contains("Permission denied"));
+            }
+            VeronaError::OAuthClient(OAuthClientError::ClientNotFound { .. }) => {
+                panic!("PERMISSION_DENIED_VIEW_CLIENT must not map to ClientNotFound");
+            }
+            VeronaError::OAuthClient(OAuthClientError::InsufficientScope { .. }) => {
+                panic!("PERMISSION_DENIED_VIEW_CLIENT must not map to InsufficientScope");
+            }
+            _ => panic!("expected ClientAccessDenied, got {:?}", err),
+        }
+        assert_eq!(
+            err.code(),
+            crate::shared::error::VeronaErrorCode::EOAUTHCLIENT020
+        );
+    }
+
+    #[test]
+    fn test_map_error_insufficient_scope_distinct_from_access_denied() {
+        let body = serde_json::json!({
+            "error": "Insufficient scope",
+            "code": "INSUFFICIENT_SCOPE",
+            "statusCode": 403
+        });
+        let err = MgrApiClient::map_error(403, &body);
+        match &err {
+            VeronaError::OAuthClient(OAuthClientError::InsufficientScope { .. }) => {}
+            _ => panic!("expected InsufficientScope, got {:?}", err),
+        }
+        assert_ne!(
+            err.code(),
+            crate::shared::error::VeronaErrorCode::EOAUTHCLIENT020
+        );
     }
 
     #[test]
@@ -1228,6 +1337,110 @@ mod tests {
         assert!(client.client_name.is_none());
         assert!(client.extension.is_none());
         assert!(client.role.is_none());
+    }
+
+    #[test]
+    fn test_strip_chain_mapped_create_clears_fields_and_reports_labels() {
+        let mut request = CreateClientRequest {
+            redirect_uris: vec!["https://example.com/callback".to_string()],
+            client_name: Some("My App".to_string()),
+            client_uri: Some("https://myapp.com".to_string()),
+            logo_uri: Some("https://myapp.com/logo.png".to_string()),
+            policy_uri: None,
+            tos_uri: None,
+            jwks_uri: None,
+            contacts: None,
+            token_endpoint_auth_method: None,
+            binded_treasury: "xion1treasury".to_string(),
+            owner: Some("user_owner".to_string()),
+            managers: None,
+        };
+
+        let discarded = strip_chain_mapped_create(&mut request);
+
+        assert_eq!(
+            discarded,
+            vec!["redirect_uris", "logo_uri", "client_uri", "owner"]
+        );
+        assert!(request.redirect_uris.is_empty());
+        assert!(request.logo_uri.is_none());
+        assert!(request.client_uri.is_none());
+        assert!(request.owner.is_none());
+        assert_eq!(request.client_name.as_deref(), Some("My App"));
+        assert_eq!(request.binded_treasury, "xion1treasury");
+    }
+
+    #[test]
+    fn test_create_request_json_omits_chain_mapped_fields_after_strip() {
+        let mut request = CreateClientRequest {
+            redirect_uris: vec!["https://example.com/callback".to_string()],
+            client_name: Some("My App".to_string()),
+            client_uri: Some("https://myapp.com".to_string()),
+            logo_uri: Some("https://myapp.com/logo.png".to_string()),
+            policy_uri: None,
+            tos_uri: None,
+            jwks_uri: None,
+            contacts: None,
+            token_endpoint_auth_method: None,
+            binded_treasury: "xion1treasury".to_string(),
+            owner: Some("user_owner".to_string()),
+            managers: None,
+        };
+
+        strip_chain_mapped_create(&mut request);
+        let json = serde_json::to_value(&request).unwrap();
+
+        assert!(json.get("redirectUris").is_none());
+        assert!(json.get("logoUri").is_none());
+        assert!(json.get("clientUri").is_none());
+        assert!(json.get("owner").is_none());
+        assert_eq!(json["bindedTreasury"], "xion1treasury");
+        assert_eq!(json["clientName"], "My App");
+    }
+
+    #[test]
+    fn test_strip_chain_mapped_update_clears_fields_and_reports_labels() {
+        let mut request = UpdateClientRequest {
+            redirect_uris: Some(vec!["https://example.com/callback".to_string()]),
+            client_name: Some("Updated App".to_string()),
+            client_uri: Some("https://myapp.com".to_string()),
+            logo_uri: Some("https://myapp.com/logo.png".to_string()),
+            policy_uri: None,
+            tos_uri: None,
+            jwks_uri: None,
+            contacts: None,
+        };
+
+        let discarded = strip_chain_mapped_update(&mut request);
+
+        assert_eq!(discarded, vec!["redirect_uris", "logo_uri", "client_uri"]);
+        assert!(request.redirect_uris.is_none());
+        assert!(request.logo_uri.is_none());
+        assert!(request.client_uri.is_none());
+        assert_eq!(request.client_name.as_deref(), Some("Updated App"));
+    }
+
+    #[test]
+    fn test_update_request_json_omits_chain_mapped_fields_after_strip() {
+        let mut request = UpdateClientRequest {
+            redirect_uris: Some(vec!["https://example.com/callback".to_string()]),
+            client_name: Some("Updated App".to_string()),
+            client_uri: Some("https://myapp.com".to_string()),
+            logo_uri: Some("https://myapp.com/logo.png".to_string()),
+            policy_uri: Some("https://myapp.com/policy".to_string()),
+            tos_uri: None,
+            jwks_uri: None,
+            contacts: None,
+        };
+
+        strip_chain_mapped_update(&mut request);
+        let json = serde_json::to_value(&request).unwrap();
+
+        assert!(json.get("redirectUris").is_none());
+        assert!(json.get("logoUri").is_none());
+        assert!(json.get("clientUri").is_none());
+        assert_eq!(json["clientName"], "Updated App");
+        assert_eq!(json["policyUri"], "https://myapp.com/policy");
     }
 
     #[test]
@@ -1701,6 +1914,35 @@ mod tests {
             assert!(result.is_ok());
             let resp = result.unwrap();
             assert_eq!(resp.message, "Manager removed successfully");
+        }
+
+        #[tokio::test]
+        async fn test_sync_from_treasury_success() {
+            let mock_server = MockServer::start().await;
+
+            let response = serde_json::json!({
+                "success": true,
+                "client": {
+                    "clientId": "client_abc",
+                    "redirectUris": ["https://treasury.example.com/callback"],
+                    "clientName": "Synced App"
+                }
+            });
+
+            Mock::given(method("POST"))
+                .and(path("/mgr-api/clients/client_abc/sync-from-treasury"))
+                .and(header("Authorization", "Bearer test_token"))
+                .respond_with(ResponseTemplate::new(200).set_body_json(response))
+                .mount(&mock_server)
+                .await;
+
+            let client = MgrApiClient::new(mock_server.uri()).unwrap();
+            let result = client.sync_from_treasury("test_token", "client_abc").await;
+
+            assert!(result.is_ok());
+            let resp = result.unwrap();
+            assert_eq!(resp.client.client_id, "client_abc");
+            assert_eq!(resp.client.client_name.as_deref(), Some("Synced App"));
         }
 
         #[tokio::test]

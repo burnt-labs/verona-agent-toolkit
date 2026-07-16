@@ -293,22 +293,44 @@ verona-toolkit config show
 |------|---------|------|-----------|
 | EOAUTHCLIENT001 | Bad request | Check request parameters and try again | No |
 | EOAUTHCLIENT002 | Client ID is required | Provide a client ID | No |
-| EOAUTHCLIENT003 | Redirect URIs are required | Provide at least one redirect URI | No |
+| EOAUTHCLIENT003 | Redirect URIs required (upstream API) | Set `redirect_url` on treasury before create (`verona-treasury`); toolkit create does not require `--redirect-uris` | No |
 | EOAUTHCLIENT004 | Binded treasury is required | Provide a treasury address with --treasury | No |
 | EOAUTHCLIENT005 | Owner is required | Provide an owner user ID | No |
 | EOAUTHCLIENT006 | Invalid grant type | Use a valid grant type (authorization_code, etc.) | No |
 | EOAUTHCLIENT007 | Manager user ID is required | Provide a manager user ID | No |
 | EOAUTHCLIENT008 | Authentication required | Run 'verona-toolkit auth login' first | No |
 | EOAUTHCLIENT009 | User not found | Run 'verona-toolkit auth login' first | No |
-| EOAUTHCLIENT010 | Insufficient scope | Re-authorize with xion:mgr:write scope | No |
+| EOAUTHCLIENT010 | Insufficient scope | Re-authorize with `xion:mgr:read` / `xion:mgr:write` scopes (`--dev-mode` or full OAuth) | No |
 | EOAUTHCLIENT011 | Only owner allowed | Only the client owner can perform this action | No |
-| EOAUTHCLIENT012 | Client not found | Check the client ID and try again | No |
+| EOAUTHCLIENT012 | Client not found | HTTP 404 `CLIENT_NOT_FOUND` — client ID does not exist | No |
 | EOAUTHCLIENT013 | Client extension not found | Check the client ID; extension may not exist | No |
 | EOAUTHCLIENT014 | Treasury not found | Verify the treasury address is correct | No |
 | EOAUTHCLIENT015 | Internal server error | Retry later or contact support | Yes |
 | EOAUTHCLIENT016 | Treasury fetch error | Failed to fetch treasury data. Try again later. | Yes |
 | EOAUTHCLIENT017 | Treasury query error | Failed to query treasury data. Try again later. | Yes |
 | EOAUTHCLIENT018 | Unknown network | Verify network configuration and try again | No |
+| EOAUTHCLIENT019 | Confirmation required | Re-run the command with --force to confirm | No |
+| EOAUTHCLIENT020 | Client access denied | GET 403 `PERMISSION_DENIED_VIEW_CLIENT` — client may not exist or you lack access; re-auth with `xion:mgr:read`; **not** proof the ID is wrong | No |
+
+#### GET client: EOAUTHCLIENT010 vs EOAUTHCLIENT012 vs EOAUTHCLIENT020
+
+| Code | HTTP | Upstream reason | Meaning |
+|------|------|-----------------|---------|
+| `EOAUTHCLIENT010` | 403 | `INSUFFICIENT_SCOPE` | Access token lacks mgr API scopes — fix auth, not client ID |
+| `EOAUTHCLIENT020` | 403 | `PERMISSION_DENIED_VIEW_CLIENT` | Enumeration-safe denial — client missing **or** no read access; do not treat as confirmed wrong ID |
+| `EOAUTHCLIENT012` | 404 | `CLIENT_NOT_FOUND` | Client ID does not exist |
+
+```bash
+# 010 — scope problem
+verona-toolkit auth login   # ensure xion:mgr:read (dev-mode / local API if needed)
+
+# 020 — access or existence ambiguous on GET
+verona-toolkit oauth2 client list   # find IDs you can see
+verona-toolkit auth login           # refresh mgr read scope
+
+# 012 — confirmed missing client
+verona-toolkit oauth2 client list   # verify ID spelling
+```
 
 ### OAuth2 Client Troubleshooting
 

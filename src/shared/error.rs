@@ -189,6 +189,8 @@ pub enum VeronaErrorCode {
     EOAUTHCLIENT018,
     /// Re-run the command with --force to confirm
     EOAUTHCLIENT019,
+    /// Client access denied (missing or inaccessible client)
+    EOAUTHCLIENT020,
 }
 
 impl VeronaErrorCode {
@@ -260,7 +262,7 @@ impl VeronaErrorCode {
             // OAuth Client Management
             VeronaErrorCode::EOAUTHCLIENT001 => "Bad request",
             VeronaErrorCode::EOAUTHCLIENT002 => "Client ID is required",
-            VeronaErrorCode::EOAUTHCLIENT003 => "Redirect URIs are required",
+            VeronaErrorCode::EOAUTHCLIENT003 => "Redirect URIs required (upstream API)",
             VeronaErrorCode::EOAUTHCLIENT004 => "Binded treasury is required",
             VeronaErrorCode::EOAUTHCLIENT005 => "Owner is required",
             VeronaErrorCode::EOAUTHCLIENT006 => "Invalid grant type",
@@ -277,6 +279,7 @@ impl VeronaErrorCode {
             VeronaErrorCode::EOAUTHCLIENT017 => "Treasury query error",
             VeronaErrorCode::EOAUTHCLIENT018 => "Unknown network",
             VeronaErrorCode::EOAUTHCLIENT019 => "Confirmation required",
+            VeronaErrorCode::EOAUTHCLIENT020 => "Client access denied",
         }
     }
 
@@ -360,7 +363,9 @@ impl VeronaErrorCode {
             // OAuth Client Management
             VeronaErrorCode::EOAUTHCLIENT001 => "Check request parameters and try again",
             VeronaErrorCode::EOAUTHCLIENT002 => "Provide a client ID",
-            VeronaErrorCode::EOAUTHCLIENT003 => "Provide at least one redirect URI",
+            VeronaErrorCode::EOAUTHCLIENT003 => {
+                "Set redirect_url on treasury before create (verona-treasury). Toolkit create does not require --redirect-uris."
+            }
             VeronaErrorCode::EOAUTHCLIENT004 => "Provide a treasury address with --treasury",
             VeronaErrorCode::EOAUTHCLIENT005 => "Provide an owner user ID",
             VeronaErrorCode::EOAUTHCLIENT006 => "Use a valid grant type (authorization_code, etc.)",
@@ -383,6 +388,7 @@ impl VeronaErrorCode {
             VeronaErrorCode::EOAUTHCLIENT017 => "Failed to query treasury data. Try again later.",
             VeronaErrorCode::EOAUTHCLIENT018 => "Verify network configuration and try again",
             VeronaErrorCode::EOAUTHCLIENT019 => "Re-run the command with --force to confirm",
+            VeronaErrorCode::EOAUTHCLIENT020 => "Client may not exist or you lack access. Re-auth with xion:mgr:read; do not assume the client ID is wrong from 'not found' wording.",
         }
     }
 
@@ -469,7 +475,7 @@ impl VeronaErrorCode {
             | VeronaErrorCode::EOAUTHCLIENT016
             | VeronaErrorCode::EOAUTHCLIENT017
             | VeronaErrorCode::EOAUTHCLIENT018 => "OAUTH_CLIENT",
-            VeronaErrorCode::EOAUTHCLIENT019 => "OAUTH_CLIENT",
+            VeronaErrorCode::EOAUTHCLIENT019 | VeronaErrorCode::EOAUTHCLIENT020 => "OAUTH_CLIENT",
         }
     }
 }
@@ -977,6 +983,9 @@ pub enum OAuthClientError {
     #[error("Only owner allowed: {message}")]
     OnlyOwnerAllowed { message: String },
 
+    #[error("Client access denied: {message}")]
+    ClientAccessDenied { message: String },
+
     #[error("Client not found: {client_id}")]
     ClientNotFound { client_id: String },
 
@@ -1009,6 +1018,7 @@ impl OAuthClientError {
             OAuthClientError::AuthenticationRequired { .. } => VeronaErrorCode::EOAUTHCLIENT008,
             OAuthClientError::InsufficientScope { .. } => VeronaErrorCode::EOAUTHCLIENT010,
             OAuthClientError::OnlyOwnerAllowed { .. } => VeronaErrorCode::EOAUTHCLIENT011,
+            OAuthClientError::ClientAccessDenied { .. } => VeronaErrorCode::EOAUTHCLIENT020,
             OAuthClientError::ClientNotFound { .. } => VeronaErrorCode::EOAUTHCLIENT012,
             OAuthClientError::ClientExtensionNotFound { .. } => VeronaErrorCode::EOAUTHCLIENT013,
             OAuthClientError::TreasuryNotFound { .. } => VeronaErrorCode::EOAUTHCLIENT014,
@@ -1033,6 +1043,9 @@ impl OAuthClientError {
             }
             OAuthClientError::OnlyOwnerAllowed { .. } => {
                 "Only the client owner can perform this action".to_string()
+            }
+            OAuthClientError::ClientAccessDenied { .. } => {
+                "Client may not exist or you lack access. Re-auth with xion:mgr:read; do not assume the client ID is wrong from 'not found' wording.".to_string()
             }
             OAuthClientError::ClientNotFound { .. } => {
                 "Check the client ID and try again".to_string()
