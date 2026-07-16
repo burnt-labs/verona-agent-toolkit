@@ -148,7 +148,8 @@ OAuth2 client lifecycle management via the Manager API.
 | Script | Command |
 |--------|---------|
 | list | `verona-toolkit oauth2 client list` |
-| create | `verona-toolkit oauth2 client create --redirect-uris "..." --treasury "..."` |
+| create | `verona-toolkit oauth2 client create --treasury "..." --client-name "..."` |
+| sync-from-treasury | `verona-toolkit oauth2 client sync-from-treasury <CLIENT_ID>` |
 | get | `verona-toolkit oauth2 client get <CLIENT_ID>` |
 | update | `verona-toolkit oauth2 client update <CLIENT_ID>` |
 | delete | `verona-toolkit oauth2 client delete <CLIENT_ID> --force` |

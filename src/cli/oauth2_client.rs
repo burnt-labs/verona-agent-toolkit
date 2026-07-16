@@ -376,7 +376,7 @@ fn chain_mapped_field_warning(label: &str) -> &'static str {
 
 fn emit_chain_mapped_warnings(discarded: &[&'static str]) {
     for label in discarded {
-        print_warning(chain_mapped_field_warning(label));
+        eprintln!("{}", chain_mapped_warning_line(label));
     }
 }
 

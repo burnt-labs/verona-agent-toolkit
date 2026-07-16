@@ -279,15 +279,20 @@ verona-toolkit asset batch-mint --contract xion1... --tokens-file tokens.json
 # List OAuth clients
 verona-toolkit oauth2 client list
 
-# Create OAuth client
+# Set redirect on treasury (SSOT), then create client
+verona-toolkit treasury update-params xion1treasury... \
+  --redirect-url "https://example.com/callback"
 verona-toolkit oauth2 client create \
-  --redirect-uris "https://example.com/callback" \
-  --treasury "xion1treasury..."
+  --treasury "xion1treasury..." \
+  --client-name "My App"
+
+# Sync client after treasury redirect/branding changes
+verona-toolkit oauth2 client sync-from-treasury <CLIENT_ID>
 
 # Get client details
 verona-toolkit oauth2 client get <CLIENT_ID>
 
-# Update client
+# Update non-chain-mapped metadata (not redirect/logo)
 verona-toolkit oauth2 client update <CLIENT_ID> \
   --client-name "Updated App"
 
@@ -318,6 +323,7 @@ verona-toolkit oauth2 client rotate-secret <CLIENT_ID>
 | EOAUTHCLIENT014 | Treasury not found | Check treasury address |
 | EOAUTHCLIENT011 | Not owner | Only owner can perform action |
 | EOAUTHCLIENT010 | Insufficient scope | Re-authorize with xion:mgr:write scope |
+| EOAUTHCLIENT020 | Client access denied (GET 403) | Verify access + mgr scopes; not proof ID is wrong |
 | EOAUTHCLIENT019 | Confirmation required | Re-run with `--force` to confirm |
 | CLIENT_NOT_CONFIDENTIAL | Cannot rotate secret for public client | Only confidential clients support secrets |
 

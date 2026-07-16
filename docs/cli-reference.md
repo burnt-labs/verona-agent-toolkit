@@ -34,6 +34,7 @@ Complete reference for the Verona Agent Toolkit CLI commands.
   - [`oauth2 client create`](#oauth2-client-create)
   - [`oauth2 client get`](#oauth2-client-get)
   - [`oauth2 client update`](#oauth2-client-update)
+  - [`oauth2 client sync-from-treasury`](#oauth2-client-sync-from-treasury)
   - [`oauth2 client delete`](#oauth2-client-delete)
   - [`oauth2 client extension get`](#oauth2-client-extension-get)
   - [`oauth2 client extension update`](#oauth2-client-extension-update)
@@ -2142,6 +2143,10 @@ Output:
 
 Manage OAuth2 clients via the Verona Manager API. Authentication is required for all commands.
 
+**Treasury SSOT (oauth2-api 0.1.0):** Redirect URI, logo, and client homepage are authoritative on the **bound treasury** (`redirect_url`, `icon_url`, `display_url` on-chain)—not from free-form `create`/`update` flags. Set treasury params first (`treasury update-params`), create with `--treasury`, then run `sync-from-treasury` after any treasury param change.
+
+**Warning UX:** Deprecated chain-mapped flags (`--redirect-uris`, `--logo-uri`, `--client-uri`, create `--owner`) and matching JSON keys (`redirectUris`, `logoUri`, `clientUri`, `owner`) are **stripped before HTTP**. The CLI prints `[WARNING]` on **stderr** for each discarded field; exit code stays `0` when otherwise valid. **Stdout success JSON is unchanged**—agents must read stderr; redirect did not change via CLI flags.
+
 ---
 
 ### `oauth2 client list`
@@ -2190,7 +2195,7 @@ Output (success):
 
 ### `oauth2 client create`
 
-Creates a new OAuth client.
+Creates a new OAuth client bound to a treasury. **Does not require `--redirect-uris`**—redirect/branding come from the treasury on-chain params (set via `treasury create` or `treasury update-params` before create).
 
 **Usage:**
 ```bash
@@ -2198,44 +2203,52 @@ verona-toolkit oauth2 client create [options]
 ```
 
 **Options:**
-- `--redirect-uris <URIS>` - OAuth redirect URIs (required, comma-separated)
-- `--treasury <ADDRESS>` - Treasury contract address to bind (required unless --json-input is provided)
+- `--treasury <ADDRESS>` - Treasury contract address to bind (**required** unless `--json-input` provides `bindedTreasury`)
+- `--redirect-uris <URIS>` - **Deprecated** — ignored if provided; stderr `[WARNING]`; set `redirect_url` on treasury instead
 - `--client-name <NAME>` - Human-readable client name
-- `--owner <USER_ID>` - Client owner user ID (defaults to authenticated user)
+- `--owner <USER_ID>` - **Deprecated on create** — ignored; authenticated user becomes owner
 - `--managers <IDS>` - Manager user IDs (comma-separated)
 - `--auth-method <METHOD>` - Token endpoint auth method (none, client_secret_basic, client_secret_post)
 - `--contacts <EMAILS>` - Contact email addresses (comma-separated)
-- `--client-uri <URL>` - Client homepage URL
-- `--logo-uri <URL>` - Client logo URL
+- `--client-uri <URL>` - **Deprecated** — ignored; set `display_url` on treasury + sync
+- `--logo-uri <URL>` - **Deprecated** — ignored; set `icon_url` on treasury + sync
 - `--policy-uri <URL>` - Privacy policy URL
 - `--tos-uri <URL>` - Terms of service URL
 - `--jwks-uri <URL>` - JWKS endpoint URL
-- `--json-input <FILE>` - Path to JSON file with full request body
+- `--json-input <FILE>` - JSON body (`bindedTreasury` required); deprecated chain-mapped keys stripped with stderr warning
 - `--show-secret` - Show client secret in output (default: redacted)
 
 **Examples:**
 
-Minimal create:
+Treasury-first create (recommended):
 ```bash
+# 1. Set redirect on treasury (SSOT)
+verona-toolkit treasury update-params xion1treasury... \
+  --redirect-url "https://myapp.com/callback"
+
+# 2. Create client (treasury binding only)
 verona-toolkit oauth2 client create \
-  --redirect-uris "https://example.com/callback" \
-  --treasury "xion1treasury..."
+  --treasury "xion1treasury..." \
+  --client-name "My App"
 ```
 
-Full create:
+With non-chain-mapped metadata:
 ```bash
 verona-toolkit oauth2 client create \
-  --redirect-uris "https://a.com/cb,https://b.com/cb" \
   --treasury "xion1treasury..." \
   --client-name "My App" \
-  --owner "user_123" \
   --managers "user_456,user_789" \
   --auth-method client_secret_basic \
   --contacts "admin@example.com" \
-  --client-uri "https://myapp.com" \
-  --logo-uri "https://myapp.com/logo.png" \
-  --policy-uri "https://myapp.com/privacy" \
-  --tos-uri "https://myapp.com/terms"
+  --policy-uri "https://myapp.com/privacy"
+```
+
+Legacy flags (accepted but ignored — stderr `[WARNING]`):
+```bash
+verona-toolkit oauth2 client create \
+  --treasury "xion1treasury..." \
+  --redirect-uris "https://example.com/callback" \
+  --client-name "My App"
 ```
 
 From JSON file:
@@ -2247,18 +2260,18 @@ Output (success):
 ```json
 {
   "success": true,
-  "clientId": "client_abc123...",
-  "clientSecret": "********",
-  "clientName": "My App",
-  "redirectUris": ["https://example.com/callback"],
-  "bindedTreasury": "xion1treasury...",
-  "owner": "user_123"
+  "client": {
+    "clientId": "client_abc123...",
+    "clientName": "My App",
+    "redirectUris": ["https://myapp.com/callback"]
+  },
+  "clientSecret": "********"
 }
 ```
 
 **Notes:**
 - Client secret is redacted by default; use `--show-secret` to reveal (store securely)
-- Owner defaults to authenticated user if `--owner` is not provided
+- Redirect in the response reflects treasury state at create time; after treasury param changes, run `sync-from-treasury`
 
 ---
 
@@ -2293,7 +2306,19 @@ Output (success):
 }
 ```
 
-Output (error - not found):
+Output (error - access denied, GET 403):
+```json
+{
+  "success": false,
+  "error": {
+    "code": "EOAUTHCLIENT020",
+    "message": "Client access denied: ...",
+    "remediation": "Client may not exist or you lack access. Re-auth with xion:mgr:read; do not assume the client ID is wrong from 'not found' wording."
+  }
+}
+```
+
+Output (error - not found, 404):
 ```json
 {
   "success": false,
@@ -2309,7 +2334,7 @@ Output (error - not found):
 
 ### `oauth2 client update`
 
-Updates an existing OAuth client.
+Updates **non-chain-mapped** OAuth client metadata (`clientName`, `policyUri`, `tosUri`, `jwksUri`, `contacts`). To change redirect or branding, update treasury on-chain and run `sync-from-treasury`—not `--redirect-uris` / `--logo-uri` on update.
 
 **Usage:**
 ```bash
@@ -2320,32 +2345,78 @@ verona-toolkit oauth2 client update <CLIENT_ID> [options]
 - `CLIENT_ID` - Client ID to update (required)
 
 **Options:**
-- `--redirect-uris <URIS>` - OAuth redirect URIs (comma-separated)
+- `--redirect-uris <URIS>` - **Deprecated** — ignored; stderr `[WARNING]`; use treasury + sync
 - `--client-name <NAME>` - Human-readable client name
-- `--client-uri <URL>` - Client homepage URL
-- `--logo-uri <URL>` - Client logo URL
+- `--client-uri <URL>` - **Deprecated** — ignored; use treasury `display_url` + sync
+- `--logo-uri <URL>` - **Deprecated** — ignored; use treasury `icon_url` + sync
 - `--policy-uri <URL>` - Privacy policy URL
 - `--tos-uri <URL>` - Terms of service URL
 - `--jwks-uri <URL>` - JWKS endpoint URL
 - `--contacts <EMAILS>` - Contact email addresses (comma-separated)
-- `--json-input <FILE>` - Path to JSON file with full request body
+- `--json-input <FILE>` - JSON body; deprecated chain-mapped keys stripped with stderr warning
 
 **Examples:**
 
+Update metadata:
 ```bash
 verona-toolkit oauth2 client update client_abc123 \
   --client-name "Updated App" \
   --contacts "new@example.com"
 ```
 
+Change redirect (treasury + sync workflow):
+```bash
+verona-toolkit treasury update-params xion1treasury... \
+  --redirect-url "https://myapp.com/new-callback"
+verona-toolkit oauth2 client sync-from-treasury client_abc123
+```
+
 Output (success):
 ```json
 {
   "success": true,
-  "clientId": "client_abc123",
-  "clientName": "Updated App"
+  "client": {
+    "clientId": "client_abc123",
+    "clientName": "Updated App"
+  }
 }
 ```
+
+---
+
+### `oauth2 client sync-from-treasury`
+
+Refreshes OAuth client redirect/branding metadata from the bound on-chain treasury (`POST /mgr-api/clients/{id}/sync-from-treasury`, no request body). Run after `treasury update-params` changes `redirect_url`, `icon_url`, or `display_url`.
+
+**Usage:**
+```bash
+verona-toolkit oauth2 client sync-from-treasury <CLIENT_ID>
+```
+
+**Arguments:**
+- `CLIENT_ID` - Client ID to sync (required)
+
+**Examples:**
+
+```bash
+verona-toolkit oauth2 client sync-from-treasury client_abc123
+```
+
+Output (success):
+```json
+{
+  "success": true,
+  "client": {
+    "clientId": "client_abc123",
+    "clientName": "My App",
+    "redirectUris": ["https://myapp.com/callback"]
+  }
+}
+```
+
+**Notes:**
+- Requires `xion:mgr:write` scope (same as other mutating mgr routes)
+- Authorize `redirect_uri` in login flow must match treasury `redirect_url`
 
 ---
 

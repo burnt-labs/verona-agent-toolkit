@@ -293,7 +293,7 @@ verona-toolkit config show
 |------|---------|------|-----------|
 | EOAUTHCLIENT001 | Bad request | Check request parameters and try again | No |
 | EOAUTHCLIENT002 | Client ID is required | Provide a client ID | No |
-| EOAUTHCLIENT003 | Redirect URIs are required | Provide at least one redirect URI | No |
+| EOAUTHCLIENT003 | Redirect URIs required (upstream API) | Set redirect_url on treasury; toolkit create does not require `--redirect-uris` | No |
 | EOAUTHCLIENT004 | Binded treasury is required | Provide a treasury address with --treasury | No |
 | EOAUTHCLIENT005 | Owner is required | Provide an owner user ID | No |
 | EOAUTHCLIENT006 | Invalid grant type | Use a valid grant type (authorization_code, etc.) | No |
@@ -309,6 +309,8 @@ verona-toolkit config show
 | EOAUTHCLIENT016 | Treasury fetch error | Failed to fetch treasury data. Try again later. | Yes |
 | EOAUTHCLIENT017 | Treasury query error | Failed to query treasury data. Try again later. | Yes |
 | EOAUTHCLIENT018 | Unknown network | Verify network configuration and try again | No |
+| EOAUTHCLIENT019 | Confirmation required | Re-run the command with --force to confirm | No |
+| EOAUTHCLIENT020 | Client access denied | Client may not exist or you lack access; re-auth with xion:mgr:read | No |
 
 ### OAuth2 Client Troubleshooting
 
