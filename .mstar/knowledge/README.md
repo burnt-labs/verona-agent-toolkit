@@ -13,3 +13,4 @@ Implementation notes and design SSOT for agent handoff. Active plans live in `.m
 | [expiration-research.md](./expiration-research.md) | phase4 | Treasury expiration field research. | Active |
 | [xion-skills-update-plan.md](./xion-skills-update-plan.md) | skills | Xion skills update planning notes. | Active |
 | [verona-rebrand-contract.md](./verona-rebrand-contract.md) | verona-rebrand | Rename matrix SSOT for Verona Agent Toolkit rebrand. | Active |
+| [conventions/oauth2-api-010-client-ssot.md](./conventions/oauth2-api-010-client-ssot.md) | eng-1880-oauth2-010-adapt | Mgr client treasury SSOT + warn/discard + sync-from-treasury (API 0.1.0 / ENG-1880). | Active |

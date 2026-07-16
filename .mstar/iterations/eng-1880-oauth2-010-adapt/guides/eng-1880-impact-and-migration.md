@@ -1,3 +1,5 @@
+Promoted to: `.mstar/knowledge/conventions/oauth2-api-010-client-ssot.md` (iteration-close compound)
+
 # ENG-1880 → verona-agent-toolkit impact
 
 **Upstream:** [ENG-1880](https://linear.app/burnt/issue/ENG-1880) / oauth2-api-service **0.1.0** (PR #49).  
