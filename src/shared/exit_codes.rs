@@ -518,6 +518,7 @@ mod tests {
         // Boundary: second-to-last OAuth Client code
         assert_eq!(exit_code_name(177), "OAUTH_CLIENT_UNKNOWN_NETWORK");
         // Boundary: last OAuth Client code
+        assert_eq!(exit_code_name(179), "OAUTH_CLIENT_ACCESS_DENIED");
         assert_eq!(exit_code_name(178), "OAUTH_CLIENT_CONFIRMATION_REQUIRED");
         // Spot-check a middle code
         assert_eq!(exit_code_name(167), "OAUTH_CLIENT_AUTH_REQUIRED");
