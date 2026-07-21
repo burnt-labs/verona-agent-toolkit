@@ -125,7 +125,7 @@ scripts/          # Build/utility scripts (NOT test scripts).
 - **Single test**: `cargo test <exact_test_name>`
 - **Env var mutation** (especially `VERONA_CI_ENCRYPTION_KEY`): MUST use `#[serial(encryption_key)]` from `serial_test`. Bare `#[serial]` is a different group and will NOT serialize correctly.
 - **Async integration tests**: `#[tokio::test]`
-- Current test count: **618 tests passing** (521 lib + integration)
+- Current test count: **635 tests passing** (538 lib + 48 integration + 49 doctests; 7 doctests ignored) — verify with `cargo test --all-features`
 
 ## Git / CI
 

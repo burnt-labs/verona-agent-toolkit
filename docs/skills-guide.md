@@ -36,7 +36,7 @@ Use when building or integrating apps, or when you need chain / CosmWasm / `xion
 
 | Skill | Role |
 |-------|------|
-| **`verona-dev`** | Entry router + application guides under `skills/verona-dev/references/` (xion.js / Abstraxion, mob, oauth2-api-service) |
+| **`verona-dev`** | Entry router + application guides in [verona-dev-plugin](https://github.com/burnt-labs/verona-dev-plugin): [`skills/verona-dev/references/`](https://github.com/burnt-labs/verona-dev-plugin/tree/main/skills/verona-dev/references) (xion.js / Abstraxion, mob, oauth2-api-service) |
 | **`verona-bin`** | `xiond` install, chain queries/txs, CosmWasm — use when the task needs the binary, not the app SDK |
 
 For chain-level queries, contract deployment, and mnemonic-wallet work, use **`verona-bin`** inside the plugin. Do **not** install a separate `xion-skills` package.
