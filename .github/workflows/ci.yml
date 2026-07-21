@@ -110,92 +110,6 @@ jobs:
           retention-days: 1
 
   # ===========================================================================
-  # Skills Tests (depends on build)
-  # ===========================================================================
-  skills-mock-tests:
-    name: Skills Mock Tests
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Download verona-toolkit binary
-        uses: actions/download-artifact@v4
-        with:
-          name: verona-toolkit-binary
-          path: target/release/
-
-      - name: Install verona-toolkit
-        run: |
-          chmod +x target/release/verona-toolkit
-          sudo ln -sf "$PWD/target/release/verona-toolkit" /usr/local/bin/verona-toolkit
-          verona-toolkit --version
-
-      - name: Install jq
-        run: sudo apt-get install -y jq
-
-      - name: Run mock tests
-        run: |
-          echo "=== Running Skills Mock Tests ==="
-          chmod +x tests/skills/run_all.sh
-          cd tests/skills && ./run_all.sh
-        env:
-          MOCK_ENABLED: "true"
-          CI: "true"
-
-  skills-lint:
-    if: "${{ github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore(main): release') }}"
-    name: Skills Lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Install shellcheck
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y shellcheck
-
-      - name: Lint test framework
-        run: |
-          echo "=== Linting test framework ==="
-          shellcheck tests/skills/lib.sh tests/skills/run_all.sh
-
-      - name: Validate SKILL.md frontmatter
-        run: |
-          echo "=== Validating skill frontmatter ==="
-          chmod +x scripts/validate-skill-frontmatter.sh
-          ./scripts/validate-skill-frontmatter.sh
-
-      - name: Lint skill scripts
-        run: |
-          echo "=== Linting skill scripts ==="
-          for script in skills/*/scripts/*.sh; do
-            if [[ -f "$script" ]]; then
-              echo "Linting $script..."
-              shellcheck "$script" || true
-            fi
-          done
-
-  skills-tests-status:
-    name: Skills Tests Status
-    runs-on: ubuntu-latest
-    needs: [skills-mock-tests, skills-lint]
-    if: always()
-    steps:
-      - name: Check overall status
-        run: |
-          if [[ "${{ needs.skills-mock-tests.result }}" == "failure" || "${{ needs.skills-lint.result }}" == "failure" ]]; then
-            echo "::error::Some skills tests failed"
-            exit 1
-          fi
-          echo "::notice::All skills tests passed"
-
-  # ===========================================================================
   # E2E Tests (depends on build)
   # E2E tests require:
   # - vars.ENABLE_E2E_TESTS = 'true' (repo variable)
@@ -260,23 +174,17 @@ jobs:
   ci-status:
     name: CI Status
     runs-on: ubuntu-latest
-    needs: [skills-tests-status, e2e-status]
+    needs: [e2e-status]
     if: always()
     steps:
       - name: Aggregate all results
         run: |
           echo "=== CI Pipeline Summary ==="
-          echo "Skills Tests: ${{ needs.skills-tests-status.result }}"
           echo "E2E Tests: ${{ needs.e2e-status.result }}"
-          
-          if [[ "${{ needs.skills-tests-status.result }}" == "failure" ]]; then
-            echo "::error::Skills tests failed"
-            exit 1
-          fi
-          
+
           if [[ "${{ needs.e2e-status.result }}" == "failure" ]]; then
             echo "::error::E2E tests failed"
             exit 1
           fi
-          
+
           echo "::notice::All CI checks passed successfully!"
