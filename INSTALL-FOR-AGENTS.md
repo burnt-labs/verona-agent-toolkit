@@ -235,6 +235,8 @@ Agent skills live in [burnt-labs/verona-dev-plugin](https://github.com/burnt-lab
 
 **Install SSOT:** Follow host-specific steps in the plugin [INSTALL.md](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md). Summary:
 
+**Cleanup legacy skills (required if upgrading):** If you previously used `npx skills add burnt-labs/verona-agent-toolkit`, `burnt-labs/xion-skills`, or similar non-plugin installs, remove leftover `verona-*`, `xion-*`, and `xiond-*` folders from `~/.agents/skills/`, `~/.cursor/skills/`, and `~/.claude/skills/` (if present) before installing the plugin. Full steps: [Cleanup legacy skills](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md#cleanup-legacy-skills).
+
 | Host | Quick start |
 |------|-------------|
 | **Cursor** | `git clone https://github.com/burnt-labs/verona-dev-plugin.git ~/.cursor/plugins/local/verona-dev-plugin` then reload window |

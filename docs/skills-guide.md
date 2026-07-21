@@ -15,6 +15,8 @@ There is **no** `npx skills add burnt-labs/verona-agent-toolkit` path and **no**
 
 ## Install (summary)
 
+**Cleanup first (if upgrading):** Remove any non-plugin `verona-*`, `xion-*`, or `xiond-*` skill folders left from older `npx skills add` installs (for example `burnt-labs/verona-agent-toolkit` or `burnt-labs/xion-skills`) under `~/.agents/skills/`, `~/.cursor/skills/`, or `~/.claude/skills/` if present. See plugin [Cleanup legacy skills](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md#cleanup-legacy-skills).
+
 Clone or install the plugin per your host. Example for **Cursor** (local path):
 
 ```bash

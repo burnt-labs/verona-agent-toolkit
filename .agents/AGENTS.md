@@ -17,7 +17,7 @@ The repo keeps `.agents/` as a **conventional anchor** next to global skill inst
 | Skills routing overview | `docs/skills-guide.md` |
 | Plugin README (Development vs Toolkit) | [verona-dev-plugin README](https://github.com/burnt-labs/verona-dev-plugin/blob/main/README.md) |
 
-Do **not** use `npx skills add burnt-labs/verona-agent-toolkit` or install `burnt-labs/xion-skills` for Verona agent workflows. Chain / CosmWasm / `xiond` tasks route to **`verona-bin`** inside the plugin.
+Do **not** use `npx skills add burnt-labs/verona-agent-toolkit` or install `burnt-labs/xion-skills` for Verona agent workflows. Chain / CosmWasm / `xiond` tasks route to **`verona-bin`** inside the plugin. If those legacy installs remain under `~/.agents/skills/` or host skill dirs, remove them before installing the plugin — [Cleanup legacy skills](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md#cleanup-legacy-skills).
 
 ## Bundled skills (plugin)
 

@@ -53,14 +53,15 @@ cargo install --path .
 Agent skills live in [burnt-labs/verona-dev-plugin](https://github.com/burnt-labs/verona-dev-plugin), not in this repository.
 
 1. Install the **CLI** (see above).
-2. Install the **plugin** per [INSTALL.md](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md) (Cursor, Codex, Claude Code, Kimi). Example for Cursor:
+2. If you have legacy non-plugin `verona-*` / `xion-*` skills from older installs, remove them first — see [Cleanup legacy skills](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md#cleanup-legacy-skills).
+3. Install the **plugin** per [INSTALL.md](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md) (Cursor, Codex, Claude Code, Kimi). Example for Cursor:
 
    ```bash
    mkdir -p ~/.cursor/plugins/local
    git clone https://github.com/burnt-labs/verona-dev-plugin.git ~/.cursor/plugins/local/verona-dev-plugin
    ```
 
-3. Reload your host, then authenticate:
+4. Reload your host, then authenticate:
 
    ```bash
    verona-toolkit auth login
