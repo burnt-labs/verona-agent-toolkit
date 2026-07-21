@@ -6,16 +6,16 @@
       "id": "skills-ssot-plugin-migration",
       "title": "Skills SSOT \u2192 verona-dev-plugin migration",
       "file": ".mstar/plans/skills-ssot-plugin-migration.md",
-      "status": "InReview",
+      "status": "Done",
       "owner": "@project-manager",
-      "progress": 95,
+      "progress": 100,
       "created_at": "2026-07-21",
       "updated_at": "2026-07-21",
       "metadata": {
         "working_branch": "plan/skills-ssot-plugin-migration",
         "spec_integration_branch": "main",
         "merge_target": "main",
-        "phase": "qa",
+        "phase": "done",
         "description": "B1: remove bundled skills/ + skill CI/tests; full install/routing docs align to burnt-labs/verona-dev-plugin (verona-bin)",
         "prepare_gates": {
           "specify": "done",
@@ -38,10 +38,10 @@
             "sha": "9464122"
           }
         ],
-        "review_range": "665aaab..9464122",
+        "review_range": "665aaab..0a7838c",
         "gates": {
           "qc": "Approve with residuals",
-          "qa": "pending"
+          "qa": "Accept with residuals"
         }
       }
     },

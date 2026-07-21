@@ -94,3 +94,10 @@
 - **Tri:** qc1/qc2 Approve; qc3 Approve with residuals (W2/W4 fixed in `9464122`)
 - **Open residuals:** R1 knowledge paths, R2 fixture migration, R3 optional polish — see `status.json` `residual_findings.skills-ssot-plugin-migration`
 - **Bundle:** `.mstar/sdd/skills-ssot-plugin-migration/review/` (gitignored)
+
+
+## QA gate summary
+
+- **Verdict:** Accept with residuals
+- **Report:** `.mstar/sdd/skills-ssot-plugin-migration/review/qa.md` (gitignored)
+- **Open residuals:** R1–R3 in `status.json`
