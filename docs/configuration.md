@@ -33,10 +33,7 @@ ls ~/.verona-toolkit/credentials/
 ### Manual steps
 
 1. **Reinstall the CLI** — use the latest `verona-agent-toolkit` installer or `cargo install` from this repository.
-2. **Reinstall skills** — global installs must use the new folder names:
-   ```bash
-   npx skills add burnt-labs/verona-agent-toolkit -g -y
-   ```
+2. **Install the Verona dev plugin** — skills live in [burnt-labs/verona-dev-plugin](https://github.com/burnt-labs/verona-dev-plugin). Follow [INSTALL.md](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md) for your host (Cursor, Codex, Claude Code, Kimi). Do **not** use `npx skills add burnt-labs/verona-agent-toolkit`.
 3. **Update environment variables** — prefer `VERONA_*` names; legacy `XION_*` vars still work with a deprecation warning (see [Environment Variables](#environment-variables)).
 4. **Update scripts and CI** — replace `xion-toolkit` invocations with `verona-toolkit`; update credential paths to `~/.verona-toolkit/`.
 

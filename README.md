@@ -50,17 +50,23 @@ cargo install --path .
 
 ### Install Skills (for AI Agents)
 
-```bash
-# 1. Install CLI first (see above)
+Agent skills live in [burnt-labs/verona-dev-plugin](https://github.com/burnt-labs/verona-dev-plugin), not in this repository.
 
-# 2. Install skills
-npx skills add burnt-labs/verona-agent-toolkit -g
+1. Install the **CLI** (see above).
+2. Install the **plugin** per [INSTALL.md](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md) (Cursor, Codex, Claude Code, Kimi). Example for Cursor:
 
-# 3. Authenticate
-verona-toolkit auth login
-```
+   ```bash
+   mkdir -p ~/.cursor/plugins/local
+   git clone https://github.com/burnt-labs/verona-dev-plugin.git ~/.cursor/plugins/local/verona-dev-plugin
+   ```
 
-Bundled skills: `verona-dev`, `verona-toolkit-init`, `verona-oauth2`, `verona-oauth2-client`, `verona-treasury`, `verona-faucet`, `verona-asset`. See [INSTALL-FOR-AGENTS.md](./INSTALL-FOR-AGENTS.md) for full details.
+3. Reload your host, then authenticate:
+
+   ```bash
+   verona-toolkit auth login
+   ```
+
+Session entry is **`verona-dev`**; toolkit leaf skills (`verona-oauth2`, `verona-treasury`, …) and chain work via **`verona-bin`** are documented in the plugin README. See [INSTALL-FOR-AGENTS.md](./INSTALL-FOR-AGENTS.md) for the full agent workflow.
 
 ### Authenticate
 
@@ -222,4 +228,4 @@ Apache License 2.0 — see [LICENSE](LICENSE) for details.
 - [Verona Documentation](https://docs.verona.dev)
 - [Developer Portal](https://dev.testnet2.burnt.com)
 - [Contributing Guide](./CONTRIBUTING.md)
-- [xion-skills](https://github.com/burnt-labs/xion-skills) — Advanced chain operations
+- [verona-dev-plugin](https://github.com/burnt-labs/verona-dev-plugin) — Agent skills (install SSOT)

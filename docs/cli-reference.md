@@ -3879,5 +3879,5 @@ The CLI returns standardized exit codes for CI/CD integration. See [EXIT-CODES.m
 - [README.md](../README.md) - Project overview and quick start
 - [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) - Condensed CLI reference for AI agents
 - [EXIT-CODES.md](./EXIT-CODES.md) - Standardized exit codes for CI/CD
-- [SKILL.md](../skills/verona-treasury/SKILL.md) - Skill documentation for Agent integration
+- [verona-treasury SKILL.md](https://github.com/burnt-labs/verona-dev-plugin/blob/main/skills/verona-treasury/SKILL.md) - Skill documentation for Agent integration (verona-dev-plugin)
 - [Contributing Guide](../CONTRIBUTING.md) - Contribution guidelines

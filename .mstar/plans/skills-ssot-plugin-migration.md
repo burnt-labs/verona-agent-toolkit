@@ -1,6 +1,6 @@
 # Skills SSOT → verona-dev-plugin Migration
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use `mstar-sdd`. Steps use checkbox (`- [ ]`) syntax.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use `mstar-sdd`. Steps use checkbox (`- [x]`) syntax.
 
 **Goal:** Make [burnt-labs/verona-dev-plugin](https://github.com/burnt-labs/verona-dev-plugin) the sole skills SSOT for agents; remove bundled `skills/` and skill-only CI/tests from this CLI repo; fully align install/routing docs with the plugin (including `verona-bin` instead of `xion-skills`).
 
@@ -50,11 +50,11 @@
 - Consumes: locked clarify (B1)
 - Produces: repo without skill packages; CI green without skills jobs
 
-- [ ] **Step 1:** Inventory and delete `skills/` packages (git rm)
-- [ ] **Step 2:** Delete `tests/skills/` and frontmatter validator bin/script; clean `Cargo.toml` / lockfile if needed
-- [ ] **Step 3:** Remove skills CI jobs and repair workflow `needs` graph
-- [ ] **Step 4:** Sanity — `rg` for `skills-mock-tests|validate-skill-frontmatter|tests/skills` in active CI/scripts; `cargo check` still passes
-- [ ] **Step 5:** Commit on `plan/skills-ssot-plugin-migration`
+- [x] **Step 1:** Inventory and delete `skills/` packages (git rm)
+- [x] **Step 2:** Delete `tests/skills/` and frontmatter validator bin/script; clean `Cargo.toml` / lockfile if needed
+- [x] **Step 3:** Remove skills CI jobs and repair workflow `needs` graph
+- [x] **Step 4:** Sanity — `rg` for `skills-mock-tests|validate-skill-frontmatter|tests/skills` in active CI/scripts; `cargo check` still passes
+- [x] **Step 5:** Commit on `plan/skills-ssot-plugin-migration`
 
 ---
 
@@ -69,11 +69,11 @@
 - Consumes: Task 1 (no local skill packages)
 - Produces: install/routing SSOT text matching plugin README + INSTALL.md
 
-- [ ] **Step 1:** Replace skill install sections with plugin clone / host steps (summarize + link to raw/blob INSTALL.md)
-- [ ] **Step 2:** Replace `xion-skills` recommendations with `verona-bin` inside the plugin
-- [ ] **Step 3:** Update `.agents/AGENTS.md` + root `AGENTS.md` / `CLAUDE.md` project structure so they no longer claim bundled `skills/` SSOT
-- [ ] **Step 4:** Grep-clean active docs for `npx skills add burnt-labs/verona-agent-toolkit`, `burnt-labs/xion-skills` (as install source), and “bundled skills live at skills/”
-- [ ] **Step 5:** Commit
+- [x] **Step 1:** Replace skill install sections with plugin clone / host steps (summarize + link to raw/blob INSTALL.md)
+- [x] **Step 2:** Replace `xion-skills` recommendations with `verona-bin` inside the plugin
+- [x] **Step 3:** Update `.agents/AGENTS.md` + root `AGENTS.md` / `CLAUDE.md` project structure so they no longer claim bundled `skills/` SSOT
+- [x] **Step 4:** Grep-clean active docs for `npx skills add burnt-labs/verona-agent-toolkit`, `burnt-labs/xion-skills` (as install source), and “bundled skills live at skills/”
+- [x] **Step 5:** Commit
 
 ---
 

@@ -4,11 +4,11 @@
   "plans": [
     {
       "id": "skills-ssot-plugin-migration",
-      "title": "Skills SSOT → verona-dev-plugin migration",
+      "title": "Skills SSOT \u2192 verona-dev-plugin migration",
       "file": ".mstar/plans/skills-ssot-plugin-migration.md",
       "status": "InProgress",
       "owner": "@project-manager",
-      "progress": 10,
+      "progress": 100,
       "created_at": "2026-07-21",
       "updated_at": "2026-07-21",
       "metadata": {
@@ -23,7 +23,17 @@
           "plan": "done"
         },
         "execution_mode": "sdd",
-        "qa_gate": "mandatory"
+        "qa_gate": "mandatory",
+        "task_commits": [
+          {
+            "task": 1,
+            "sha": "4b0cf08"
+          },
+          {
+            "task": 2,
+            "sha": "0872cbd"
+          }
+        ]
       }
     },
     {

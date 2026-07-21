@@ -8,7 +8,7 @@ CLI-first, agent-oriented Rust toolkit for the Verona blockchain. Uses OAuth2/Me
 |-------|------|--------|
 | Project (this file) | `AGENTS.md` | Rust CLI, build/test, coding style, security |
 | Harness | `.mstar/AGENTS.md` | `.mstar/status.json`, plans, knowledge, QC reports |
-| Skills | `.agents/AGENTS.md` | Bundled `skills/`, install paths, skill conventions |
+| Skills | `.agents/AGENTS.md` | [verona-dev-plugin](https://github.com/burnt-labs/verona-dev-plugin) install/routing; skill conventions |
 
 `CLAUDE.md` mirrors this file for Claude Code. Subtree `AGENTS.md` files are self-contained; do not duplicate harness rules here or in `.agents/AGENTS.md`.
 
@@ -71,12 +71,9 @@ src/
 ├── account/      # MetaAccount queries
 ├── shared/       # Error types, retry logic, exit codes, instantiate2
 └── utils/        # Output formatting (JSON/human/GHA)
-skills/           # Agent skills (bash scripts + JSON schemas) that consume the CLI.
-                  # Each skill has its own SKILL.md with conventions.
-                  # Read the relevant SKILL.md if modifying a skill.
 .mstar/           # Harness: status.json, plans/, knowledge/ — see .mstar/AGENTS.md
 .agents/          # Codex/Cursor skill context anchor — see .agents/AGENTS.md
-tests/            # E2E bash tests (e2e_*.sh) and skills mock tests.
+tests/            # E2E bash tests (e2e_*.sh) and integration tests.
 scripts/          # Build/utility scripts (NOT test scripts).
 ```
 
