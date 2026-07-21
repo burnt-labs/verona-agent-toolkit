@@ -87,3 +87,10 @@
 ## SDD runtime (ephemeral)
 
 `{SDD_DIR}` = `.mstar/sdd/skills-ssot-plugin-migration/`
+
+## QC gate summary
+
+- **Verdict:** Approve with residuals (`665aaab..9464122`)
+- **Tri:** qc1/qc2 Approve; qc3 Approve with residuals (W2/W4 fixed in `9464122`)
+- **Open residuals:** R1 knowledge paths, R2 fixture migration, R3 optional polish — see `status.json` `residual_findings.skills-ssot-plugin-migration`
+- **Bundle:** `.mstar/sdd/skills-ssot-plugin-migration/review/` (gitignored)
