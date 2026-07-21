@@ -5,6 +5,14 @@ All notable changes to the Verona Agent Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.1](https://github.com/burnt-labs/verona-agent-toolkit/compare/0.14.0...0.14.1) (2026-07-21)
+
+
+### Chores
+
+* **skills:** move skills SSOT to verona-dev-plugin ([#93](https://github.com/burnt-labs/verona-agent-toolkit/issues/93)) ([2f9709d](https://github.com/burnt-labs/verona-agent-toolkit/commit/2f9709d4fd63aebd2f943e4e121de1e7328b56c8))
+* stop tracking GitNexus Claude skills ([#91](https://github.com/burnt-labs/verona-agent-toolkit/issues/91)) ([665aaab](https://github.com/burnt-labs/verona-agent-toolkit/commit/665aaab621b9f0eb3ec4fd4bd31a417d9a80c036))
+
 ## [0.14.0](https://github.com/burnt-labs/verona-agent-toolkit/compare/0.13.1...0.14.0) (2026-07-16)
 
 
