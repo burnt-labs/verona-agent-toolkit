@@ -1,7 +1,50 @@
 {
   "version": 1,
-  "updated_at": "2026-07-16",
+  "updated_at": "2026-07-21",
   "plans": [
+    {
+      "id": "skills-ssot-plugin-migration",
+      "title": "Skills SSOT \u2192 verona-dev-plugin migration",
+      "file": ".mstar/plans/skills-ssot-plugin-migration.md",
+      "status": "Done",
+      "owner": "@project-manager",
+      "progress": 100,
+      "created_at": "2026-07-21",
+      "updated_at": "2026-07-21",
+      "metadata": {
+        "working_branch": "plan/skills-ssot-plugin-migration",
+        "spec_integration_branch": "main",
+        "merge_target": "main",
+        "phase": "done",
+        "description": "B1: remove bundled skills/ + skill CI/tests; full install/routing docs align to burnt-labs/verona-dev-plugin (verona-bin)",
+        "prepare_gates": {
+          "specify": "done",
+          "clarify": "done",
+          "plan": "done"
+        },
+        "execution_mode": "sdd",
+        "qa_gate": "mandatory",
+        "task_commits": [
+          {
+            "task": 1,
+            "sha": "4b0cf08"
+          },
+          {
+            "task": 2,
+            "sha": "384929b"
+          },
+          {
+            "task": "fix-w2-w4",
+            "sha": "9464122"
+          }
+        ],
+        "review_range": "665aaab..0a7838c",
+        "gates": {
+          "qc": "Approve with residuals",
+          "qa": "Accept with residuals"
+        }
+      }
+    },
     {
       "id": "verona-rebrand",
       "title": "Verona Agent Toolkit full rebrand",
@@ -92,6 +135,32 @@
         "disposition": "deferred",
         "summary": "sync-from-treasury.sh discoverability / stderr capture polish",
         "source": "qc3 suggestions",
+        "status": "open"
+      }
+    ],
+    "skills-ssot-plugin-migration": [
+      {
+        "id": "R1",
+        "severity": "medium",
+        "disposition": "deferred",
+        "summary": "Active .mstar/knowledge still cites local skills/ and xion-skills paths",
+        "source": "qc3 W1/W5",
+        "status": "open"
+      },
+      {
+        "id": "R2",
+        "severity": "medium",
+        "disposition": "deferred",
+        "summary": "Skill mock fixture suite retired; migrate to plugin or tests/cli later",
+        "source": "plan deferred + qc3 W3",
+        "status": "open"
+      },
+      {
+        "id": "R3",
+        "severity": "info",
+        "disposition": "accepted_risk",
+        "summary": "Optional CHANGELOG note / ci-status aggregator comments",
+        "source": "qc suggestions",
         "status": "open"
       }
     ]

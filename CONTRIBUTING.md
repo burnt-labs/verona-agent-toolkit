@@ -219,7 +219,6 @@ verona-agent-toolkit/
 │   ├── config/          # Configuration
 │   ├── utils/           # Utilities
 │   └── asset_builder/   # CW721 NFT / Asset Builder
-├── skills/              # Agent Skills
 ├── tests/               # All test scripts and integration tests
 │   ├── e2e_*.sh         # E2E test scripts (e.g. e2e_treasury_lifecycle.sh)
 │   ├── *_integration_test.rs
@@ -233,8 +232,7 @@ verona-agent-toolkit/
 
 - **tests/**: E2E scripts should be named `e2e_*.sh`. Do not put test scripts in `scripts/`.
 - **.mstar/**: `.mstar/status.json` (roadmap/progress), `.mstar/plans/` (plans, archived, reports), `.mstar/knowledge/` (design SSOT); see `.mstar/AGENTS.md`.
-- **.agents/**: Skill install conventions only — `.agents/AGENTS.md`.
-- **skills/**: Source packages copied or linked into `~/.agents/skills/` for global install.
+- **.agents/**: Skill install conventions — `.agents/AGENTS.md` (skills SSOT: [verona-dev-plugin](https://github.com/burnt-labs/verona-dev-plugin)).
 
 ## Adding New Features
 

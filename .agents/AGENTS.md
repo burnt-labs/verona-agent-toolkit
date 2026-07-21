@@ -1,35 +1,35 @@
 # AGENTS.md — Agent skill context (`.agents/`)
 
-Rules for how Codex, Cursor, and similar coding agents use **skills** with this repository.
+Rules for how Codex, Cursor, and similar coding agents use **Verona skills** alongside this repository.
 
 ## What this directory is for
 
-The repo keeps `.agents/` as a **conventional anchor** next to the global install layout `~/.agents/skills/`. It holds **no** source code, plans, or review artifacts—only this guide for skill discovery.
+The repo keeps `.agents/` as a **conventional anchor** next to global skill install layouts (`~/.agents/skills/`, host plugin trees). It holds **no** source code, plans, or review artifacts—only this guide for skill discovery.
 
-Bundled skill packages live at **`skills/`** (repository root). Each package includes `SKILL.md`, optional `scripts/`, and `schemas/`.
+**Agent skills do not live in this repository.** The skills SSOT is [burnt-labs/verona-dev-plugin](https://github.com/burnt-labs/verona-dev-plugin). Install and update skills only via that plugin’s [INSTALL.md](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md).
 
 ## Install and discovery
 
 | Step | Location |
 |------|----------|
-| Full install guide | `INSTALL-FOR-AGENTS.md` (repository root) |
-| Skill conventions & schemas | `docs/skills-guide.md` |
-| Global skill install root | `~/.agents/skills/<skill-name>/` (e.g. via `npx skills add` / `skills.sh -g`) |
-| Validate frontmatter in CI | `scripts/validate-skill-frontmatter.sh` |
+| Plugin install (SSOT) | [verona-dev-plugin INSTALL.md](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md) |
+| CLI + agent workflow | `INSTALL-FOR-AGENTS.md` (repository root) |
+| Skills routing overview | `docs/skills-guide.md` |
+| Plugin README (Development vs Toolkit) | [verona-dev-plugin README](https://github.com/burnt-labs/verona-dev-plugin/blob/main/README.md) |
 
-Install skills so **`verona-dev`** sits beside other Verona toolkit skills under the same parent directory; param validation resolves schemas from sibling skill folders.
+Do **not** use `npx skills add burnt-labs/verona-agent-toolkit` or install `burnt-labs/xion-skills` for Verona agent workflows. Chain / CosmWasm / `xiond` tasks route to **`verona-bin`** inside the plugin. If those legacy installs remain under `~/.agents/skills/` or host skill dirs, remove them before installing the plugin — [Cleanup legacy skills](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md#cleanup-legacy-skills).
 
-## Bundled skills (this repo)
+## Bundled skills (plugin)
 
-`verona-dev`, `verona-toolkit-init`, `verona-oauth2`, `verona-oauth2-client`, `verona-treasury`, `verona-faucet`, `verona-asset`.
+Session entry: **`verona-dev`**. Toolkit leaf skills: `verona-toolkit-init`, `verona-oauth2`, `verona-oauth2-client`, `verona-treasury`, `verona-faucet`, `verona-asset`. Development lane: `verona-dev` references + **`verona-bin`**.
 
-Before treasury, faucet, or NFT operations: authenticate per `verona-oauth2` / `verona-toolkit-init` skill docs.
+Before treasury, faucet, or NFT operations: authenticate per `verona-oauth2` / `verona-toolkit-init` (or `verona-toolkit auth login`).
 
-## Skill authoring rules
+## Skill conventions (plugin)
 
-- Skill `description` in YAML frontmatter must stay within loader limits (Codex ≤ 1024 characters); CI enforces via `validate_skill_frontmatter`.
-- Scripts invoked by skills must use `--output json` and structured stderr on failure (see root `AGENTS.md` CLI output rules).
-- Colocate skill-specific scripts under `skills/<name>/scripts/`; shared helpers belong in the skill that owns them.
+- Skill packages live under `skills/` in **verona-dev-plugin**; each has `SKILL.md`, optional `scripts/`, and `schemas/`.
+- Scripts invoked by skills should use `--output json` and structured stderr on failure (see root `AGENTS.md` CLI output rules).
+- Skill authoring and frontmatter validation happen in the plugin repository, not here.
 
 ## Rust / CLI work in this repo
 

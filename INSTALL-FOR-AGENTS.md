@@ -231,44 +231,40 @@ Available command groups:
 
 ### Step 3: Install Skills (Recommended)
 
-Skills provide agent-friendly wrappers around CLI commands with JSON output and error handling.
+Agent skills live in [burnt-labs/verona-dev-plugin](https://github.com/burnt-labs/verona-dev-plugin). There is **no** `npx skills add` install path for this CLI repository.
 
-```bash
-# Install verona-agent-toolkit skills (global, all common agents: Cursor, Claude Code, Codex, OpenClaw)
-npx skills add burnt-labs/verona-agent-toolkit -g -y -a cursor -a claude-code -a codex -a openclaw
+**Install SSOT:** Follow host-specific steps in the plugin [INSTALL.md](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md). Summary:
 
-# Optional: Install xion-skills for xiond CLI operations
-npx skills add burnt-labs/xion-skills -g -y -a cursor -a claude-code -a codex -a openclaw
-```
+**Cleanup legacy skills (required if upgrading):** If you previously used `npx skills add burnt-labs/verona-agent-toolkit`, `burnt-labs/xion-skills`, or similar non-plugin installs, remove leftover `verona-*`, `xion-*`, and `xiond-*` folders from `~/.agents/skills/`, `~/.cursor/skills/`, and `~/.claude/skills/` (if present) before installing the plugin. Full steps: [Cleanup legacy skills](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md#cleanup-legacy-skills).
 
-- **`-g`**: Install to global directory (`~/.agents/skills/`) so skills are available in all projects.
-- **`-y`**: Non-interactive; skip confirmation prompts (suitable for scripts and agents).
-- **`-a cursor -a claude-code -a codex -a openclaw`**: Create symlinks for these agents so each tool (Cursor, Claude Code, Codex, OpenClaw) can load the skills from its own directory. You can omit agents you do not use.
+| Host | Quick start |
+|------|-------------|
+| **Cursor** | `git clone https://github.com/burnt-labs/verona-dev-plugin.git ~/.cursor/plugins/local/verona-dev-plugin` then reload window |
+| **Codex** | Clone repo, register local path in `~/.agents/plugins/marketplace.json`, run `codex plugin add verona-dev-plugin --marketplace personal`; trust plugin hooks |
+| **Kimi** | `/plugins install https://github.com/burnt-labs/verona-dev-plugin` then `/plugins reload` |
+| **Claude Code** | Clone and register local plugin path, or marketplace when published |
 
-**Available Skills:**
+After install, reload the host. Session entry **`verona-dev`** loads automatically when hooks/manifest are active (Codex: trust hooks first).
 
-| Package | Skill | Purpose |
-|---------|-------|---------|
-| `burnt-labs/verona-agent-toolkit` | `verona-dev` | Unified entry point - routes to correct skill |
-| | `verona-toolkit-init` | Install verona-toolkit CLI |
-| | `verona-oauth2` | OAuth2 authentication |
-| | `verona-treasury` | Treasury management |
-| | `verona-asset` | NFT operations |
-| | `verona-faucet` | Claim testnet tokens |
-| `burnt-labs/xion-skills` | `xiond-init` | Install xiond CLI |
-| (optional) | `xiond-usage` | Chain queries, account management |
-| | `xiond-wasm` | CosmWasm deployment |
+**Available skills (plugin):**
 
-**When to Use Which:**
+| Lane | Skills | Purpose |
+|------|--------|---------|
+| **Development** | `verona-dev`, `verona-bin` | App SDK guides; `xiond` / chain / CosmWasm via **`verona-bin`** (not a separate `xion-skills` install) |
+| **Toolkit** | `verona-toolkit-init`, `verona-oauth2`, `verona-oauth2-client`, `verona-treasury`, `verona-asset`, `verona-faucet` | MetaAccount CLI workflows via `verona-toolkit` |
 
-| Use verona-agent-toolkit when... | Use xion-skills when... |
-|-------------------------------|-------------------------|
-| Building Verona applications | Deploying CosmWasm contracts |
+**When to use which:**
+
+| Use toolkit skills when... | Use `verona-bin` when... |
+|---------------------------|--------------------------|
+| Building Verona apps with MetaAccount / Treasury | Deploying CosmWasm contracts |
 | Managing Treasury contracts | Querying chain data (blocks, txs) |
 | Gasless transactions | Checking transaction status |
-| OAuth2 authentication | Mnemonic wallet operations |
-| Authz/Fee grant configuration | Validator operations |
+| OAuth2 authentication (CLI) | Mnemonic wallet / validator operations |
+| Authz/Fee grant configuration | Installing or using `xiond` |
 | Claiming testnet tokens | - |
+
+Do not invent install steps beyond [INSTALL.md](https://github.com/burnt-labs/verona-dev-plugin/blob/main/INSTALL.md).
 
 ---
 
