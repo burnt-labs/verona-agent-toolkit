@@ -29,7 +29,7 @@ jobs:
   # unrelated PRs whose squash message mentions that phrase in the body (e.g. #51).
   # Only treat a line as a “release commit” when it matches chore(main): release x.y.z.
   classify:
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     outputs:
       skip_release_please: ${{ steps.check.outputs.skip }}
     steps:
@@ -53,7 +53,7 @@ jobs:
   release-please:
     needs: classify
     if: needs.classify.outputs.skip_release_please != 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
@@ -80,7 +80,7 @@ jobs:
   # We manually create the tag here, then trigger release.yml to upload artifacts.
   trigger-dist:
     if: github.event_name == 'push'
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v6
         with:
