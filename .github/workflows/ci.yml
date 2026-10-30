@@ -24,7 +24,7 @@ jobs:
     # Skip push events where the commit message starts with "chore(main): release"
     if: "${{ github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore(main): release') }}"
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v6
 
@@ -55,7 +55,7 @@ jobs:
   lint:
     if: "${{ github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore(main): release') }}"
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v6
 
@@ -73,7 +73,7 @@ jobs:
   security-audit:
     if: "${{ github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore(main): release') }}"
     name: Security Audit
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v6
 
@@ -91,7 +91,7 @@ jobs:
   # ===========================================================================
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     needs: [test, lint, security-audit]
     steps:
       - uses: actions/checkout@v6
@@ -117,7 +117,7 @@ jobs:
   # ===========================================================================
   e2e-tests:
     name: E2E Tests
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     needs: [build]
     if: ${{ vars.ENABLE_E2E_TESTS == 'true' }}
     steps:
@@ -156,7 +156,7 @@ jobs:
 
   e2e-status:
     name: E2E Tests Status
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     needs: [e2e-tests]
     if: always()
     steps:
@@ -173,7 +173,7 @@ jobs:
   # ===========================================================================
   ci-status:
     name: CI Status
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     needs: [e2e-status]
     if: always()
     steps:
