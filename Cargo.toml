@@ -67,7 +67,8 @@ prost-types = "0.12"
 cosmwasm-std = { version = "2.1", features = ["stargate"] }
 
 # Treasury contract types (from burnt-labs/contracts)
-treasury = { git = "https://github.com/burnt-labs/contracts", branch = "main", features = ["library"] }
+# Pinned: the treasury contract was removed from burnt-labs/contracts main; this is the last rev that contains it.
+treasury = { git = "https://github.com/burnt-labs/contracts", rev = "893f5f17b4f675cab6cbd0f708f39068c543b20e", features = ["library"] }
 
 # Regex for parsing
 regex = "1.10"
