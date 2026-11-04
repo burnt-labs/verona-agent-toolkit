@@ -5,6 +5,18 @@ All notable changes to the Verona Agent Toolkit will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.2](https://github.com/burnt-labs/verona-agent-toolkit/compare/0.14.1...0.14.2) (2026-11-04)
+
+
+### Bug Fixes
+
+* **deps:** resolve cargo audit vulnerabilities ([#96](https://github.com/burnt-labs/verona-agent-toolkit/issues/96)) ([1186cd9](https://github.com/burnt-labs/verona-agent-toolkit/commit/1186cd9bca508d84eb0e4c307272c45efd74f942))
+
+
+### CI/CD
+
+* run Linux jobs on Ubicloud ([#95](https://github.com/burnt-labs/verona-agent-toolkit/issues/95)) ([c0fba6e](https://github.com/burnt-labs/verona-agent-toolkit/commit/c0fba6e168417b051512d44d5b877f0c2c67619e))
+
 ## [0.14.1](https://github.com/burnt-labs/verona-agent-toolkit/compare/0.14.0...0.14.1) (2026-07-21)
 
 
