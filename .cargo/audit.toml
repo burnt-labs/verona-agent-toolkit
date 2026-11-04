@@ -1,0 +1,25 @@
+# cargo-audit configuration (read automatically by `cargo audit`).
+# Each ignore must say why it cannot be fixed by a dependency update.
+# Revisit these when cosmwasm-std / cosmwasm-crypto move to the RustCrypto
+# 0.14 elliptic-curve stack or the arkworks crates drop these dependencies.
+
+[advisories]
+ignore = [
+    # crypto-bigint 0.5.5: timing variability in constant-time operations.
+    # Only fixed in >=0.7.6; no patched 0.5.x exists. It is pulled in via
+    # cosmwasm-std -> cosmwasm-crypto -> ecdsa 0.16 / k256 0.13 / p256 0.13 ->
+    # elliptic-curve 0.13, and even the latest cosmwasm-crypto (3.0.x) still
+    # depends on that stack. This toolkit uses cosmwasm-std for types and
+    # instantiate2 address derivation, not for secret-key ECDSA operations.
+    "RUSTSEC-2026-0387",
+
+    # derivative 2.2.0: unmaintained (no vulnerability). Proc-macro used by
+    # ark-ec / ark-ff 0.4 via cosmwasm-crypto 2.x; no replacement available
+    # without upstream changes.
+    "RUSTSEC-2024-0388",
+
+    # paste 1.0.15: unmaintained (no vulnerability). Proc-macro used by
+    # ark-ff 0.4 via cosmwasm-crypto 2.x; no replacement available without
+    # upstream changes.
+    "RUSTSEC-2024-0436",
+]

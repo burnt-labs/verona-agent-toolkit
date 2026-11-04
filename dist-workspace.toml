@@ -21,3 +21,7 @@ targets = ["aarch64-apple-darwin", "aarch64-unknown-linux-gnu", "x86_64-apple-da
 install-path = "CARGO_HOME"
 # Whether to install an updater program
 install-updater = false
+
+[dist.github-custom-runners]
+# Run the non-build jobs (plan, global artifacts, host, announce) on Ubicloud
+global = "ubicloud-standard-2"
